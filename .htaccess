@@ -1,0 +1,12 @@
+Options -Indexes
+DirectoryIndex index.php
+
+RewriteEngine On
+
+# Redirect /index.php to /
+RewriteRule ^index\.php$ / [R=301,L]
+
+# Redirect bare slugs without trailing slash (e.g. /palette → /palette/)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
