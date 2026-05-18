@@ -13,7 +13,7 @@ require 'includes/header.php';
         </div>
         <div class="badge">
             <span class="badge-dot"></span>
-            3 tools available · more coming
+            4 tools available · more coming
         </div>
     </div>
 
@@ -81,28 +81,26 @@ require 'includes/header.php';
             </div>
         </div>
 
-        <div class="tool-card coming-soon fade-in-3">
+        <a href="/gradient/" class="tool-card fade-in-3">
             <div class="card-preview">
-                <div class="card-preview-soon">
-                    <p class="text-micro">Coming soon</p>
-                </div>
+                <div id="grad-card-preview" style="width:100%;height:100%;"></div>
             </div>
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Gradient studio</span>
-                    <span class="tag">Soon</span>
+                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Build gradients that actually look good.
                     Interpolate through OKLCH to avoid the grey, muddy band that
                     ruins most CSS gradients.</p>
                 <div class="card-footer">
-                    <span class="card-meta">CSS · SVG · Figma</span>
-                    <div class="card-arrow disabled"><svg viewBox="0 0 24 24">
+                    <span class="card-meta">Linear · Radial · Copy CSS</span>
+                    <div class="card-arrow"><svg viewBox="0 0 24 24">
                             <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg></div>
                 </div>
             </div>
-        </div>
+        </a>
 
         <a href="/color-picker/" class="tool-card fade-in-4">
             <div class="card-preview">
@@ -189,6 +187,30 @@ require 'includes/header.php';
         ctx.globalCompositeOperation = 'source-over';
         ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI * 2);
         ctx.fillStyle = oklchToHex(0.6, 0.178, 264); ctx.fill();
+    })();
+
+    (function () {
+        function lerpHue(h1, h2, t) {
+            let d = ((h2 - h1) % 360 + 360) % 360;
+            if (d > 180) d -= 360;
+            return ((h1 + d * t) % 360 + 360) % 360;
+        }
+        function lerpGrad(hexA, hexB, t) {
+            const ra = hexToRgb(hexA), rb = hexToRgb(hexB);
+            if (!ra || !rb) return hexA;
+            const [La, Ca, Ha] = rgbToOklch(...ra);
+            const [Lb, Cb, Hb] = rgbToOklch(...rb);
+            return oklchToHex(La+(Lb-La)*t, Ca+(Cb-Ca)*t, lerpHue(Ha,Hb,t));
+        }
+        const el = document.getElementById('grad-card-preview');
+        if (!el) return;
+        const hexA = '#2563eb', hexB = '#e11d48';
+        const n = 16;
+        const ss = Array.from({length: n + 1}, (_, i) => {
+            const t = i / n;
+            return `${lerpGrad(hexA, hexB, t)} ${(t * 100).toFixed(1)}%`;
+        }).join(', ');
+        el.style.background = `linear-gradient(135deg, ${ss})`;
     })();
 
     const recentColors = ['#2563eb', '#e11d48'];

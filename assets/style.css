@@ -2096,15 +2096,247 @@ textarea#main-input::placeholder {
   margin-bottom: 56px;
 }
 
+/* ══════════════════════════════════════════════════
+   GRADIENT STUDIO
+══════════════════════════════════════════════════ */
+
+.grad-panel {
+  width: 290px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.grad-section {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.grad-section-stops { border-bottom: none; flex: 1; }
+
+.grad-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.grad-preview-section {
+  padding: 24px 28px 0;
+  flex-shrink: 0;
+}
+
+.grad-preview {
+  height: 220px;
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  transition: background 0.06s;
+}
+
+.grad-track-outer {
+  position: relative;
+  height: 28px;
+  margin-top: 12px;
+  cursor: crosshair;
+}
+
+.grad-track {
+  position: absolute;
+  top: 10px; left: 0; right: 0;
+  height: 8px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.grad-handles { position: absolute; inset: 0; }
+
+.grad-handle {
+  position: absolute;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.4);
+  top: 3px;
+  transform: translateX(-50%);
+  cursor: grab;
+  transition: box-shadow 0.1s;
+  z-index: 2;
+}
+
+.grad-handle:hover    { box-shadow: 0 0 0 2px rgba(0,0,0,0.3), 0 3px 10px rgba(0,0,0,0.5); }
+.grad-handle.selected { box-shadow: 0 0 0 2.5px rgba(255,255,255,0.7), 0 0 0 4px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.5); }
+
+.grad-track-hint {
+  text-align: center;
+  margin-top: 7px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text4);
+}
+
+.grad-code-section {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.grad-output-box { flex: 1; min-height: 0; max-height: none !important; }
+
+/* angle wheel */
+.angle-row { display: flex; align-items: flex-start; gap: 14px; margin-top: 10px; }
+
+.angle-wheel {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  position: relative;
+  cursor: crosshair;
+  flex-shrink: 0;
+  background: var(--bg3);
+  user-select: none;
+}
+
+.angle-wheel::after {
+  content: '';
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--border3);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.angle-dot {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text2);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.angle-right { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.angle-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 5px 9px;
+}
+
+.angle-input {
+  background: transparent; border: none; outline: none;
+  font-family: var(--mono); font-size: 14px; color: var(--text);
+  width: 46px; text-align: right;
+  -moz-appearance: textfield;
+}
+.angle-input::-webkit-inner-spin-button,
+.angle-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.angle-unit { font-family: var(--mono); font-size: 13px; color: var(--text3); }
+
+.dir-presets { display: grid; grid-template-columns: repeat(3, 26px); gap: 2px; }
+
+.dir-presets button,
+.dir-presets span {
+  width: 26px; height: 26px;
+  border-radius: 4px; border: 1px solid var(--border);
+  background: transparent; color: var(--text3); cursor: pointer;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s, color 0.1s, border-color 0.1s; line-height: 1;
+}
+
+.dir-presets button:hover { background: rgba(255,255,255,0.07); color: var(--text2); border-color: var(--border2); }
+.dir-presets span { cursor: default; opacity: 0.2; border-color: transparent; }
+
+/* stop rows */
+.stop-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px; border-radius: var(--r);
+  border: 1px solid transparent; cursor: pointer;
+  transition: background 0.1s, border-color 0.1s; margin-bottom: 3px;
+}
+
+.stop-row:hover    { background: rgba(255,255,255,0.04); border-color: var(--border); }
+.stop-row.selected { background: rgba(255,255,255,0.06); border-color: var(--border2); }
+
+.stop-swatch-wrap { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
+
+.stop-swatch {
+  position: absolute; inset: 0;
+  border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.12);
+  pointer-events: none;
+}
+
+.stop-color-input {
+  position: absolute; inset: -3px; opacity: 0; cursor: pointer;
+  width: calc(100% + 6px); height: calc(100% + 6px); border: none;
+}
+
+.stop-hex-input {
+  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+  border-bottom: 1px solid transparent; font-family: var(--mono); font-size: 12px;
+  letter-spacing: 0.04em; color: var(--text2); padding: 2px 0;
+  transition: border-color 0.1s;
+}
+
+.stop-hex-input:hover { border-bottom-color: var(--border2); }
+.stop-hex-input:focus { border-bottom-color: var(--border3); color: var(--text); }
+
+.stop-pos-input {
+  width: 42px; background: transparent; border: none; outline: none;
+  border-bottom: 1px solid transparent; font-family: var(--mono); font-size: 12px;
+  color: var(--text2); text-align: right; padding: 2px 0;
+  -moz-appearance: textfield; transition: border-color 0.1s;
+}
+
+.stop-pos-input::-webkit-inner-spin-button,
+.stop-pos-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.stop-pos-input:hover { border-bottom-color: var(--border2); }
+.stop-pos-input:focus { border-bottom-color: var(--border3); color: var(--text); }
+
+.stop-pos-label { font-family: var(--mono); font-size: 11px; color: var(--text4); }
+
+.stop-remove {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: transparent; border: 1px solid var(--border); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.12s, background 0.12s, border-color 0.12s, color 0.12s;
+  color: var(--text3); flex-shrink: 0;
+}
+
+.stop-row:hover .stop-remove { opacity: 1; }
+.stop-remove:hover { background: rgba(255,80,80,0.1); border-color: rgba(255,80,80,0.3); color: #ff6b6b; }
+.stop-remove svg { width: 8px; height: 8px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.stop-remove-placeholder { width: 20px; flex-shrink: 0; }
+
+.add-stop-btn {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  padding: 8px 6px; background: transparent; border: 1px dashed var(--border2);
+  border-radius: var(--r); cursor: pointer; font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.08em; color: var(--text3); text-transform: uppercase;
+  transition: border-color 0.12s, color 0.12s, background 0.12s; margin-top: 4px;
+}
+
+.add-stop-btn:hover { border-color: var(--border3); color: var(--text2); background: rgba(255,255,255,0.02); }
+.add-stop-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 760px) {
-  aside {
-    display: none;
-  }
-  main.scrollable {
-    padding: 20px 18px 48px;
-  }
-  .scroll-area {
-    padding: 20px 18px 48px;
-  }
+  aside { display: none; }
+  main.scrollable { padding: 20px 18px 48px; }
+  .scroll-area { padding: 20px 18px 48px; }
 }
