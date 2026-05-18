@@ -78,12 +78,11 @@
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Workspace</div>
-                <a href="#" class="sidebar-link">
+                <a href="/saved-palettes/" class="sidebar-link<?= $activePage === 'saved-palettes' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                     </svg>
                     Saved palettes
-                    <span class="soon">Soon</span>
                 </a>
                 <a href="#" class="sidebar-link">
                     <svg viewBox="0 0 24 24">

@@ -785,14 +785,11 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   gap: 12px;
 }
 
-.topbar-greeting {
-}
-.topbar-greeting h2 {
-  line-height: 1;
-}
-.topbar-greeting p {
-  margin-top: 6px;
-}
+.topbar-greeting { }
+.topbar-greeting h2 { line-height: 1; }
+.topbar-greeting p  { margin-top: 6px; }
+
+.topbar-right { display: flex; align-items: center; gap: 10px; }
 
 /* recent row */
 .recent-section {
