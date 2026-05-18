@@ -11,9 +11,15 @@ require '../includes/header.php';
       <h2>Palette <em>generator</em></h2>
       <p>Pick your colors, get a full scale.</p>
     </div>
-    <div class="badge">
-      <span class="badge-dot"></span>
-      oklch color theory
+    <div class="topbar-right">
+      <button class="btn" onclick="savePalette()">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        <span id="save-label">Save palette</span>
+      </button>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        oklch color theory
+      </div>
     </div>
   </div>
 
@@ -260,14 +266,40 @@ require '../includes/header.php';
     lbl.textContent = 'Copied!'; setTimeout(() => lbl.textContent = 'Copy', 2000);
   }
 
-  // Init — build full scale objects with L/C/H
-  colors.forEach(c => {
-    c.scale = genScale(c.hex).map((h, i) => {
-      const [L, C, H] = rgbToOklch(...hexToRgb(h));
-      return { stop: SCALE_STOPS[i], hex: h, L, C, H };
+  // ── SAVE / LOAD ──────────────────────────────────────
+  const STORAGE_KEY = 'oklch-palettes';
+
+  function savePalette() {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const name = colors.slice(0, 2).map(c => c.name).join(' · ');
+    all.push({ id: 'p-' + Date.now(), name, savedAt: Date.now(),
+               colors: colors.map(c => ({ name: c.name, hex: c.hex })) });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    const lbl = document.getElementById('save-label');
+    lbl.textContent = 'Saved!';
+    setTimeout(() => lbl.textContent = 'Save palette', 2000);
+    showToast('Palette saved');
+  }
+
+  // Init — check for ?load=<id>, then build scales and render
+  (function() {
+    const id = new URLSearchParams(location.search).get('load');
+    if (id) {
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const palette = all.find(p => p.id === id);
+      if (palette && palette.colors.length >= 1) {
+        colors = palette.colors.map((c, i) => ({ id: 'c' + i, name: c.name, hex: c.hex, scale: [] }));
+        nextId = colors.length;
+      }
+    }
+    colors.forEach(c => {
+      c.scale = genScale(c.hex).map((h, i) => {
+        const [L, C, H] = rgbToOklch(...hexToRgb(h));
+        return { stop: SCALE_STOPS[i], hex: h, L, C, H };
+      });
     });
-  });
-  renderPickers(); renderScales(); updateOutput();
+    renderPickers(); renderScales(); updateOutput();
+  })();
 </script>
 
 <?php require '../includes/footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 // Variables expected from caller:
 // $pageTitle  (string) — page <title>
-// $activePage (string) — 'index' | 'palette' | 'picker' | 'case-converter'
+// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter'
 // $shellClass (string, optional) — extra class appended to .shell
 ?>
 <!DOCTYPE html>
@@ -60,13 +60,12 @@
                     </svg>
                     Color picker
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="/gradient/" class="sidebar-link<?= $activePage === 'gradient' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
                         <line x1="4" y1="22" x2="4" y2="15" />
                     </svg>
                     Gradient studio
-                    <span class="soon">Soon</span>
                 </a>
                 <a href="/case-converter/" class="sidebar-link<?= $activePage === 'case-converter' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
@@ -79,12 +78,11 @@
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Workspace</div>
-                <a href="#" class="sidebar-link">
+                <a href="/saved-palettes/" class="sidebar-link<?= $activePage === 'saved-palettes' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                     </svg>
                     Saved palettes
-                    <span class="soon">Soon</span>
                 </a>
                 <a href="#" class="sidebar-link">
                     <svg viewBox="0 0 24 24">
@@ -98,5 +96,5 @@
                     <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">oklch.tools<br>v1.0 · 3 tools available</div>
+            <div class="sidebar-footer">oklch.tools<br>v1.0 · 4 tools available</div>
         </aside>

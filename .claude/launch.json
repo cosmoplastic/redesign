@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "php-dev",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-S", "localhost:8765", "-t", "/Users/ryanpugh/Websites/redesign"],
+      "port": 8765
+    }
+  ]
+}
