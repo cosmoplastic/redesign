@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Color Picker — OKLCH Tools';
+$pageTitle = 'Color Picker — ONE design';
 $activePage = 'picker';
 $shellClass = 'full-height';
 require 'includes/header.php';

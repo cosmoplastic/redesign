@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Palette Generator — OKLCH Tools';
+$pageTitle = 'Palette Generator — ONE design';
 $activePage = 'palette';
 require '../includes/header.php';
 ?>
@@ -12,24 +12,37 @@ require '../includes/header.php';
       <p>Pick your colors, get a full scale.</p>
     </div>
     <div class="topbar-right">
+      <div class="swatch-count-control">
+        <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
+        <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
+          onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
+        <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
+        <span class="swatch-count-label">swatches</span>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
+        <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
+      </div>
       <button class="btn" onclick="savePalette()">
-        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+        </svg>
         <span id="save-label">Save palette</span>
       </button>
       <div class="badge">
         <span class="badge-dot"></span>
-        oklch color theory
+        <span id="mode-badge">oklch color theory</span>
       </div>
     </div>
   </div>
 
-  <div class="pickers-grid" id="pickers-grid"></div>
+  <div class="palette-sections">
 
-  <div class="scales-section" id="scales-section"></div>
+    <div class="pickers-grid" id="pickers-grid"></div>
 
-  <div class="divider"></div>
+    <div class="scales-section" id="scales-section"></div>
 
-  <div class="output-section">
+    <div class="output-section">
     <div class="output-header">
       <div class="tabs">
         <button class="tab-btn active" id="tab-css" onclick="switchTab('css')">CSS variables</button>
@@ -44,7 +57,9 @@ require '../includes/header.php';
       </button>
     </div>
     <pre class="output-box" id="output"></pre>
-  </div>
+    </div>
+
+  </div><!-- /.palette-sections -->
 
 </main>
 </div>
@@ -56,12 +71,72 @@ require '../includes/header.php';
   const MAX_COLORS = 4;
   const ADD_DEFAULTS = ['#16a34a', '#f59e0b', '#8b5cf6', '#ec4899'];
   const ADD_NAMES = ['tertiary', 'quaternary'];
+  const DRAFT_KEY = 'oklch-palette-draft';
+  let _draftTimer;
 
   let colors = [
     { id: 'c0', name: 'primary', hex: '#2563eb', scale: [] },
     { id: 'c1', name: 'secondary', hex: '#e11d48', scale: [] },
   ];
-  let nextId = 2, currentTab = 'css';
+  let nextId = 2, currentTab = 'css', scaleMode = 'oklch', stopCount = 10;
+
+  function getActiveStops() {
+    return ALL_STOPS.slice(0, stopCount).slice().sort((a, b) => a - b);
+  }
+
+  // ── TINT / SHADE SCALE ───────────────────────────────
+  const TINT_AMOUNTS = { 25: .97, 50: .95, 75: .92, 100: .90, 200: .75, 300: .55, 400: .32 };
+  const SHADE_AMOUNTS = { 600: .20, 700: .40, 800: .60, 900: .78, 950: .86, 975: .92 };
+
+  function genScaleTintShade(hex, stops) {
+    const [r, g, b] = hexToRgb(hex);
+    return stops.map(stop => {
+      if (stop === 500) return hex;
+      if (stop < 500) {
+        const t = TINT_AMOUNTS[stop];
+        return rgbToHex(Math.round(r + (255 - r) * t), Math.round(g + (255 - g) * t), Math.round(b + (255 - b) * t));
+      }
+      const t = SHADE_AMOUNTS[stop];
+      return rgbToHex(Math.round(r * (1 - t)), Math.round(g * (1 - t)), Math.round(b * (1 - t)));
+    });
+  }
+
+  function getScale(hex) {
+    const stops = getActiveStops();
+    if (scaleMode === 'tint-shade') return genScaleTintShade(hex, stops);
+    return genScaleWithStops(hex, stops);
+  }
+
+  function setMode(mode) {
+    scaleMode = mode;
+    document.getElementById('mode-oklch').classList.toggle('active', mode === 'oklch');
+    document.getElementById('mode-tintshade').classList.toggle('active', mode === 'tint-shade');
+    document.getElementById('mode-badge').textContent = mode === 'oklch' ? 'oklch color theory' : 'tint / shade';
+    const stops = getActiveStops();
+    colors.forEach(col => {
+      col.scale = getScale(col.hex).map((h, i) => {
+        const [L, C, H] = rgbToOklch(...hexToRgb(h));
+        return { stop: stops[i], hex: h, L, C, H };
+      });
+      renderSwatches(col.id, col.scale);
+    });
+    updateOutput();
+  }
+
+  function setStopCount(n) {
+    n = Math.max(4, Math.min(14, parseInt(n) || 10));
+    stopCount = n;
+    document.getElementById('stop-count').value = n;
+    const stops = getActiveStops();
+    colors.forEach(col => {
+      col.scale = getScale(col.hex).map((h, i) => {
+        const [L, C, H] = rgbToOklch(...hexToRgb(h));
+        return { stop: stops[i], hex: h, L, C, H };
+      });
+      renderSwatches(col.id, col.scale);
+    });
+    updateOutput();
+  }
 
   function toSlug(s) { return s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'color'; }
 
@@ -77,14 +152,8 @@ require '../includes/header.php';
         <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
       </button>`: ''}
       <div class="picker-card-header">
-        <div class="name-input-wrap">
-          <input class="name-input" type="text" value="${col.name}" maxlength="24" spellcheck="false"
-            aria-label="Color name" data-name-id="${col.id}">
-          <span class="name-edit-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </span>
-        </div>
-        <span class="picker-oklch" id="oklch-${col.id}"></span>
+        <input class="name-input" type="text" value="${col.name}" maxlength="24" spellcheck="false"
+          aria-label="Color name" data-name-id="${col.id}">
       </div>
       <div class="picker-controls">
         <div class="color-swatch-btn">
@@ -92,7 +161,8 @@ require '../includes/header.php';
           <input type="color" value="${col.hex}" id="picker-${col.id}" aria-label="${col.name} color">
         </div>
         <input type="text" class="hex-input" value="${col.hex}" id="hex-${col.id}" maxlength="7" spellcheck="false" aria-label="${col.name} hex">
-      </div>`;
+      </div>
+      <span class="picker-oklch" id="oklch-${col.id}"></span>`;
       grid.appendChild(card);
 
       if (colors.length > 1) card.querySelector('[data-remove]').addEventListener('click', () => removeColor(col.id));
@@ -160,9 +230,10 @@ require '../includes/header.php';
   function setColor(id, hex) {
     const col = colors.find(c => c.id === id); if (!col) return;
     col.hex = hex;
-    col.scale = genScale(hex).map((h, i) => {
+    const stops = getActiveStops();
+    col.scale = getScale(hex).map((h, i) => {
       const [L, C, H] = rgbToOklch(...hexToRgb(h));
-      return { stop: SCALE_STOPS[i], hex: h, L, C, H };
+      return { stop: stops[i], hex: h, L, C, H };
     });
     const prev = document.getElementById('preview-' + id); if (prev) prev.style.background = hex;
     const dot = document.getElementById('dot-' + id); if (dot) dot.style.background = hex;
@@ -189,9 +260,10 @@ require '../includes/header.php';
   function addColor() {
     if (colors.length >= MAX_COLORS) return;
     const id = 'c' + nextId++;
-    const hex = ADD_DEFAULTS[(colors.length - 2) % ADD_DEFAULTS.length];
+    const hex = ADD_DEFAULTS[colors.length % ADD_DEFAULTS.length];
     const name = ADD_NAMES[colors.length - 2] || 'color-' + colors.length;
-    const scale = genScale(hex).map((h, i) => { const [L, C, H] = rgbToOklch(...hexToRgb(h)); return { stop: SCALE_STOPS[i], hex: h, L, C, H }; });
+    const stops = getActiveStops();
+    const scale = getScale(hex).map((h, i) => { const [L, C, H] = rgbToOklch(...hexToRgb(h)); return { stop: stops[i], hex: h, L, C, H }; });
     colors.push({ id, name, hex, scale });
     renderPickers();
     const section = document.getElementById('scales-section');
@@ -213,8 +285,7 @@ require '../includes/header.php';
   function hiCSS(code) {
     return code
       .replace(/(--[\w-]+)/g, '<span class="token-key">$1</span>')
-      .replace(/(#[0-9a-fA-F]{6})/g, '<span class="token-val">$1</span>')
-      .replace(/(\/\*.*?\*\/)/g, '<span class="token-comment">$1</span>')
+      .replace(/(oklch\([^)]+\))/g, '<span class="token-val">$1</span>')
       .replace(/([{}:;])/g, '<span class="token-punct">$1</span>');
   }
   function hiJSON(code) {
@@ -228,8 +299,8 @@ require '../includes/header.php';
     const lines = [':root {'];
     colors.forEach(col => {
       const slug = toSlug(col.name);
-      col.scale.forEach(({ stop, hex, L, C, H }) => {
-        lines.push(`  --color-${slug}-${stop}: ${hex}; /* oklch(${(L * 100).toFixed(1)}% ${C.toFixed(4)} ${H.toFixed(1)}) */`);
+      col.scale.forEach(({ stop, L, C, H }) => {
+        lines.push(`  --color-${slug}-${stop}: oklch(${(L * 100).toFixed(1)}% ${C.toFixed(3)} ${H.toFixed(1)});`);
       });
       lines.push('');
     });
@@ -241,16 +312,29 @@ require '../includes/header.php';
     colors.forEach(col => {
       const slug = toSlug(col.name);
       obj.colors[slug] = {};
-      col.scale.forEach(({ stop, hex, L, C, H }) => {
-        obj.colors[slug][stop] = { value: hex, type: 'color', oklch: `oklch(${(L * 100).toFixed(1)}% ${C.toFixed(4)} ${H.toFixed(1)})` };
+      col.scale.forEach(({ stop, hex }) => {
+        obj.colors[slug][stop] = { value: hex, type: 'color' };
       });
     });
     return JSON.stringify(obj, null, 2);
   }
 
+  function persistDraft() {
+    clearTimeout(_draftTimer);
+    _draftTimer = setTimeout(() => {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        colors: colors.map(c => ({ name: c.name, hex: c.hex })),
+        tab: currentTab,
+        mode: scaleMode,
+        stopCount,
+      }));
+    }, 300);
+  }
+
   function updateOutput() {
     const raw = currentTab === 'css' ? genCSS() : genJSON();
     document.getElementById('output').innerHTML = currentTab === 'css' ? hiCSS(raw) : hiJSON(raw);
+    persistDraft();
   }
 
   function switchTab(tab) {
@@ -272,8 +356,10 @@ require '../includes/header.php';
   function savePalette() {
     const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     const name = colors.slice(0, 2).map(c => c.name).join(' · ');
-    all.push({ id: 'p-' + Date.now(), name, savedAt: Date.now(),
-               colors: colors.map(c => ({ name: c.name, hex: c.hex })) });
+    all.push({
+      id: 'p-' + Date.now(), name, savedAt: Date.now(),
+      colors: colors.map(c => ({ name: c.name, hex: c.hex }))
+    });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
     const lbl = document.getElementById('save-label');
     lbl.textContent = 'Saved!';
@@ -282,7 +368,7 @@ require '../includes/header.php';
   }
 
   // Init — check for ?load=<id>, then build scales and render
-  (function() {
+  (function () {
     const id = new URLSearchParams(location.search).get('load');
     if (id) {
       const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -291,13 +377,31 @@ require '../includes/header.php';
         colors = palette.colors.map((c, i) => ({ id: 'c' + i, name: c.name, hex: c.hex, scale: [] }));
         nextId = colors.length;
       }
+    } else {
+      try {
+        const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+        if (draft?.colors?.length >= 1) {
+          colors = draft.colors.map((c, i) => ({ id: 'c' + i, name: c.name, hex: c.hex, scale: [] }));
+          nextId = colors.length;
+          if (draft.tab) currentTab = draft.tab;
+          if (draft.stopCount) stopCount = draft.stopCount;
+          if (draft.mode) {
+            scaleMode = draft.mode;
+            document.getElementById('mode-oklch').classList.toggle('active', scaleMode === 'oklch');
+            document.getElementById('mode-tintshade').classList.toggle('active', scaleMode === 'tint-shade');
+            document.getElementById('mode-badge').textContent = scaleMode === 'oklch' ? 'oklch color theory' : 'tint / shade';
+          }
+        }
+      } catch (_) { }
     }
+    const stops = getActiveStops();
     colors.forEach(c => {
-      c.scale = genScale(c.hex).map((h, i) => {
+      c.scale = getScale(c.hex).map((h, i) => {
         const [L, C, H] = rgbToOklch(...hexToRgb(h));
-        return { stop: SCALE_STOPS[i], hex: h, L, C, H };
+        return { stop: stops[i], hex: h, L, C, H };
       });
     });
+    document.getElementById('stop-count').value = stopCount;
     renderPickers(); renderScales(); updateOutput();
   })();
 </script>

@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Case Converter — OKLCH Tools';
+$pageTitle = 'Case Converter — ONE design';
 $activePage = 'case-converter';
 require '../includes/header.php';
 ?>

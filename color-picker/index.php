@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Color Picker — OKLCH Tools';
+$pageTitle = 'Color Picker — ONE design';
 $activePage = 'picker';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -113,6 +113,14 @@ require '../includes/header.php';
 <script>
   let state = { L: 0.60, C: 0.178, H: 264, A: 1.0 };
   let harmonyMode = 'none', activeHarmonyIdx = 0;
+  const DRAFT_KEY = 'oklch-picker-draft';
+  let _draftTimer;
+  function persistDraft() {
+    clearTimeout(_draftTimer);
+    _draftTimer = setTimeout(() =>
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ L: state.L, C: state.C, H: state.H, A: state.A, harmonyMode }))
+      , 300);
+  }
 
   const hueCanvas = document.getElementById('hue-canvas');
   const gamutCanvas = document.getElementById('gamut-canvas');
@@ -300,6 +308,7 @@ require '../includes/header.php';
     state.L = L; state.C = C; state.H = H;
     drawGamut(); updateHueThumb(); updateGamutThumb();
     updateSliderTracks(); updateStage(); renderFormats(); renderHarmony(); renderContrast();
+    persistDraft();
   }
 
   // canvas interactions
@@ -343,7 +352,22 @@ require '../includes/header.php';
     if ((e.metaKey || e.ctrlKey) && e.key === 'c') copyText(getHex(), 'Hex copied');
   });
 
-  drawHueWheel(); syncAll();
+  drawHueWheel();
+  try {
+    const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if (draft) {
+      if (draft.L != null) state.L = draft.L;
+      if (draft.C != null) state.C = draft.C;
+      if (draft.H != null) state.H = draft.H;
+      if (draft.A != null) state.A = draft.A;
+      if (draft.harmonyMode) {
+        harmonyMode = draft.harmonyMode;
+        document.querySelectorAll('.htab').forEach(t =>
+          t.classList.toggle('active', t.dataset.mode === harmonyMode));
+      }
+    }
+  } catch (_) { }
+  syncAll();
 </script>
 
 <?php require '../includes/footer.php'; ?>

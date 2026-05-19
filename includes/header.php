@@ -24,7 +24,7 @@
 
         <aside>
             <div class="sidebar-logo">
-                <a href="/">OKLCH <em>Tools</em></a>
+                <a href="/">ONE <em>design</em></a>
                 <p class="tagline">For designers</p>
             </div>
             <div class="sidebar-section">
@@ -96,5 +96,5 @@
                     <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">oklch.tools<br>v1.0 · 4 tools available</div>
+            <div class="sidebar-footer">one.design<br>v1.0 · 4 tools available<br><a href="/admin/" class="sidebar-footer-admin">admin</a></div>
         </aside>

@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'OKLCH — Design Tools';
+$pageTitle = 'ONE design';
 $activePage = 'index';
 require 'includes/header.php';
 ?>
@@ -14,20 +14,6 @@ require 'includes/header.php';
         <div class="badge">
             <span class="badge-dot"></span>
             4 tools available · more coming
-        </div>
-    </div>
-
-    <div class="recent-section">
-        <div class="recent-header">
-            <p class="section-label">Jump back in</p>
-        </div>
-        <div class="recent-list">
-            <a href="/palette/" class="recent-item">
-                <div class="recent-swatches" id="recent-swatches-1"></div>
-                <span class="recent-name">Untitled palette</span>
-                <span class="recent-tool">Palette generator</span>
-                <span class="recent-time">just now</span>
-            </a>
         </div>
     </div>
 
@@ -200,29 +186,19 @@ require 'includes/header.php';
             if (!ra || !rb) return hexA;
             const [La, Ca, Ha] = rgbToOklch(...ra);
             const [Lb, Cb, Hb] = rgbToOklch(...rb);
-            return oklchToHex(La+(Lb-La)*t, Ca+(Cb-Ca)*t, lerpHue(Ha,Hb,t));
+            return oklchToHex(La + (Lb - La) * t, Ca + (Cb - Ca) * t, lerpHue(Ha, Hb, t));
         }
         const el = document.getElementById('grad-card-preview');
         if (!el) return;
         const hexA = '#2563eb', hexB = '#e11d48';
         const n = 16;
-        const ss = Array.from({length: n + 1}, (_, i) => {
+        const ss = Array.from({ length: n + 1 }, (_, i) => {
             const t = i / n;
             return `${lerpGrad(hexA, hexB, t)} ${(t * 100).toFixed(1)}%`;
         }).join(', ');
         el.style.background = `linear-gradient(135deg, ${ss})`;
     })();
 
-    const recentColors = ['#2563eb', '#e11d48'];
-    const recentContainer = document.getElementById('recent-swatches-1');
-    recentColors.forEach(hex => {
-        const scale = genScale(hex);
-        [2, 5, 7].forEach(i => {
-            const d = document.createElement('div');
-            d.className = 'recent-swatch'; d.style.background = scale[i];
-            recentContainer.appendChild(d);
-        });
-    });
 </script>
 
 <?php require 'includes/footer.php'; ?>
