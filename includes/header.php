@@ -1,7 +1,7 @@
 <?php
 // Variables expected from caller:
 // $pageTitle  (string) — page <title>
-// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter'
+// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide'
 // $shellClass (string, optional) — extra class appended to .shell
 ?>
 <!DOCTYPE html>
@@ -75,6 +75,15 @@
                     </svg>
                     Case converter
                 </a>
+                <a href="/type-guide/" class="sidebar-link<?= $activePage === 'type-guide' ? ' active' : '' ?>">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="5" x2="21" y2="5" />
+                        <line x1="3" y1="10" x2="18" y2="10" />
+                        <line x1="3" y1="15" x2="14" y2="15" />
+                        <line x1="3" y1="20" x2="9" y2="20" />
+                    </svg>
+                    Type guide
+                </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Workspace</div>
@@ -96,6 +105,6 @@
                     <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">one.design<br>v1.0 · 4 tools available<br><a href="/admin/"
+            <div class="sidebar-footer">one.design<br>v1.0 · 5 tools available<br><a href="/admin/"
                     class="sidebar-footer-admin">admin</a></div>
         </aside>

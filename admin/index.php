@@ -34,6 +34,17 @@ if (isset($_GET['token']) || isset($_GET['img'])) {
 }
 
 // ── Auth ─────────────────────────────────────────────────────────
+const SESSION_TTL = 1800; // 30 minutes
+
+// Expire session if older than TTL
+if (!empty($_SESSION['admin']) && isset($_SESSION['admin_time'])) {
+    if (time() - $_SESSION['admin_time'] > SESSION_TTL) {
+        $_SESSION = [];
+        session_destroy();
+        session_start();
+    }
+}
+
 if (isset($_POST['logout'])) {
     $_SESSION = [];
     session_destroy();
@@ -43,11 +54,33 @@ if (isset($_POST['logout'])) {
 if (isset($_POST['password'])) {
     if ($_POST['password'] === ADMIN_PASS) {
         $_SESSION['admin'] = true;
+        $_SESSION['admin_time'] = time();
     } else {
         $authErr = true;
     }
 }
 $authed = !empty($_SESSION['admin']);
+
+// ── Ping (returns 401 when session gone) ─────────────────────────
+if (isset($_POST['action']) && $_POST['action'] === 'ping') {
+    header('Content-Type: application/json');
+    if (!$authed) { http_response_code(401); echo json_encode(['authed' => false]); exit; }
+    echo json_encode(['authed' => true]);
+    exit;
+}
+
+// ── Re-auth (no session required) ────────────────────────────────
+if (isset($_POST['action']) && $_POST['action'] === 'reauth') {
+    header('Content-Type: application/json');
+    if (($_POST['password'] ?? '') === ADMIN_PASS) {
+        $_SESSION['admin'] = true;
+        $_SESSION['admin_time'] = time();
+        echo json_encode(['ok' => true]);
+    } else {
+        echo json_encode(['ok' => false]);
+    }
+    exit;
+}
 
 // ── API (authed only) ─────────────────────────────────────────────
 if ($authed) {
@@ -82,6 +115,11 @@ if ($authed) {
     if (isset($_POST['action'])) {
         header('Content-Type: application/json');
         $action = $_POST['action'];
+
+        if ($action === 'ping') {
+            echo json_encode(['authed' => true]);
+            exit;
+        }
         $snips  = json_decode(file_exists($snipsFile) ? file_get_contents($snipsFile) : '[]', true) ?: [];
         $files  = json_decode(file_exists($filesFile) ? file_get_contents($filesFile) : '[]', true) ?: [];
 
@@ -475,6 +513,18 @@ if ($authed) {
       font-size: 12px;
     }
 
+    .session-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .session-overlay.hidden { display: none; }
+
     .upload-progress {
       font-size: 12px;
       color: var(--text3);
@@ -500,12 +550,27 @@ if ($authed) {
 
 <?php else: ?>
 
+<div class="session-overlay hidden" id="session-overlay">
+  <div class="lock-card">
+    <div class="lock-title">Session <em>expired</em></div>
+    <div class="lock-field">
+      <label for="reauth-pw">Re-enter passcode</label>
+      <input class="lock-input" type="password" id="reauth-pw" autocomplete="off">
+      <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
+      <button class="lock-submit" id="reauth-submit">Unlock</button>
+    </div>
+  </div>
+</div>
+
 <div class="admin-wrap">
   <div class="admin-header">
     <div class="admin-title">Admin <em>tools</em></div>
-    <form method="POST">
-      <button class="logout-btn" name="logout" value="1">Lock</button>
-    </form>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="/" class="logout-btn" style="text-decoration:none;">← Home</a>
+      <form method="POST" style="margin:0;">
+        <button class="logout-btn" name="logout" value="1">Lock</button>
+      </form>
+    </div>
   </div>
 
   <div class="admin-tabs">
@@ -801,11 +866,53 @@ function showToast(msg) {
   t._timer = setTimeout(() => t.classList.remove('show'), 1800);
 }
 
-// ── Init ─────────────────────────────────────────────────────────
+// ── Session watchdog ─────────────────────────────────────────────
 <?php if ($authed): ?>
+let _sessionInterval;
+
+async function pingSession() {
+  const fd = new FormData();
+  fd.append('action', 'ping');
+  try {
+    const res = await fetch('/admin/', { method: 'POST', body: fd });
+    if (res.status === 401) showSessionExpired();
+  } catch (_) {}
+}
+
+function showSessionExpired() {
+  clearInterval(_sessionInterval);
+  const overlay = document.getElementById('session-overlay');
+  overlay.classList.remove('hidden');
+  setTimeout(() => document.getElementById('reauth-pw').focus(), 50);
+}
+
+document.getElementById('reauth-submit').addEventListener('click', reauth);
+document.getElementById('reauth-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') reauth();
+});
+
+async function reauth() {
+  const pw = document.getElementById('reauth-pw').value;
+  const fd = new FormData();
+  fd.append('action', 'reauth');
+  fd.append('password', pw);
+  const res  = await fetch('/admin/', { method: 'POST', body: fd });
+  const json = await res.json();
+  if (json.ok) {
+    document.getElementById('session-overlay').classList.add('hidden');
+    document.getElementById('reauth-pw').value = '';
+    document.getElementById('reauth-error').classList.remove('show');
+    _sessionInterval = setInterval(pingSession, 60000);
+  } else {
+    document.getElementById('reauth-error').classList.add('show');
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────
 bindUploadZone('file-zone', 'file-input', 'file');
 bindUploadZone('img-zone',  'img-input',  'image');
 loadData();
+_sessionInterval = setInterval(pingSession, 60000);
 <?php endif; ?>
 </script>
 

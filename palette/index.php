@@ -12,17 +12,17 @@ require '../includes/header.php';
       <p>Pick your colors, get a full scale.</p>
     </div>
     <div class="topbar-right">
-      <div class="swatch-count-control">
-        <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
-        <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
-          onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
-        <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
-        <span class="swatch-count-label">swatches</span>
-      </div>
       <div class="tabs">
         <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
         <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
       </div>
+      <button class="btn" onclick="openExportModal()">
+        <svg viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+        </svg>
+        Export
+      </button>
       <button class="btn" onclick="savePalette()">
         <svg viewBox="0 0 24 24">
           <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
@@ -40,14 +40,32 @@ require '../includes/header.php';
 
     <div class="pickers-grid" id="pickers-grid"></div>
 
-    <div class="scales-section" id="scales-section"></div>
-
-    <div class="output-section">
-      <div class="output-header">
-        <div class="tabs">
-          <button class="tab-btn active" id="tab-css" onclick="switchTab('css')">CSS variables</button>
-          <button class="tab-btn" id="tab-json" onclick="switchTab('json')">Figma JSON</button>
+    <div>
+      <div class="scales-header">
+        <span class="scales-header-label">Swatches</span>
+        <div class="swatch-count-control">
+          <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
+          <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
+            onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
+          <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
         </div>
+      </div>
+      <div class="scales-section" id="scales-section"></div>
+    </div>
+  </div><!-- /.palette-sections -->
+
+</main>
+</div>
+
+<div class="export-modal" id="export-modal">
+  <div class="export-modal-backdrop" onclick="closeExportModal()"></div>
+  <div class="export-modal-box">
+    <div class="export-modal-header">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-css" onclick="switchTab('css')">CSS variables</button>
+        <button class="tab-btn" id="tab-json" onclick="switchTab('json')">Figma JSON</button>
+      </div>
+      <div class="export-modal-actions">
         <button class="btn" onclick="copyOutput()">
           <svg viewBox="0 0 24 24">
             <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -55,13 +73,13 @@ require '../includes/header.php';
           </svg>
           <span id="copy-label">Copy</span>
         </button>
+        <button class="export-modal-close" onclick="closeExportModal()">×</button>
       </div>
-      <pre class="output-box" id="output"></pre>
     </div>
-
-  </div><!-- /.palette-sections -->
-
-</main>
+    <div class="export-modal-body">
+      <pre class="export-modal-code" id="output"></pre>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -404,6 +422,15 @@ require '../includes/header.php';
     document.getElementById('stop-count').value = stopCount;
     renderPickers(); renderScales(); updateOutput();
   })();
+
+  function openExportModal() {
+    updateOutput();
+    document.getElementById('export-modal').classList.add('open');
+  }
+  function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
 </script>
 
 <?php require '../includes/footer.php'; ?>
