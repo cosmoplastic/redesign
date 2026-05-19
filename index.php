@@ -141,7 +141,7 @@ require 'includes/header.php';
 </main>
 </div>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
     const previewColors = ['#2563eb', '#e11d48'];
     const previewContainer = document.getElementById('preview-swatches');

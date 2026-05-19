@@ -108,7 +108,7 @@ require '../includes/header.php';
 </div>
 
 <div class="toast" id="toast"></div>
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
   // ── STATE ──────────────────────────────────────────────────────
   let stops = [

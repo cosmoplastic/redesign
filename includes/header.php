@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/version.php';
 // Variables expected from caller:
 // $pageTitle  (string) — page <title>
 // $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
@@ -15,7 +16,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
     <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
@@ -115,7 +116,5 @@
                     Export history
                 </a>
             </div>
-            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not bought
-                &mdash; <a href="https://rydesignstudios.com/" target="_blank" rel="noopener"
-                    class="sidebar-footer-link">Ryan Pugh</a></div>
+            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not bought<br><a href="https://rydesignstudios.com/" target="_blank" rel="noopener" class="sidebar-footer-link">Ryan Pugh</a></div>
         </aside>

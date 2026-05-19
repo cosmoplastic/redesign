@@ -136,7 +136,7 @@ require '../includes/header.php';
     </div>
   </div>
 </div>
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
   // ── STATE ──────────────────────────────────────────────────────
   const DRAFT_KEY = 'oklch-type-draft';

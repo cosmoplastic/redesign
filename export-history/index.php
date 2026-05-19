@@ -25,7 +25,7 @@ require '../includes/header.php';
   </div>
 </main>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
 const TOOL_LABELS = { palette: 'Palette', gradient: 'Gradient', color: 'Color', type: 'Type guide' };
 

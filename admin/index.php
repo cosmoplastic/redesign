@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../includes/version.php';
 
 define('ADMIN_PASS', '2230');
 
@@ -635,7 +636,7 @@ if ($authed) {
 <?php endif; ?>
 
 <div class="toast" id="toast"></div>
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
 const BASE = window.location.origin;
 let fileExpiry = 24;

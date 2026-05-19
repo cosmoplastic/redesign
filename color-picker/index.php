@@ -134,7 +134,7 @@ require '../includes/header.php';
   </div>
 </div>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
   let state = { L: 0.60, C: 0.178, H: 264, A: 1.0 };
   let harmonyMode = 'none', activeHarmonyIdx = 0;

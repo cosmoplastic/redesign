@@ -16,12 +16,12 @@ require '../includes/header.php';
         <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
         <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
       </div>
-      <button class="btn btn-ghost" onclick="openPresetsModal()">
+      <button class="btn" onclick="openPresetsModal()">
         <svg viewBox="0 0 24 24">
           <rect x="3" y="3" width="4" height="4" rx=".75"/><rect x="10" y="3" width="4" height="4" rx=".75"/><rect x="17" y="3" width="4" height="4" rx=".75"/>
           <rect x="3" y="10" width="4" height="4" rx=".75"/><rect x="10" y="10" width="4" height="4" rx=".75"/><rect x="17" y="10" width="4" height="4" rx=".75"/>
         </svg>
-        Presets
+        Color library
       </button>
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
@@ -93,7 +93,7 @@ require '../includes/header.php';
   <div class="presets-modal-backdrop" onclick="closePresetsModal()"></div>
   <div class="presets-modal-box">
     <div class="presets-modal-header">
-      <span>Starter palettes</span>
+      <span>Color library</span>
       <button class="export-modal-close" onclick="closePresetsModal()">×</button>
     </div>
     <div class="presets-modal-grid" id="presets-grid"></div>
@@ -102,9 +102,9 @@ require '../includes/header.php';
 
 <div class="toast" id="toast"></div>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
-  const MAX_COLORS = 4;
+  const MAX_COLORS = 8;
   const ADD_DEFAULTS = ['#16a34a', '#f59e0b', '#8b5cf6', '#ec4899'];
   const ADD_NAMES = ['tertiary', 'quaternary'];
   const DRAFT_KEY = 'oklch-palette-draft';
@@ -492,21 +492,14 @@ require '../includes/header.php';
     }).join('');
   }
 
-  function isDefaultPalette() {
-    return colors.length === 2
-      && colors[0].name === 'primary'   && colors[0].hex === '#2563eb'
-      && colors[1].name === 'secondary' && colors[1].hex === '#e11d48';
-  }
-
   function loadPreset(name, seedHex) {
-    if (!isDefaultPalette() && !confirm('Load ' + name + '? Your current palette will be replaced.')) return;
-    nextId = 1;
-    colors = [{ id: 'c0', name: name.toLowerCase(), hex: seedHex, scale: [] }];
+    const id = 'c' + nextId++;
     const stops = getActiveStops();
-    colors[0].scale = getScale(seedHex).map((h, i) => {
+    const scale = getScale(seedHex).map((h, i) => {
       const [L, C, H] = rgbToOklch(...hexToRgb(h));
       return { stop: stops[i], hex: h, L, C, H };
     });
+    colors.push({ id, name: name.toLowerCase(), hex: seedHex, scale });
     closePresetsModal();
     renderPickers();
     renderScales();
