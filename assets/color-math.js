@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════
-   OKLCH TOOLS — SHARED COLOR MATH
+   ONE DESIGN — SHARED COLOR MATH
    color-math.js
 ══════════════════════════════════════════════════ */
 
@@ -69,19 +69,28 @@ function clampToGamut(L,C,H){
   return [L,(lo+hi)/2,H];
 }
 
-/* palette scale generator */
-const SCALE_LIGHTNESS = {50:.97,100:.93,200:.87,300:.80,400:.70,500:.60,600:.50,700:.40,800:.30,900:.20};
-const SCALE_CHROMA    = {50:.04,100:.07,200:.11,300:.15,400:.19,500:1.00,600:.95,700:.85,800:.70,900:.55};
+/* palette scale generator
+   Lightness curve derived from Tailwind v4's OKLCH palette.
+   Chroma ratios relative to the input color's chroma.
+   Stop 500 always returns the exact input hex unchanged.           */
+const SCALE_LIGHTNESS = {25:.982,50:.967,75:.952,100:.940,200:.897,300:.838,400:.758,600:.645,700:.553,800:.460,900:.370,950:.257,975:.178};
+const SCALE_CHROMA    = {25:.040,50:.090,75:.140,100:.200,200:.380,300:.620,400:.870,600:1.04,700:.920,800:.740,900:.580,950:.420,975:.300};
 const SCALE_STOPS     = [50,100,200,300,400,500,600,700,800,900];
+/* All 14 stops in priority order — first 10 = standard Tailwind-style scale */
+const ALL_STOPS       = [50,100,200,300,400,500,600,700,800,900,950,25,75,975];
 
-function genScale(hex){
+function genScaleWithStops(hex, stops){
   const [r,g,b]=hexToRgb(hex);
-  const [L,C,H]=rgbToOklch(r,g,b);
-  return SCALE_STOPS.map(stop=>{
-    const tC=stop===500?C:C*SCALE_CHROMA[stop];
-    return rgbToHex(...oklchToRgb(SCALE_LIGHTNESS[stop],clamp(tC,0,.38),H));
+  const [,C,H]=rgbToOklch(r,g,b);
+  return stops.map(stop=>{
+    if(stop===500) return hex;
+    const tL=SCALE_LIGHTNESS[stop];
+    const [,cC]=clampToGamut(tL, C*SCALE_CHROMA[stop], H);
+    return rgbToHex(...oklchToRgb(tL,cC,H));
   });
 }
+
+function genScale(hex){ return genScaleWithStops(hex, SCALE_STOPS); }
 
 /* toast helper */
 function showToast(msg){

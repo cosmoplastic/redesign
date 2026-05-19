@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'OKLCH — Design Tools';
+$pageTitle = 'ONE design';
 $activePage = 'index';
 require 'includes/header.php';
 ?>
@@ -8,26 +8,12 @@ require 'includes/header.php';
 
     <div class="topbar">
         <div class="topbar-greeting">
-            <h2>Good morning, <em>designer.</em></h2>
+            <h2 id="greeting-text"></h2>
             <p>What are you building today?</p>
         </div>
         <div class="badge">
             <span class="badge-dot"></span>
-            4 tools available · more coming
-        </div>
-    </div>
-
-    <div class="recent-section">
-        <div class="recent-header">
-            <p class="section-label">Jump back in</p>
-        </div>
-        <div class="recent-list">
-            <a href="/palette/" class="recent-item">
-                <div class="recent-swatches" id="recent-swatches-1"></div>
-                <span class="recent-name">Untitled palette</span>
-                <span class="recent-tool">Palette generator</span>
-                <span class="recent-time">just now</span>
-            </a>
+            5 tools available · more coming
         </div>
     </div>
 
@@ -155,6 +141,33 @@ require 'includes/header.php';
             </div>
         </a>
 
+        <a href="/type-guide/" class="tool-card fade-in-5">
+            <div class="card-preview">
+                <div class="card-preview-type">
+                    <div class="card-preview-type-line"></div>
+                    <div class="card-preview-type-line"></div>
+                    <div class="card-preview-type-line"></div>
+                    <div class="card-preview-type-line"></div>
+                    <div class="card-preview-type-line"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-header">
+                    <span class="card-title">Type guide</span>
+                    <span class="tag tag-green">Available</span>
+                </div>
+                <p class="card-desc">Set typography standards for desktop and mobile.
+                    Choose a modular scale ratio, load Google Fonts, and export
+                    CSS variables or utility classes.</p>
+                <div class="card-footer">
+                    <span class="card-meta">Modular scale · Desktop + Mobile · CSS export</span>
+                    <div class="card-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg></div>
+                </div>
+            </div>
+        </a>
+
     </div>
 </main>
 </div>
@@ -200,29 +213,59 @@ require 'includes/header.php';
             if (!ra || !rb) return hexA;
             const [La, Ca, Ha] = rgbToOklch(...ra);
             const [Lb, Cb, Hb] = rgbToOklch(...rb);
-            return oklchToHex(La+(Lb-La)*t, Ca+(Cb-Ca)*t, lerpHue(Ha,Hb,t));
+            return oklchToHex(La + (Lb - La) * t, Ca + (Cb - Ca) * t, lerpHue(Ha, Hb, t));
         }
         const el = document.getElementById('grad-card-preview');
         if (!el) return;
         const hexA = '#2563eb', hexB = '#e11d48';
         const n = 16;
-        const ss = Array.from({length: n + 1}, (_, i) => {
+        const ss = Array.from({ length: n + 1 }, (_, i) => {
             const t = i / n;
             return `${lerpGrad(hexA, hexB, t)} ${(t * 100).toFixed(1)}%`;
         }).join(', ');
         el.style.background = `linear-gradient(135deg, ${ss})`;
     })();
 
-    const recentColors = ['#2563eb', '#e11d48'];
-    const recentContainer = document.getElementById('recent-swatches-1');
-    recentColors.forEach(hex => {
-        const scale = genScale(hex);
-        [2, 5, 7].forEach(i => {
-            const d = document.createElement('div');
-            d.className = 'recent-swatch'; d.style.background = scale[i];
-            recentContainer.appendChild(d);
-        });
-    });
+    // ── Greeting name ────────────────────────────────────────────
+    (function () {
+        const NAME_KEY = 'greeting-name';
+        const greetingEl = document.getElementById('greeting-text');
+
+        function timeOfDay() {
+            const h = new Date().getHours();
+            if (h < 12) return 'morning';
+            if (h < 17) return 'afternoon';
+            return 'evening';
+        }
+
+        function renderGreeting(name) {
+            const display = name || 'designer';
+            greetingEl.innerHTML = `Good ${timeOfDay()}, <em class="greeting-name-wrap">${display}<button class="greeting-edit-btn" id="greeting-edit" aria-label="Edit name" title="Edit name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></em>`;
+            document.getElementById('greeting-edit').addEventListener('click', openEdit);
+        }
+
+        function openEdit() {
+            const name = localStorage.getItem(NAME_KEY) || '';
+            greetingEl.innerHTML = `Good ${timeOfDay()}, <em><input class="greeting-input" id="greeting-input" type="text" value="${name}" placeholder="your name" maxlength="32" spellcheck="false" autocomplete="off"></em>`;
+            const input = document.getElementById('greeting-input');
+            input.focus();
+            input.select();
+            function commit() {
+                const val = input.value.trim();
+                if (val) localStorage.setItem(NAME_KEY, val);
+                else localStorage.removeItem(NAME_KEY);
+                renderGreeting(val);
+            }
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') { input.removeEventListener('blur', commit); renderGreeting(localStorage.getItem(NAME_KEY) || ''); }
+            });
+        }
+
+        renderGreeting(localStorage.getItem(NAME_KEY) || '');
+    })();
+
 </script>
 
 <?php require 'includes/footer.php'; ?>

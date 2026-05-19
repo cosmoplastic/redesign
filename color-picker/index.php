@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Color Picker — OKLCH Tools';
+$pageTitle = 'Color Picker — ONE design';
 $activePage = 'picker';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -9,6 +9,13 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-title">Color <em>picker</em></div>
     <div class="topstrip-actions">
+      <button class="btn" onclick="openExportModal()">
+        <svg viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+        </svg>
+        Export
+      </button>
       <div class="harmony-tabs" id="harmony-tabs">
         <button class="htab active" data-mode="none">None</button>
         <button class="htab" data-mode="complementary">Complementary</button>
@@ -88,10 +95,6 @@ require '../includes/header.php';
       </div>
 
       <div class="output-scroll">
-        <div>
-          <div class="out-section-title">Formats</div>
-          <div class="format-list" id="format-list"></div>
-        </div>
         <div id="harmony-section" style="display:none;">
           <div class="out-section-title" id="harmony-label">Harmony</div>
           <div class="harmony-strip" id="harmony-strip"></div>
@@ -109,10 +112,40 @@ require '../includes/header.php';
 
 <div class="toast" id="toast"></div>
 
+<div class="export-modal" id="export-modal">
+  <div class="export-modal-backdrop" onclick="closeExportModal()"></div>
+  <div class="export-modal-box">
+    <div class="export-modal-header">
+      <span style="font-size:12px;font-weight:500;color:var(--color-text-400);letter-spacing:.05em;text-transform:uppercase;">Color formats</span>
+      <div class="export-modal-actions">
+        <button class="btn" onclick="copyText(getHex(),'Hex copied')">
+          <svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+          Copy hex
+        </button>
+        <button class="export-modal-close" onclick="closeExportModal()">×</button>
+      </div>
+    </div>
+    <div class="export-modal-body">
+      <div class="format-list" id="format-list"></div>
+    </div>
+  </div>
+</div>
+
 <script src="/assets/color-math.js"></script>
 <script>
   let state = { L: 0.60, C: 0.178, H: 264, A: 1.0 };
   let harmonyMode = 'none', activeHarmonyIdx = 0;
+  const DRAFT_KEY = 'oklch-picker-draft';
+  let _draftTimer;
+  function persistDraft() {
+    clearTimeout(_draftTimer);
+    _draftTimer = setTimeout(() =>
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ L: state.L, C: state.C, H: state.H, A: state.A, harmonyMode }))
+      , 300);
+  }
 
   const hueCanvas = document.getElementById('hue-canvas');
   const gamutCanvas = document.getElementById('gamut-canvas');
@@ -300,6 +333,7 @@ require '../includes/header.php';
     state.L = L; state.C = C; state.H = H;
     drawGamut(); updateHueThumb(); updateGamutThumb();
     updateSliderTracks(); updateStage(); renderFormats(); renderHarmony(); renderContrast();
+    persistDraft();
   }
 
   // canvas interactions
@@ -343,7 +377,30 @@ require '../includes/header.php';
     if ((e.metaKey || e.ctrlKey) && e.key === 'c') copyText(getHex(), 'Hex copied');
   });
 
-  drawHueWheel(); syncAll();
+  drawHueWheel();
+  try {
+    const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if (draft) {
+      if (draft.L != null) state.L = draft.L;
+      if (draft.C != null) state.C = draft.C;
+      if (draft.H != null) state.H = draft.H;
+      if (draft.A != null) state.A = draft.A;
+      if (draft.harmonyMode) {
+        harmonyMode = draft.harmonyMode;
+        document.querySelectorAll('.htab').forEach(t =>
+          t.classList.toggle('active', t.dataset.mode === harmonyMode));
+      }
+    }
+  } catch (_) { }
+  syncAll();
+
+  function openExportModal() {
+    document.getElementById('export-modal').classList.add('open');
+  }
+  function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
 </script>
 
 <?php require '../includes/footer.php'; ?>

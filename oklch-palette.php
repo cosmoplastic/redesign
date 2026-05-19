@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Palette Generator — OKLCH Tools';
+$pageTitle = 'Palette Generator — ONE design';
 $activePage = 'palette';
 require 'includes/header.php';
 ?>

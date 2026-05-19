@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Case Converter — OKLCH Tools';
+$pageTitle = 'Case Converter — ONE design';
 $activePage = 'case-converter';
 require '../includes/header.php';
 ?>
@@ -76,7 +76,7 @@ require '../includes/header.php';
 
   const TRANSFORMS = {
     standard: [
-      { id: 'sentence', name: 'Sentence case', desc: 'First letter of each sentence', fn: t => t.replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase()) },
+      { id: 'sentence', name: 'Sentence case', desc: 'First letter of each sentence', fn: t => t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase()) },
       { id: 'title', name: 'Capitalized Case', desc: 'First letter of each word', fn: t => t.replace(/\b\w/g, c => c.toUpperCase()) },
       { id: 'lower', name: 'lower case', desc: 'All letters lowercase', fn: t => t.toLowerCase() },
       { id: 'upper', name: 'UPPER CASE', desc: 'All letters uppercase', fn: t => t.toUpperCase() },
@@ -111,7 +111,7 @@ require '../includes/header.php';
     activeTransform = tx;
     const card = document.querySelector(`[data-id="${tx.id}"]`);
     if (card) { card.classList.add('flash'); setTimeout(() => card.classList.remove('flash'), 600); }
-    updateStats(); updatePreviews();
+    updateStats();
     showToast(tx.name + ' applied');
   }
 
@@ -120,8 +120,7 @@ require '../includes/header.php';
     card.className = 'tx-card'; card.dataset.id = tx.id;
     const nm = document.createElement('div'); nm.className = 'tx-card-name'; nm.textContent = tx.name;
     const ds = document.createElement('div'); ds.className = 'tx-card-desc'; ds.textContent = tx.desc;
-    const pv = document.createElement('div'); pv.className = 'tx-card-preview'; pv.dataset.preview = tx.id; pv.textContent = '—';
-    card.append(nm, ds, pv);
+    card.append(nm, ds);
     card.addEventListener('click', () => applyTransform(tx));
     return card;
   }
@@ -134,14 +133,6 @@ require '../includes/header.php';
   renderGrid('standard-grid', TRANSFORMS.standard);
   renderGrid('developer-grid', TRANSFORMS.developer);
   renderGrid('cleanup-grid', TRANSFORMS.cleanup);
-
-  function updatePreviews() {
-    const sample = getText().trim() || SAMPLE;
-    [...TRANSFORMS.standard, ...TRANSFORMS.developer, ...TRANSFORMS.cleanup].forEach(tx => {
-      const el = document.querySelector(`[data-preview="${tx.id}"]`); if (!el) return;
-      try { const out = tx.fn(sample); el.textContent = out.slice(0, 52) + (out.length > 52 ? '…' : ''); } catch (e) { el.textContent = '—'; }
-    });
-  }
 
   function updateStats() {
     const t = getText();
@@ -158,10 +149,10 @@ require '../includes/header.php';
     clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 1800);
   }
 
-  inputEl.addEventListener('input', () => { updateStats(); updatePreviews(); });
+  inputEl.addEventListener('input', () => { updateStats(); });
 
   document.getElementById('reset-btn').addEventListener('click', () => {
-    inputEl.value = ''; activeTransform = null; updateStats(); updatePreviews(); inputEl.focus();
+    inputEl.value = ''; activeTransform = null; updateStats(); inputEl.focus();
   });
 
   document.getElementById('copy-all-btn').addEventListener('click', () => {
@@ -170,11 +161,11 @@ require '../includes/header.php';
   });
 
   document.getElementById('sample-btn').addEventListener('click', () => {
-    inputEl.value = SAMPLE; updateStats(); updatePreviews();
+    inputEl.value = SAMPLE; updateStats();
     if (activeTransform) { inputEl.value = activeTransform.fn(inputEl.value); }
   });
 
-  updateStats(); updatePreviews();
+  updateStats();
 </script>
 
 <?php require '../includes/footer.php'; ?>
