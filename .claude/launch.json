@@ -4,7 +4,7 @@
     {
       "name": "php-dev",
       "runtimeExecutable": "php",
-      "runtimeArgs": ["-S", "localhost:8765", "-t", "/Users/ryanpugh/Websites/redesign"],
+      "runtimeArgs": ["-S", "localhost:8765", "-t", "/Users/ryanpugh/Websites/redesign", "/Users/ryanpugh/Websites/redesign/router.php"],
       "port": 8765
     }
   ]

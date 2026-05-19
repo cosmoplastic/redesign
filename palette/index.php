@@ -16,6 +16,13 @@ require '../includes/header.php';
         <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
         <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
       </div>
+      <button class="btn btn-ghost" onclick="openPresetsModal()">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="4" height="4" rx=".75"/><rect x="10" y="3" width="4" height="4" rx=".75"/><rect x="17" y="3" width="4" height="4" rx=".75"/>
+          <rect x="3" y="10" width="4" height="4" rx=".75"/><rect x="10" y="10" width="4" height="4" rx=".75"/><rect x="17" y="10" width="4" height="4" rx=".75"/>
+        </svg>
+        Presets
+      </button>
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
           <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -79,6 +86,17 @@ require '../includes/header.php';
     <div class="export-modal-body">
       <pre class="export-modal-code" id="output"></pre>
     </div>
+  </div>
+</div>
+
+<div class="presets-modal" id="presets-modal">
+  <div class="presets-modal-backdrop" onclick="closePresetsModal()"></div>
+  <div class="presets-modal-box">
+    <div class="presets-modal-header">
+      <span>Starter palettes</span>
+      <button class="export-modal-close" onclick="closePresetsModal()">×</button>
+    </div>
+    <div class="presets-modal-grid" id="presets-grid"></div>
   </div>
 </div>
 
@@ -363,9 +381,11 @@ require '../includes/header.php';
   }
 
   function copyOutput() {
-    copyText(currentTab === 'css' ? genCSS() : genJSON(), 'Copied!');
+    const raw = currentTab === 'css' ? genCSS() : genJSON();
+    copyText(raw, 'Copied!');
     const lbl = document.getElementById('copy-label');
     lbl.textContent = 'Copied!'; setTimeout(() => lbl.textContent = 'Copy', 2000);
+    recordExport('palette', currentTab === 'css' ? 'CSS variables' : 'Figma JSON', colors.map(c => c.name).join(' · '), raw);
   }
 
   // ── SAVE / LOAD ──────────────────────────────────────
@@ -430,7 +450,70 @@ require '../includes/header.php';
   function closeExportModal() {
     document.getElementById('export-modal').classList.remove('open');
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
+
+  // ── PRESETS ──────────────────────────────────────────
+  const PRESETS = [
+    { name: 'Gray',   L: 0.649, C: 0,     H: 0 },
+    { name: 'Slate',  L: 0.645, C: 0.018, H: 256 },
+    { name: 'Red',    L: 0.647, C: 0.176, H: 17 },
+    { name: 'Blue',   L: 0.629, C: 0.187, H: 252 },
+    { name: 'Green',  L: 0.623, C: 0.178, H: 145 },
+    { name: 'Yellow', L: 0.725, C: 0.187, H: 91 },
+    { name: 'Orange', L: 0.670, C: 0.185, H: 55 },
+    { name: 'Purple', L: 0.637, C: 0.185, H: 295 },
+    { name: 'Pink',   L: 0.641, C: 0.185, H: 343 },
+    { name: 'Cyan',   L: 0.623, C: 0.178, H: 210 },
+    { name: 'Teal',   L: 0.618, C: 0.182, H: 180 },
+    { name: 'Indigo', L: 0.632, C: 0.185, H: 275 },
+    { name: 'Amber',  L: 0.733, C: 0.194, H: 75 },
+    { name: 'Lime',   L: 0.703, C: 0.205, H: 120 },
+    { name: 'Mint',   L: 0.609, C: 0.192, H: 165 },
+    { name: 'Tomato', L: 0.657, C: 0.183, H: 25 },
+  ];
+
+  function openPresetsModal() {
+    renderPresetsGrid();
+    document.getElementById('presets-modal').classList.add('open');
+  }
+  function closePresetsModal() {
+    document.getElementById('presets-modal').classList.remove('open');
+  }
+
+  function renderPresetsGrid() {
+    const grid = document.getElementById('presets-grid');
+    grid.innerHTML = PRESETS.map(p => {
+      const seedHex = oklchToHex(p.L, p.C, p.H);
+      const swatches = genScaleWithStops(seedHex, [50, 200, 400, 600, 800, 950]);
+      const swatchHtml = swatches.map(h => `<span class="preset-swatch" style="background:${h}"></span>`).join('');
+      return `<button class="preset-card" onclick="loadPreset('${p.name}','${seedHex}')">
+        <div class="preset-swatches">${swatchHtml}</div>
+        <span class="preset-name">${p.name}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function isDefaultPalette() {
+    return colors.length === 2
+      && colors[0].name === 'primary'   && colors[0].hex === '#2563eb'
+      && colors[1].name === 'secondary' && colors[1].hex === '#e11d48';
+  }
+
+  function loadPreset(name, seedHex) {
+    if (!isDefaultPalette() && !confirm('Load ' + name + '? Your current palette will be replaced.')) return;
+    nextId = 1;
+    colors = [{ id: 'c0', name: name.toLowerCase(), hex: seedHex, scale: [] }];
+    const stops = getActiveStops();
+    colors[0].scale = getScale(seedHex).map((h, i) => {
+      const [L, C, H] = rgbToOklch(...hexToRgb(h));
+      return { stop: stops[i], hex: h, L, C, H };
+    });
+    closePresetsModal();
+    renderPickers();
+    renderScales();
+    updateOutput();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeExportModal(); closePresetsModal(); } });
 </script>
 
 <?php require '../includes/footer.php'; ?>

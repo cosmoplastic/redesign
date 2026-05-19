@@ -106,3 +106,13 @@ function copyText(text, msg){
   navigator.clipboard.writeText(text);
   showToast(msg||'Copied!');
 }
+
+/* export history */
+const EXPORT_HISTORY_KEY = 'oklch-export-history';
+function recordExport(tool, format, label, content){
+  try {
+    const h = JSON.parse(localStorage.getItem(EXPORT_HISTORY_KEY)||'[]');
+    h.unshift({ id:'e-'+Date.now(), ts:Date.now(), tool, format, label, content });
+    localStorage.setItem(EXPORT_HISTORY_KEY, JSON.stringify(h.slice(0,100)));
+  } catch(_){}
+}

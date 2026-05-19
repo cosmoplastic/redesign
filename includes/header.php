@@ -1,7 +1,7 @@
 <?php
 // Variables expected from caller:
 // $pageTitle  (string) — page <title>
-// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide'
+// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
 // $shellClass (string, optional) — extra class appended to .shell
 ?>
 <!DOCTYPE html>
@@ -46,13 +46,6 @@
                     </svg>
                     Palette generator
                 </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                    Contrast checker
-                    <span class="soon">Soon</span>
-                </a>
                 <a href="/color-picker/" class="sidebar-link<?= $activePage === 'picker' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3" />
@@ -91,9 +84,9 @@
                     <svg viewBox="0 0 24 24">
                         <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                     </svg>
-                    Saved palettes
+                    Saved
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="/export-history/" class="sidebar-link<?= $activePage === 'export-history' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <circle cx="18" cy="5" r="3" />
                         <circle cx="6" cy="12" r="3" />
@@ -102,9 +95,9 @@
                         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                     </svg>
                     Export history
-                    <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">one.design<br>v1.0 · 5 tools available<br><a href="/admin/"
-                    class="sidebar-footer-admin">admin</a></div>
+            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not bought
+                &mdash; <a href="https://rydesignstudios.com/" target="_blank" rel="noopener"
+                    class="sidebar-footer-link">Ryan Pugh</a></div>
         </aside>

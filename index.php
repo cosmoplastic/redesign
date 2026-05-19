@@ -27,7 +27,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Palette generator</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Generate full 50–900 shade scales from any
                     color using perceptually uniform OKLCH math. Export as CSS
@@ -43,12 +42,11 @@ require 'includes/header.php';
 
         <a href="/gradient/" class="tool-card fade-in-2">
             <div class="card-preview">
-                <div id="grad-card-preview" style="width:100%;height:100%;"></div>
+                <div id="grad-card-preview"></div>
             </div>
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Gradient studio</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Build gradients that actually look good.
                     Interpolate through OKLCH to avoid the grey, muddy band that
@@ -69,7 +67,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Color picker</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Pick colors natively in the OKLCH space. Drag
                     the gamut canvas, spin the hue wheel, and export in any format —
@@ -101,7 +98,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Case converter</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Transform text between 13 different cases and
                     formats — sentence, title, camel, snake, kebab, slug, and more.
@@ -128,7 +124,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Type guide</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Set typography standards for desktop and mobile.
                     Choose a modular scale ratio, load Google Fonts, and export
@@ -174,30 +169,6 @@ require 'includes/header.php';
         ctx.globalCompositeOperation = 'source-over';
         ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI * 2);
         ctx.fillStyle = oklchToHex(0.6, 0.178, 264); ctx.fill();
-    })();
-
-    (function () {
-        function lerpHue(h1, h2, t) {
-            let d = ((h2 - h1) % 360 + 360) % 360;
-            if (d > 180) d -= 360;
-            return ((h1 + d * t) % 360 + 360) % 360;
-        }
-        function lerpGrad(hexA, hexB, t) {
-            const ra = hexToRgb(hexA), rb = hexToRgb(hexB);
-            if (!ra || !rb) return hexA;
-            const [La, Ca, Ha] = rgbToOklch(...ra);
-            const [Lb, Cb, Hb] = rgbToOklch(...rb);
-            return oklchToHex(La + (Lb - La) * t, Ca + (Cb - Ca) * t, lerpHue(Ha, Hb, t));
-        }
-        const el = document.getElementById('grad-card-preview');
-        if (!el) return;
-        const hexA = '#2563eb', hexB = '#e11d48';
-        const n = 16;
-        const ss = Array.from({ length: n + 1 }, (_, i) => {
-            const t = i / n;
-            return `${lerpGrad(hexA, hexB, t)} ${(t * 100).toFixed(1)}%`;
-        }).join(', ');
-        el.style.background = `linear-gradient(135deg, ${ss})`;
     })();
 
     // ── Greeting name ────────────────────────────────────────────

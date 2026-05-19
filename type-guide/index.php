@@ -80,7 +80,13 @@ require '../includes/header.php';
         </div>
       </div>
 
-      <div class="grad-section" style="margin-top:auto;padding-top:16px;">
+      <div class="grad-section" style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+        <button class="btn" style="width:100%;justify-content:center;" onclick="saveTypeguide()">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+          </svg>
+          Save
+        </button>
         <button class="btn" style="width:100%;justify-content:center;" onclick="openExportModal()">
           <svg viewBox="0 0 24 24">
             <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -394,6 +400,25 @@ require '../includes/header.php';
     const el = document.getElementById('copy-label');
     if (el) { const orig = el.textContent; el.textContent = 'Copied!'; setTimeout(() => el.textContent = orig, 2000); }
     showToast('Copied!');
+    const ratioName = document.getElementById('d-ratio').selectedOptions[0]?.text?.split(' · ')[0] || '';
+    recordExport('type', outputTab === 'vars' ? 'CSS variables' : 'CSS classes', settings.headingFont + ' · ' + ratioName, raw);
+  }
+
+  // ── SAVE ───────────────────────────────────────────────────────
+  const TYPE_SAVES_KEY = 'oklch-type-saves';
+
+  function saveTypeguide() {
+    const all = JSON.parse(localStorage.getItem(TYPE_SAVES_KEY) || '[]');
+    const ratioName = document.getElementById('d-ratio').selectedOptions[0]?.text?.split(' · ')[0] || 'Scale';
+    all.push({
+      id: 't-' + Date.now(),
+      name: settings.headingFont + ' · ' + ratioName,
+      savedAt: Date.now(),
+      settings: { ...settings },
+      levels: levels.map(l => ({ ...l })),
+    });
+    localStorage.setItem(TYPE_SAVES_KEY, JSON.stringify(all));
+    showToast('Type guide saved');
   }
 
   // ── PERSIST ────────────────────────────────────────────────────
@@ -406,14 +431,27 @@ require '../includes/header.php';
 
   // ── INIT ───────────────────────────────────────────────────────
   (function () {
-    // Restore draft
-    try {
-      const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
-      if (d) {
-        if (d.settings) Object.assign(settings, d.settings);
-        if (d.levels?.length === DEFAULT_LEVELS.length) levels = d.levels;
-      }
-    } catch (_) { }
+    // Load from saved (takes priority over draft)
+    const loadId = new URLSearchParams(location.search).get('load');
+    if (loadId) {
+      try {
+        const saves = JSON.parse(localStorage.getItem(TYPE_SAVES_KEY) || '[]');
+        const save = saves.find(s => s.id === loadId);
+        if (save) {
+          if (save.settings) Object.assign(settings, save.settings);
+          if (save.levels?.length === DEFAULT_LEVELS.length) levels = save.levels;
+        }
+      } catch (_) { }
+    } else {
+      // Restore draft
+      try {
+        const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
+        if (d) {
+          if (d.settings) Object.assign(settings, d.settings);
+          if (d.levels?.length === DEFAULT_LEVELS.length) levels = d.levels;
+        }
+      } catch (_) { }
+    }
 
     // Sync controls from settings
     document.getElementById('d-base').value = settings.desktopBase;

@@ -458,6 +458,8 @@ require '../includes/header.php';
   function copyGradient() {
     const raw = currentTab === 'modern' ? modernCSS() : compatCSS();
     copyText(raw, 'Copied!');
+    const label = [...stops].sort((a,b)=>a.pos-b.pos).map(s=>s.hex).join(' → ');
+    recordExport('gradient', currentTab === 'modern' ? 'Modern CSS' : 'Compatible CSS', label, raw);
     ['copy-label', 'copy-label2'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
