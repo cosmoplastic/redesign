@@ -41,33 +41,7 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <div class="tool-card coming-soon fade-in-2">
-            <div class="card-preview">
-                <div class="card-preview-soon">
-                    <div>
-                        <p class="soon-title">Aa</p>
-                        <p class="text-micro">Coming soon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card-header">
-                    <span class="card-title">Contrast checker</span>
-                    <span class="tag">Soon</span>
-                </div>
-                <p class="card-desc">Check WCAG AA and AAA contrast ratios between
-                    any two colors. See which stops in your palette are safe for
-                    text at any size.</p>
-                <div class="card-footer">
-                    <span class="card-meta">WCAG 2.1 · APCA</span>
-                    <div class="card-arrow disabled"><svg viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg></div>
-                </div>
-            </div>
-        </div>
-
-        <a href="/gradient/" class="tool-card fade-in-3">
+        <a href="/gradient/" class="tool-card fade-in-2">
             <div class="card-preview">
                 <div id="grad-card-preview" style="width:100%;height:100%;"></div>
             </div>
@@ -88,7 +62,7 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <a href="/color-picker/" class="tool-card fade-in-4">
+        <a href="/color-picker/" class="tool-card fade-in-3">
             <div class="card-preview">
                 <canvas id="picker-preview-canvas" width="120" height="120"></canvas>
             </div>
@@ -110,7 +84,7 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <a href="/case-converter/" class="tool-card fade-in-5">
+        <a href="/case-converter/" class="tool-card fade-in-4">
             <div class="card-preview">
                 <div class="card-preview-tags">
                     <div class="card-preview-tags-row">
