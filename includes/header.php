@@ -16,11 +16,26 @@
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/assets/style.css">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
+    <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/favicon/site.webmanifest">
 </head>
 
 <body>
 
     <div class="shell<?= isset($shellClass) ? ' ' . htmlspecialchars($shellClass) : '' ?>">
+
+        <div class="mob-header">
+            <button class="mob-menu-btn" onclick="document.querySelector('.shell').classList.toggle('nav-open')" aria-label="Open menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <a href="/" class="mob-logo">ONE <em>design</em></a>
+        </div>
+        <div class="mob-backdrop" onclick="document.querySelector('.shell').classList.remove('nav-open')"></div>
 
         <aside>
             <div class="sidebar-logo">

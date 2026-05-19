@@ -3019,17 +3019,190 @@ textarea#main-input::placeholder {
   color: var(--color-text-500);
 }
 
+/* ── MOBILE NAV (hidden on desktop) ── */
+.mob-header  { display: none; }
+.mob-backdrop { display: none; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 760px) {
-  aside {
-    display: none;
+
+  /* ── Mobile header bar ── */
+  .mob-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    padding: 0 18px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    z-index: 400;
   }
+  .mob-menu-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: var(--r-sm);
+    color: var(--color-text-300);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .mob-menu-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .mob-logo {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--color-text-100);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .mob-logo em { font-style: italic; }
+
+  /* ── Sidebar becomes slide-in drawer ── */
+  aside {
+    display: flex !important;
+    position: fixed;
+    left: -230px;
+    top: 0;
+    bottom: 0;
+    z-index: 500;
+    width: 220px;
+    height: 100dvh;
+    transition: left 0.25s ease;
+  }
+  .shell.nav-open aside {
+    left: 0;
+    box-shadow: 8px 0 32px rgba(0,0,0,0.45);
+  }
+
+  /* ── Backdrop ── */
+  .mob-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 499;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .shell.nav-open .mob-backdrop {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Content offset for fixed header ── */
   main.scrollable {
     padding: 20px 18px 48px;
+    padding-top: 72px;
   }
   .scroll-area {
     padding: 20px 18px 48px;
+    padding-top: 72px;
   }
+  main.panel {
+    padding-top: 52px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* ── Unstick full-height constraint on mobile ── */
+  .shell.full-height {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* ── Topstrip wrapping ── */
+  .topstrip {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+  }
+  .topstrip-actions {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+  }
+
+  /* ── Harmony tabs scroll on mobile ── */
+  .harmony-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Stack tool panels ── */
+  .workspace {
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+    flex: none;
+  }
+
+  /* Color picker left panel */
+  .picker-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+    height: auto;
+  }
+
+  /* Color picker right panel */
+  .output-panel {
+    overflow: visible;
+    flex: none;
+    height: auto;
+  }
+  .color-stage {
+    height: 120px;
+  }
+
+  /* Gradient + type guide left panel */
+  .grad-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Gradient + type guide right area */
+  .grad-main {
+    overflow: visible;
+    flex: none;
+    height: auto;
+  }
+  .grad-code-section {
+    overflow: visible;
+    height: auto;
+  }
+
+  /* ── Palette topbar right row ── */
+  .topbar-right {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+  .badge {
+    display: none;
+  }
+
+  /* ── Saved page grid ── */
   .palettes-grid {
     grid-template-columns: 1fr;
   }
@@ -3184,7 +3357,7 @@ textarea#main-input::placeholder {
   font-size: 12px;
   font-weight: 500;
   color: var(--color-text-400);
-  letter-spacing: .05em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   font-family: var(--mono);
 }
@@ -3203,7 +3376,9 @@ textarea#main-input::placeholder {
   padding: 0;
   overflow: hidden;
   text-align: left;
-  transition: border-color .15s, transform .12s;
+  transition:
+    border-color 0.15s,
+    transform 0.12s;
 }
 .preset-card:hover {
   border-color: var(--border3);
@@ -3226,7 +3401,7 @@ textarea#main-input::placeholder {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--color-text-400);
-  letter-spacing: .03em;
+  letter-spacing: 0.03em;
 }
 
 /* ══════════════════════════════════════════════════
@@ -3445,10 +3620,10 @@ textarea#main-input::placeholder {
 
 /* ── EXPORT HISTORY ── */
 :root {
-  --eh-palette:  oklch(74% 0.15 200);
+  --eh-palette: oklch(74% 0.15 200);
   --eh-gradient: oklch(74% 0.15 290);
-  --eh-color:    oklch(74% 0.15 55);
-  --eh-type:     oklch(74% 0.15 150);
+  --eh-color: oklch(74% 0.15 55);
+  --eh-type: oklch(74% 0.15 150);
 }
 
 .eh-wrap {
@@ -3468,7 +3643,7 @@ textarea#main-input::placeholder {
 .eh-empty svg {
   width: 40px;
   height: 40px;
-  opacity: .35;
+  opacity: 0.35;
 }
 .eh-empty p {
   font-size: 14px;
@@ -3502,16 +3677,28 @@ textarea#main-input::placeholder {
 .eh-badge {
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 2px 7px;
   border-radius: 100px;
   line-height: 1.6;
 }
-.eh-badge-palette  { background: oklch(74% 0.15 200 / .15); color: var(--eh-palette); }
-.eh-badge-gradient { background: oklch(74% 0.15 290 / .15); color: var(--eh-gradient); }
-.eh-badge-color    { background: oklch(74% 0.15 55  / .15); color: var(--eh-color); }
-.eh-badge-type     { background: oklch(74% 0.15 150 / .15); color: var(--eh-type); }
+.eh-badge-palette {
+  background: oklch(74% 0.15 200 / 0.15);
+  color: var(--eh-palette);
+}
+.eh-badge-gradient {
+  background: oklch(74% 0.15 290 / 0.15);
+  color: var(--eh-gradient);
+}
+.eh-badge-color {
+  background: oklch(74% 0.15 55 / 0.15);
+  color: var(--eh-color);
+}
+.eh-badge-type {
+  background: oklch(74% 0.15 150 / 0.15);
+  color: var(--eh-type);
+}
 
 .eh-format {
   font-size: 12px;
