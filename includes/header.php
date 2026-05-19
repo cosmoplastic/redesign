@@ -96,5 +96,6 @@
                     <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">one.design<br>v1.0 · 4 tools available<br><a href="/admin/" class="sidebar-footer-admin">admin</a></div>
+            <div class="sidebar-footer">one.design<br>v1.0 · 4 tools available<br><a href="/admin/"
+                    class="sidebar-footer-admin">admin</a></div>
         </aside>

@@ -43,20 +43,20 @@ require '../includes/header.php';
     <div class="scales-section" id="scales-section"></div>
 
     <div class="output-section">
-    <div class="output-header">
-      <div class="tabs">
-        <button class="tab-btn active" id="tab-css" onclick="switchTab('css')">CSS variables</button>
-        <button class="tab-btn" id="tab-json" onclick="switchTab('json')">Figma JSON</button>
+      <div class="output-header">
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-css" onclick="switchTab('css')">CSS variables</button>
+          <button class="tab-btn" id="tab-json" onclick="switchTab('json')">Figma JSON</button>
+        </div>
+        <button class="btn" onclick="copyOutput()">
+          <svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+          <span id="copy-label">Copy</span>
+        </button>
       </div>
-      <button class="btn" onclick="copyOutput()">
-        <svg viewBox="0 0 24 24">
-          <rect x="9" y="9" width="13" height="13" rx="2" />
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-        </svg>
-        <span id="copy-label">Copy</span>
-      </button>
-    </div>
-    <pre class="output-box" id="output"></pre>
+      <pre class="output-box" id="output"></pre>
     </div>
 
   </div><!-- /.palette-sections -->
