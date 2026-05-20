@@ -10,12 +10,12 @@ require '../includes/header.php';
   <div class="topstrip">
     <span class="topstrip-title">Gradient <em>studio</em></span>
     <div class="topstrip-actions">
-      <button class="btn" onclick="copyGradient()">
+      <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
           <rect x="9" y="9" width="13" height="13" rx="2" />
           <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
         </svg>
-        <span id="copy-label">Copy CSS</span>
+        Export
       </button>
     </div>
   </div>
@@ -85,26 +85,35 @@ require '../includes/header.php';
         <p class="grad-track-hint">Drag handles · Click track to add stop</p>
       </div>
 
-      <div class="grad-code-section">
-        <div class="output-header">
-          <div class="tabs">
-            <button class="tab-btn active" id="tab-modern" onclick="switchTab('modern')">Modern CSS</button>
-            <button class="tab-btn" id="tab-compat" onclick="switchTab('compat')">Compatible</button>
-          </div>
-          <button class="btn" onclick="copyGradient()">
-            <svg viewBox="0 0 24 24">
-              <rect x="9" y="9" width="13" height="13" rx="2" />
-              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-            </svg>
-            <span id="copy-label2">Copy</span>
-          </button>
-        </div>
-        <pre class="output-box grad-output-box" id="output"></pre>
-      </div>
 
     </div>
   </div>
 </main>
+</div>
+
+<div class="export-modal" id="export-modal">
+  <div class="export-modal-backdrop" onclick="closeExportModal()"></div>
+  <div class="export-modal-box">
+    <div class="export-modal-header">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-modern" onclick="switchTab('modern')">Modern CSS</button>
+        <button class="tab-btn" id="tab-compat" onclick="switchTab('compat')">Compatible</button>
+      </div>
+      <div class="export-modal-actions">
+        <button class="btn" onclick="copyGradient()">
+          <svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+          Copy
+        </button>
+        <button class="export-modal-close" onclick="closeExportModal()">×</button>
+      </div>
+    </div>
+    <div class="export-modal-body">
+      <pre class="export-modal-code" id="output"></pre>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -460,14 +469,16 @@ require '../includes/header.php';
     copyText(raw, 'Copied!');
     const label = [...stops].sort((a,b)=>a.pos-b.pos).map(s=>s.hex).join(' → ');
     recordExport('gradient', currentTab === 'modern' ? 'Modern CSS' : 'Compatible CSS', label, raw);
-    ['copy-label', 'copy-label2'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const orig = el.textContent;
-      el.textContent = 'Copied!';
-      setTimeout(() => el.textContent = orig, 2000);
-    });
   }
+
+  function openExportModal() {
+    renderOutput();
+    document.getElementById('export-modal').classList.add('open');
+  }
+  function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
 
   // ── INIT ───────────────────────────────────────────────────────
   (function () {

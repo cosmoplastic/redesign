@@ -116,5 +116,7 @@ require_once __DIR__ . '/version.php';
                     Export history
                 </a>
             </div>
-            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not bought<br><a href="https://rydesignstudios.com/" target="_blank" rel="noopener" class="sidebar-footer-link">Ryan Pugh</a></div>
+            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not
+                bought<br><a href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener"
+                    class="sidebar-footer-link">Ryan Pugh</a></div>
         </aside>

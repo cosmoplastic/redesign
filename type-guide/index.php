@@ -59,17 +59,20 @@ require '../includes/header.php';
 
       <div class="grad-section">
         <label class="field-label">Fonts</label>
-        <div class="type-font-row">
+        <div class="font-picker-row">
           <span class="type-font-label">Heading</span>
-          <input type="text" class="type-font-input" id="heading-font" value="Fraunces" spellcheck="false">
-          <button class="type-font-load" onclick="loadFont('heading')">Load</button>
+          <button class="font-picker-trigger" id="heading-picker-trigger" onclick="openFontPicker('heading')">
+            <span class="font-picker-trigger-name" id="heading-picker-name">Fraunces</span>
+            <svg viewBox="0 0 24 24" class="font-picker-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
         </div>
-        <div class="type-font-row">
+        <div class="font-picker-row">
           <span class="type-font-label">Body</span>
-          <input type="text" class="type-font-input" id="body-font" value="DM Mono" spellcheck="false">
-          <button class="type-font-load" onclick="loadFont('body')">Load</button>
+          <button class="font-picker-trigger" id="body-picker-trigger" onclick="openFontPicker('body')">
+            <span class="font-picker-trigger-name" id="body-picker-name">DM Mono</span>
+            <svg viewBox="0 0 24 24" class="font-picker-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
         </div>
-        <p class="type-font-hint">Any Google Font name</p>
       </div>
 
       <div class="grad-section">
@@ -108,6 +111,19 @@ require '../includes/header.php';
     </div>
   </div>
 </main>
+</div>
+
+<!-- Font picker dropdown -->
+<div class="font-picker-dropdown" id="font-picker-dropdown">
+  <div class="font-picker-search-wrap">
+    <svg viewBox="0 0 24 24" class="font-picker-search-icon" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" class="font-picker-search" id="font-picker-search"
+      placeholder="Search fonts…" autocomplete="off" spellcheck="false"
+      oninput="renderFontList(this.value)">
+  </div>
+  <div class="font-picker-list" id="font-picker-list"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -369,28 +385,207 @@ require '../includes/header.php';
     settings.mobileRatio = parseFloat(document.getElementById('m-ratio').value) || 1.250;
   }
 
-  // ── FONT LOADING ───────────────────────────────────────────────
+  // ── FONT PICKER ────────────────────────────────────────────────
   const loadedFonts = new Set(['Fraunces', 'DM Mono']);
+  const loadedPreviewFonts = new Set(['Fraunces', 'DM Mono']);
+  let activePicker = null;
+  let fontPickerObserver = null;
 
-  function loadFont(which) {
-    const input = document.getElementById(which + '-font');
-    const name = input.value.trim();
-    if (!name) return;
+  const GOOGLE_FONTS = [
+    { name: 'Inter',             cat: 'Sans' },
+    { name: 'Roboto',            cat: 'Sans' },
+    { name: 'Open Sans',         cat: 'Sans' },
+    { name: 'Lato',              cat: 'Sans' },
+    { name: 'Montserrat',        cat: 'Sans' },
+    { name: 'Poppins',           cat: 'Sans' },
+    { name: 'Nunito',            cat: 'Sans' },
+    { name: 'Raleway',           cat: 'Sans' },
+    { name: 'Oswald',            cat: 'Sans' },
+    { name: 'Ubuntu',            cat: 'Sans' },
+    { name: 'Work Sans',         cat: 'Sans' },
+    { name: 'Rubik',             cat: 'Sans' },
+    { name: 'Noto Sans',         cat: 'Sans' },
+    { name: 'DM Sans',           cat: 'Sans' },
+    { name: 'Outfit',            cat: 'Sans' },
+    { name: 'Plus Jakarta Sans', cat: 'Sans' },
+    { name: 'Figtree',           cat: 'Sans' },
+    { name: 'Manrope',           cat: 'Sans' },
+    { name: 'Mulish',            cat: 'Sans' },
+    { name: 'Karla',             cat: 'Sans' },
+    { name: 'Barlow',            cat: 'Sans' },
+    { name: 'Cabin',             cat: 'Sans' },
+    { name: 'Jost',              cat: 'Sans' },
+    { name: 'Quicksand',         cat: 'Sans' },
+    { name: 'Source Sans 3',     cat: 'Sans' },
+    { name: 'Nunito Sans',       cat: 'Sans' },
+    { name: 'IBM Plex Sans',     cat: 'Sans' },
+    { name: 'Sora',              cat: 'Sans' },
+    { name: 'Lexend',            cat: 'Sans' },
+    { name: 'Playfair Display',  cat: 'Serif' },
+    { name: 'Merriweather',      cat: 'Serif' },
+    { name: 'Lora',              cat: 'Serif' },
+    { name: 'EB Garamond',       cat: 'Serif' },
+    { name: 'Cormorant Garamond',cat: 'Serif' },
+    { name: 'Libre Baskerville', cat: 'Serif' },
+    { name: 'Bitter',            cat: 'Serif' },
+    { name: 'Crimson Text',      cat: 'Serif' },
+    { name: 'PT Serif',          cat: 'Serif' },
+    { name: 'Fraunces',          cat: 'Serif' },
+    { name: 'DM Serif Display',  cat: 'Serif' },
+    { name: 'Young Serif',       cat: 'Serif' },
+    { name: 'Bodoni Moda',       cat: 'Serif' },
+    { name: 'Cardo',             cat: 'Serif' },
+    { name: 'Spectral',          cat: 'Serif' },
+    { name: 'IBM Plex Serif',    cat: 'Serif' },
+    { name: 'Source Serif 4',    cat: 'Serif' },
+    { name: 'Cormorant',         cat: 'Serif' },
+    { name: 'Roboto Mono',       cat: 'Mono' },
+    { name: 'Source Code Pro',   cat: 'Mono' },
+    { name: 'JetBrains Mono',    cat: 'Mono' },
+    { name: 'Fira Code',         cat: 'Mono' },
+    { name: 'Space Mono',        cat: 'Mono' },
+    { name: 'DM Mono',           cat: 'Mono' },
+    { name: 'IBM Plex Mono',     cat: 'Mono' },
+    { name: 'Inconsolata',       cat: 'Mono' },
+    { name: 'Courier Prime',     cat: 'Mono' },
+    { name: 'Fira Mono',         cat: 'Mono' },
+    { name: 'Abril Fatface',     cat: 'Display' },
+    { name: 'Bebas Neue',        cat: 'Display' },
+    { name: 'Righteous',         cat: 'Display' },
+    { name: 'Lobster',           cat: 'Display' },
+    { name: 'Pacifico',          cat: 'Display' },
+    { name: 'Permanent Marker',  cat: 'Display' },
+    { name: 'Dancing Script',    cat: 'Display' },
+    { name: 'Caveat',            cat: 'Display' },
+    { name: 'Satisfy',           cat: 'Display' },
+    { name: 'Sacramento',        cat: 'Display' },
+    { name: 'Russo One',         cat: 'Display' },
+    { name: 'Comfortaa',         cat: 'Display' },
+    { name: 'Alfa Slab One',     cat: 'Display' },
+  ];
 
+  function openFontPicker(which) {
+    if (activePicker === which) { closeFontPicker(); return; }
+    if (activePicker) document.getElementById(activePicker + '-picker-trigger').classList.remove('open');
+    activePicker = which;
+
+    const trigger = document.getElementById(which + '-picker-trigger');
+    trigger.classList.add('open');
+    const rect = trigger.getBoundingClientRect();
+    const W = 264;
+    let left = rect.left;
+    if (left + W > window.innerWidth - 8) left = window.innerWidth - W - 8;
+
+    const dropdown = document.getElementById('font-picker-dropdown');
+    dropdown.style.top  = (rect.bottom + 4) + 'px';
+    dropdown.style.left = left + 'px';
+    dropdown.style.width = W + 'px';
+    dropdown.classList.add('open');
+
+    const search = document.getElementById('font-picker-search');
+    search.value = '';
+    renderFontList('');
+    search.focus();
+  }
+
+  function closeFontPicker() {
+    if (!activePicker) return;
+    document.getElementById(activePicker + '-picker-trigger').classList.remove('open');
+    activePicker = null;
+    document.getElementById('font-picker-dropdown').classList.remove('open');
+    if (fontPickerObserver) { fontPickerObserver.disconnect(); fontPickerObserver = null; }
+  }
+
+  function renderFontList(query) {
+    const list = document.getElementById('font-picker-list');
+    const q = query.toLowerCase().trim();
+    const current = activePicker === 'heading' ? settings.headingFont : settings.bodyFont;
+
+    let html = '';
+    if (q) {
+      const results = GOOGLE_FONTS.filter(f => f.name.toLowerCase().includes(q));
+      if (results.length === 0) {
+        html = '<div class="font-picker-empty">No fonts found</div>';
+      } else {
+        results.forEach(f => { html += fontItemHTML(f, f.name === current); });
+      }
+    } else {
+      ['Sans', 'Serif', 'Mono', 'Display'].forEach(cat => {
+        html += `<div class="font-picker-cat">${cat}</div>`;
+        GOOGLE_FONTS.filter(f => f.cat === cat).forEach(f => {
+          html += fontItemHTML(f, f.name === current);
+        });
+      });
+    }
+
+    list.innerHTML = html;
+    setupFontObserver();
+
+    const activeItem = list.querySelector('.font-picker-item.active');
+    if (activeItem) setTimeout(() => activeItem.scrollIntoView({ block: 'center' }), 0);
+  }
+
+  function fontItemHTML(f, isActive) {
+    const ff = (loadedPreviewFonts.has(f.name) || loadedFonts.has(f.name))
+      ? `'${f.name}',sans-serif` : 'inherit';
+    const check = isActive
+      ? `<svg class="font-picker-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
+      : '';
+    return `<button class="font-picker-item${isActive ? ' active' : ''}" data-font="${f.name}" onclick="applyFont('${f.name.replace(/'/g,"\\'")}')">
+      <span class="font-picker-item-name" style="font-family:${ff}">${f.name}</span>${check}
+    </button>`;
+  }
+
+  function setupFontObserver() {
+    if (fontPickerObserver) fontPickerObserver.disconnect();
+    const list = document.getElementById('font-picker-list');
+    fontPickerObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        fontPickerObserver.unobserve(e.target);
+        const name = e.target.dataset.font;
+        if (!name) return;
+        const nameEl = e.target.querySelector('.font-picker-item-name');
+        if (!nameEl) return;
+        if (!loadedPreviewFonts.has(name) && !loadedFonts.has(name)) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400&display=swap`;
+          document.head.appendChild(link);
+          loadedPreviewFonts.add(name);
+        }
+        nameEl.style.fontFamily = `'${name}',sans-serif`;
+      });
+    }, { root: list, rootMargin: '80px 0px' });
+    list.querySelectorAll('.font-picker-item[data-font]').forEach(item => {
+      fontPickerObserver.observe(item);
+    });
+  }
+
+  function applyFont(name) {
+    if (!activePicker) return;
+    const which = activePicker;
     if (which === 'heading') settings.headingFont = name;
     else settings.bodyFont = name;
-
     if (!loadedFonts.has(name)) {
-      const encoded = encodeURIComponent(name);
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = `https://fonts.googleapis.com/css2?family=${encoded}:wght@300;400;500;600;700&display=swap`;
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@300;400;500;600;700&display=swap`;
       document.head.appendChild(link);
       loadedFonts.add(name);
     }
-
+    closeFontPicker();
+    updateTriggerName(which);
     render();
     persistDraft();
+  }
+
+  function updateTriggerName(which) {
+    const name = which === 'heading' ? settings.headingFont : settings.bodyFont;
+    const el = document.getElementById(which + '-picker-name');
+    if (!el) return;
+    el.textContent = name;
+    el.style.fontFamily = `'${name}',sans-serif`;
   }
 
   // ── COPY ───────────────────────────────────────────────────────
@@ -458,8 +653,8 @@ require '../includes/header.php';
     document.getElementById('m-base').value = settings.mobileBase;
     document.getElementById('d-ratio').value = settings.desktopRatio;
     document.getElementById('m-ratio').value = settings.mobileRatio;
-    document.getElementById('heading-font').value = settings.headingFont;
-    document.getElementById('body-font').value = settings.bodyFont;
+    updateTriggerName('heading');
+    updateTriggerName('body');
 
     // Load any non-default fonts
     [settings.headingFont, settings.bodyFont].forEach(name => {
@@ -486,8 +681,15 @@ require '../includes/header.php';
       });
     });
 
-    document.getElementById('heading-font').addEventListener('keydown', e => { if (e.key === 'Enter') loadFont('heading'); });
-    document.getElementById('body-font').addEventListener('keydown', e => { if (e.key === 'Enter') loadFont('body'); });
+    document.addEventListener('click', e => {
+      if (!activePicker) return;
+      const dropdown = document.getElementById('font-picker-dropdown');
+      const hT = document.getElementById('heading-picker-trigger');
+      const bT = document.getElementById('body-picker-trigger');
+      if (!dropdown.contains(e.target) && !hT.contains(e.target) && !bT.contains(e.target)) {
+        closeFontPicker();
+      }
+    });
 
     render();
   })();
@@ -499,7 +701,9 @@ require '../includes/header.php';
   function closeExportModal() {
     document.getElementById('export-modal').classList.remove('open');
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { if (activePicker) closeFontPicker(); else closeExportModal(); }
+  });
 </script>
 
 <?php require '../includes/footer.php'; ?>
