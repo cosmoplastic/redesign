@@ -1166,7 +1166,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin-bottom: 48px;
 }
@@ -1413,6 +1413,15 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   gap: 56px;
 }
 
+@media (min-width: 1024px) {
+  .palette-sections {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+}
+
 .pickers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -1646,6 +1655,256 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   fill: none;
   stroke-width: 2;
   stroke-linecap: round;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SHADOW & ELEVATION TOOL
+   Add these rules to assets/style.css
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Shared control labels ─────────────────────────────────── */
+.shadow-hint {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.shadow-control-label {
+  display: block;
+  font-size: 11px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+/* ── Palette chip row ─────────────────────────────────────── */
+.palette-chip-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.shadow-palette-chip {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.1s,
+    border-color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.shadow-palette-chip:hover {
+  transform: scale(1.15);
+}
+.shadow-palette-chip.active {
+  border-color: var(--color-text-primary);
+}
+
+/* ── Palette swatch strip ─────────────────────────────────── */
+.palette-swatch-strip {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.shadow-swatch-stop {
+  flex: 1;
+}
+
+/* ── Slider rows ──────────────────────────────────────────── */
+.shadow-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.shadow-slider-row input[type="range"] {
+  flex: 1;
+}
+
+.shadow-slider-val {
+  font-size: 11px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  color: var(--color-text-secondary);
+  min-width: 34px;
+  text-align: right;
+}
+
+/* ── Dual surface preview ─────────────────────────────────── */
+.shadow-surfaces {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.shadow-surfaces--single {
+  grid-template-columns: 1fr;
+}
+
+.shadow-surface {
+  border-radius: var(--radius-md, 8px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid transparent;
+}
+
+.shadow-surface--light {
+  background: #f5f4f0;
+  border-color: #e5e4e0;
+}
+
+.shadow-surface--dark {
+  background: #141414;
+  border-color: #2a2a2a;
+}
+
+.shadow-surface-label {
+  font-size: 10px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shadow-surface--light .shadow-surface-label {
+  color: #999;
+}
+.shadow-surface--dark .shadow-surface-label {
+  color: #555;
+}
+
+/* ── Individual preview cards ─────────────────────────────── */
+.shadow-preview-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.shadow-preview-card {
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.shadow-preview-card--light {
+  background: #ffffff;
+}
+.shadow-preview-card--dark {
+  background: #222222;
+}
+
+.shadow-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shadow-card-label {
+  font-size: 11px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.shadow-preview-card--light .shadow-card-label {
+  color: #333;
+}
+.shadow-preview-card--dark .shadow-card-label {
+  color: #ccc;
+}
+
+.shadow-card-use {
+  font-size: 10px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+}
+
+.shadow-preview-card--light .shadow-card-use {
+  color: #999;
+}
+.shadow-preview-card--dark .shadow-card-use {
+  color: #555;
+}
+
+.shadow-card-blur {
+  font-size: 10px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  opacity: 0.4;
+}
+
+.shadow-preview-card--light .shadow-card-blur {
+  color: #333;
+}
+.shadow-preview-card--dark .shadow-card-blur {
+  color: #aaa;
+}
+
+/* ── Token rows ───────────────────────────────────────────── */
+.shadow-tokens {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shadow-token-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface-subtle, rgba(0, 0, 0, 0.02));
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.shadow-token-row:hover {
+  border-color: var(--color-border-strong, rgba(0, 0, 0, 0.2));
+  background: var(--color-surface, #fff);
+}
+
+.shadow-token-name {
+  font-size: 12px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.shadow-token-value {
+  font-size: 10px;
+  font-family: var(--font-mono, "DM Mono", monospace);
+  color: var(--color-text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shadow-token-swatch {
+  height: 26px;
+  border-radius: 4px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 /* ── HARMONY SUGGESTIONS ──────────────────────────────── */
@@ -2795,6 +3054,130 @@ textarea#main-input::placeholder {
 .grad-preview-section {
   padding: 24px 28px 0;
   flex-shrink: 0;
+}
+
+/* ── GRADIENT SAVES ──────────────────────────────────── */
+.grad-saves-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 28px 24px;
+}
+.grad-saves-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.grad-save-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.grad-save-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.grad-save-card:hover {
+  border-color: var(--border2);
+}
+.grad-save-bar {
+  height: 44px;
+  width: 100%;
+  display: block;
+  transition: background 0.06s;
+}
+.grad-save-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+}
+.grad-save-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-200);
+  background: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid transparent;
+  min-width: 0;
+  flex: 1;
+  cursor: text;
+  transition: border-color 0.13s;
+}
+.grad-save-name:hover {
+  border-bottom-color: var(--border2);
+}
+.grad-save-name:focus {
+  border-bottom-color: var(--border3);
+}
+.grad-save-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--color-text-500);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.grad-save-actions {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.grad-save-load {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--color-text-400);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s,
+    border-color 0.12s;
+}
+.grad-save-load:hover {
+  background: var(--bg3);
+  border-color: var(--border3);
+  color: var(--color-text-100);
+}
+.grad-save-del {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: var(--r-sm);
+  color: var(--color-text-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s,
+    border-color 0.12s;
+}
+.grad-save-del:hover {
+  background: rgba(255, 100, 100, 0.1);
+  color: #f87171;
+  border-color: rgba(255, 100, 100, 0.3);
+}
+.grad-save-del svg {
+  width: 10px;
+  height: 10px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 .grad-preview {

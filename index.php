@@ -135,6 +135,28 @@ require 'includes/header.php';
                 </div>
             </div>
         </a>
+        <a href="/shadow/" class="tool-card fade-in-6">
+            <div class="card-preview card-preview--shadow">
+                <div class="shadow-card-demo">
+                    <div class="demo-card demo-card--xs"></div>
+                    <div class="demo-card demo-card--md"></div>
+                    <div class="demo-card demo-card--xl"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-header">
+                    <span class="card-title">Shadow &amp; elevation</span>
+                </div>
+                <p class="card-desc">Build a semantic shadow scale tinted from your palette. Preview on light and dark
+                    surfaces and export as CSS tokens or Figma JSON.</p>
+                <div class="card-footer">
+                    <span class="card-meta">Palette tint · Light &amp; dark · CSS export</span>
+                    <div class="card-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg></div>
+                </div>
+            </div>
+        </a>
 
     </div>
 </main>
@@ -172,5 +194,39 @@ require 'includes/header.php';
 
 
 </script>
+<style>
+    .card-preview--shadow {
+        align-items: center;
+        justify-content: center;
+    }
 
+    .shadow-card-demo {
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+    }
+
+    .demo-card {
+        background: #363533;
+        border-radius: 6px;
+    }
+
+    .demo-card--xs {
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 1px 12px rgb(255 255 255 / 45%)
+    }
+
+    .demo-card--md {
+        width: 52px;
+        height: 52px;
+        box-shadow: 0 1px 13px rgb(255 255 255 / 45%)
+    }
+
+    .demo-card--xl {
+        width: 36px;
+        height: 70px;
+        box-shadow: 0 1px 12px rgb(255 255 255 / 45%)
+    }
+</style>
 <?php require 'includes/footer.php'; ?>

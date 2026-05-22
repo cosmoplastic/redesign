@@ -17,6 +17,12 @@ require '../includes/header.php';
         </svg>
         Export
       </button>
+      <button class="btn btn-primary" onclick="saveGradient()">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+        </svg>
+        Save
+      </button>
     </div>
   </div>
 
@@ -85,6 +91,12 @@ require '../includes/header.php';
         <p class="grad-track-hint">Drag handles · Click track to add stop</p>
       </div>
 
+      <div class="grad-saves-wrap" id="grad-saves-wrap" style="display:none">
+        <div class="grad-saves-header">
+          <span class="scales-header-label">Saved gradients</span>
+        </div>
+        <div class="grad-save-list" id="grad-save-list"></div>
+      </div>
 
     </div>
   </div>
@@ -480,6 +492,100 @@ require '../includes/header.php';
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
 
+  // ── SAVED GRADIENTS ────────────────────────────────────────────
+  const GRAD_KEY = 'oklch-gradients';
+
+  function loadGradients() {
+    try { return JSON.parse(localStorage.getItem(GRAD_KEY) || '[]'); }
+    catch (_) { return []; }
+  }
+
+  function gradientCSSValue() {
+    const interp = buildInterpolated(OUTPUT_STEPS);
+    const ss = interp.map(s => `${s.hex} ${s.pos.toFixed(1)}%`).join(', ');
+    return gradType === 'linear'
+      ? `linear-gradient(${angle}deg, ${ss})`
+      : `radial-gradient(circle, ${ss})`;
+  }
+
+  function saveGradient() {
+    const all = loadGradients();
+    const sorted = [...stops].sort((a, b) => a.pos - b.pos);
+    const label = sorted.map(s => s.hex).join(' → ');
+    const item = {
+      id: 'g-' + Date.now(),
+      name: label,
+      savedAt: Date.now(),
+      gradType,
+      angle,
+      stops: sorted.map(s => ({ hex: s.hex, pos: s.pos })),
+      css: gradientCSSValue(),
+    };
+    all.push(item);
+    localStorage.setItem(GRAD_KEY, JSON.stringify(all));
+    renderSavedGradients();
+    showToast('Gradient saved');
+  }
+
+  function deleteGradient(id) {
+    const all = loadGradients().filter(g => g.id !== id);
+    localStorage.setItem(GRAD_KEY, JSON.stringify(all));
+    renderSavedGradients();
+  }
+
+  function loadGradientById(id) {
+    const g = loadGradients().find(x => x.id === id);
+    if (!g) return;
+    stops = g.stops.map((s, i) => ({ id: 's' + i, hex: s.hex, pos: s.pos }));
+    nextId = stops.length;
+    gradType = g.gradType;
+    angle = g.angle ?? 135;
+    document.getElementById('type-linear').classList.toggle('active', gradType === 'linear');
+    document.getElementById('type-radial').classList.toggle('active', gradType === 'radial');
+    document.getElementById('angle-section').style.display = gradType === 'linear' ? '' : 'none';
+    document.getElementById('angle-input').value = angle;
+    selectedId = stops[0]?.id ?? 's0';
+    render();
+    showToast('Gradient loaded');
+  }
+
+  function renderSavedGradients() {
+    const all = loadGradients();
+    const wrap = document.getElementById('grad-saves-wrap');
+    const list = document.getElementById('grad-save-list');
+    if (!wrap || !list) return;
+    wrap.style.display = all.length ? '' : 'none';
+    list.innerHTML = '';
+    [...all].reverse().forEach(g => {
+      const card = document.createElement('div');
+      card.className = 'grad-save-card';
+      const meta = g.gradType === 'linear' ? `linear · ${g.angle}° · ${g.stops.length} stops` : `radial · ${g.stops.length} stops`;
+      card.innerHTML = `
+        <div class="grad-save-bar" style="background:${g.css}"></div>
+        <div class="grad-save-body">
+          <input class="grad-save-name" value="${g.name}" spellcheck="false">
+          <span class="grad-save-meta">${meta}</span>
+          <div class="grad-save-actions">
+            <button class="grad-save-load">Load</button>
+            <button class="grad-save-del" title="Delete">
+              <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+            </button>
+          </div>
+        </div>`;
+      card.querySelector('.grad-save-name').addEventListener('change', e => {
+        const all2 = loadGradients();
+        const item = all2.find(x => x.id === g.id);
+        if (item) { item.name = e.target.value.trim() || g.name; localStorage.setItem(GRAD_KEY, JSON.stringify(all2)); }
+      });
+      card.querySelector('.grad-save-load').addEventListener('click', () => loadGradientById(g.id));
+      card.querySelector('.grad-save-del').addEventListener('click', () => {
+        card.style.transition = 'opacity .18s'; card.style.opacity = '0';
+        setTimeout(() => deleteGradient(g.id), 180);
+      });
+      list.appendChild(card);
+    });
+  }
+
   // ── INIT ───────────────────────────────────────────────────────
   (function () {
     let hasDraft = false;
@@ -526,9 +632,27 @@ require '../includes/header.php';
     document.getElementById('tab-modern').classList.toggle('active', currentTab === 'modern');
     document.getElementById('tab-compat').classList.toggle('active', currentTab === 'compat');
 
+    // Handle ?load=<id> deep-link from Saved page
+    const loadParam = new URLSearchParams(location.search).get('load');
+    if (loadParam) {
+      const linked = loadGradients().find(x => x.id === loadParam);
+      if (linked) {
+        stops = linked.stops.map((s, i) => ({ id: 's' + i, hex: s.hex, pos: s.pos }));
+        nextId = stops.length;
+        gradType = linked.gradType;
+        angle = linked.angle ?? 135;
+        document.getElementById('type-linear').classList.toggle('active', gradType === 'linear');
+        document.getElementById('type-radial').classList.toggle('active', gradType === 'radial');
+        document.getElementById('angle-section').style.display = gradType === 'linear' ? '' : 'none';
+        document.getElementById('angle-input').value = angle;
+        selectedId = stops[0]?.id ?? 's0';
+      }
+    }
+
     initAngleWheel();
     initTrackClick();
     render();
+    renderSavedGradients();
   })();
 </script>
 

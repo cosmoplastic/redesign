@@ -5,6 +5,8 @@ require_once __DIR__ . '/version.php';
 // $pageDescription (string, optional) — meta description / og:description
 // $activePage      (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
 // $shellClass      (string, optional) — extra class appended to .shell
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,6 +112,15 @@ require_once __DIR__ . '/version.php';
                     </svg>
                     Type guide
                 </a>
+                <a href="/shadow/" class="sidebar-link <?= $activePage === 'shadow' ? 'active' : '' ?>">
+                    <!-- Shadow icon: stacked layers -->
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="8" width="18" height="10" rx="2" />
+                        <rect x="5" y="5" width="14" height="3" rx="1" opacity=".5" />
+                    </svg>
+                    Shadow &amp; Elevation
+                </a>
+
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Workspace</div>
