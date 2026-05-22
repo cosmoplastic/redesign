@@ -1,5 +1,6 @@
 <?php
-$pageTitle = 'ONE design';
+$pageTitle = 'ONE design — Tools for Designers who Care About the Details';
+$pageDescription = 'A growing collection of free design tools — OKLCH palette generator, color picker, gradient builder, and more. Made by a designer, for designers.';
 $activePage = 'index';
 require 'includes/header.php';
 ?>
@@ -8,12 +9,10 @@ require 'includes/header.php';
 
     <div class="topbar">
         <div class="topbar-greeting">
-            <h2 id="greeting-text"></h2>
-            <p>What are you building today?</p>
-        </div>
-        <div class="badge">
-            <span class="badge-dot"></span>
-            5 tools available · more coming
+            <h2>Tools for designers who <br><em>care about the details</em></h2>
+            <p>A growing collection of tools for designers — made by <a
+                    href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener"
+                    style="color: inherit;">a designer</a>.</p>
         </div>
     </div>
 
@@ -27,7 +26,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Palette generator</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Generate full 50–900 shade scales from any
                     color using perceptually uniform OKLCH math. Export as CSS
@@ -41,40 +39,13 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <div class="tool-card coming-soon fade-in-2">
+        <a href="/gradient/" class="tool-card fade-in-2">
             <div class="card-preview">
-                <div class="card-preview-soon">
-                    <div>
-                        <p class="soon-title">Aa</p>
-                        <p class="text-micro">Coming soon</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card-header">
-                    <span class="card-title">Contrast checker</span>
-                    <span class="tag">Soon</span>
-                </div>
-                <p class="card-desc">Check WCAG AA and AAA contrast ratios between
-                    any two colors. See which stops in your palette are safe for
-                    text at any size.</p>
-                <div class="card-footer">
-                    <span class="card-meta">WCAG 2.1 · APCA</span>
-                    <div class="card-arrow disabled"><svg viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg></div>
-                </div>
-            </div>
-        </div>
-
-        <a href="/gradient/" class="tool-card fade-in-3">
-            <div class="card-preview">
-                <div id="grad-card-preview" style="width:100%;height:100%;"></div>
+                <div id="grad-card-preview"></div>
             </div>
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Gradient studio</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Build gradients that actually look good.
                     Interpolate through OKLCH to avoid the grey, muddy band that
@@ -88,14 +59,13 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <a href="/color-picker/" class="tool-card fade-in-4">
+        <a href="/color-picker/" class="tool-card fade-in-3">
             <div class="card-preview">
                 <canvas id="picker-preview-canvas" width="120" height="120"></canvas>
             </div>
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Color picker</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Pick colors natively in the OKLCH space. Drag
                     the gamut canvas, spin the hue wheel, and export in any format —
@@ -110,7 +80,7 @@ require 'includes/header.php';
             </div>
         </a>
 
-        <a href="/case-converter/" class="tool-card fade-in-5">
+        <a href="/case-converter/" class="tool-card fade-in-4">
             <div class="card-preview">
                 <div class="card-preview-tags">
                     <div class="card-preview-tags-row">
@@ -127,7 +97,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Case converter</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Transform text between 13 different cases and
                     formats — sentence, title, camel, snake, kebab, slug, and more.
@@ -154,7 +123,6 @@ require 'includes/header.php';
             <div class="card-body">
                 <div class="card-header">
                     <span class="card-title">Type guide</span>
-                    <span class="tag tag-green">Available</span>
                 </div>
                 <p class="card-desc">Set typography standards for desktop and mobile.
                     Choose a modular scale ratio, load Google Fonts, and export
@@ -172,7 +140,7 @@ require 'includes/header.php';
 </main>
 </div>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
     const previewColors = ['#2563eb', '#e11d48'];
     const previewContainer = document.getElementById('preview-swatches');
@@ -202,69 +170,6 @@ require 'includes/header.php';
         ctx.fillStyle = oklchToHex(0.6, 0.178, 264); ctx.fill();
     })();
 
-    (function () {
-        function lerpHue(h1, h2, t) {
-            let d = ((h2 - h1) % 360 + 360) % 360;
-            if (d > 180) d -= 360;
-            return ((h1 + d * t) % 360 + 360) % 360;
-        }
-        function lerpGrad(hexA, hexB, t) {
-            const ra = hexToRgb(hexA), rb = hexToRgb(hexB);
-            if (!ra || !rb) return hexA;
-            const [La, Ca, Ha] = rgbToOklch(...ra);
-            const [Lb, Cb, Hb] = rgbToOklch(...rb);
-            return oklchToHex(La + (Lb - La) * t, Ca + (Cb - Ca) * t, lerpHue(Ha, Hb, t));
-        }
-        const el = document.getElementById('grad-card-preview');
-        if (!el) return;
-        const hexA = '#2563eb', hexB = '#e11d48';
-        const n = 16;
-        const ss = Array.from({ length: n + 1 }, (_, i) => {
-            const t = i / n;
-            return `${lerpGrad(hexA, hexB, t)} ${(t * 100).toFixed(1)}%`;
-        }).join(', ');
-        el.style.background = `linear-gradient(135deg, ${ss})`;
-    })();
-
-    // ── Greeting name ────────────────────────────────────────────
-    (function () {
-        const NAME_KEY = 'greeting-name';
-        const greetingEl = document.getElementById('greeting-text');
-
-        function timeOfDay() {
-            const h = new Date().getHours();
-            if (h < 12) return 'morning';
-            if (h < 17) return 'afternoon';
-            return 'evening';
-        }
-
-        function renderGreeting(name) {
-            const display = name || 'designer';
-            greetingEl.innerHTML = `Good ${timeOfDay()}, <em class="greeting-name-wrap">${display}<button class="greeting-edit-btn" id="greeting-edit" aria-label="Edit name" title="Edit name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></em>`;
-            document.getElementById('greeting-edit').addEventListener('click', openEdit);
-        }
-
-        function openEdit() {
-            const name = localStorage.getItem(NAME_KEY) || '';
-            greetingEl.innerHTML = `Good ${timeOfDay()}, <em><input class="greeting-input" id="greeting-input" type="text" value="${name}" placeholder="your name" maxlength="32" spellcheck="false" autocomplete="off"></em>`;
-            const input = document.getElementById('greeting-input');
-            input.focus();
-            input.select();
-            function commit() {
-                const val = input.value.trim();
-                if (val) localStorage.setItem(NAME_KEY, val);
-                else localStorage.removeItem(NAME_KEY);
-                renderGreeting(val);
-            }
-            input.addEventListener('blur', commit);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-                if (e.key === 'Escape') { input.removeEventListener('blur', commit); renderGreeting(localStorage.getItem(NAME_KEY) || ''); }
-            });
-        }
-
-        renderGreeting(localStorage.getItem(NAME_KEY) || '');
-    })();
 
 </script>
 

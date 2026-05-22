@@ -9,5 +9,8 @@
 .env
 .env.*
 
+# Uploads (may contain large files)
+admin/uploads/
+
 # Logs
 *.log

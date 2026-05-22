@@ -16,6 +16,22 @@ require '../includes/header.php';
         <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
         <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
       </div>
+      <div class="apply-btn-wrap">
+        <button class="btn" id="apply-btn" onclick="toggleTheme()">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+          <span class="apply-label">Apply to site</span>
+        </button>
+        <div class="apply-tip" id="apply-tip" role="tooltip">
+          <button class="apply-tip-close" onclick="dismissApplyTip()" aria-label="Dismiss">
+            <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+          </button>
+          <p class="apply-tip-title">See it live</p>
+          <p class="apply-tip-body">Hit Apply to site and watch your palette take over every surface of the app — instantly.</p>
+        </div>
+      </div>
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
           <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -23,16 +39,12 @@ require '../includes/header.php';
         </svg>
         Export
       </button>
-      <button class="btn" onclick="savePalette()">
+      <button class="btn btn-primary" onclick="savePalette()">
         <svg viewBox="0 0 24 24">
           <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
         </svg>
         <span id="save-label">Save palette</span>
       </button>
-      <div class="badge">
-        <span class="badge-dot"></span>
-        <span id="mode-badge">oklch color theory</span>
-      </div>
     </div>
   </div>
 
@@ -82,11 +94,22 @@ require '../includes/header.php';
   </div>
 </div>
 
+<div class="presets-modal" id="presets-modal">
+  <div class="presets-modal-backdrop" onclick="closePresetsModal()"></div>
+  <div class="presets-modal-box">
+    <div class="presets-modal-header">
+      <span>Color library</span>
+      <button class="export-modal-close" onclick="closePresetsModal()">×</button>
+    </div>
+    <div class="presets-modal-grid" id="presets-grid"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script src="/assets/color-math.js"></script>
+<script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
-  const MAX_COLORS = 4;
+  const MAX_COLORS = 8;
   const ADD_DEFAULTS = ['#16a34a', '#f59e0b', '#8b5cf6', '#ec4899'];
   const ADD_NAMES = ['tertiary', 'quaternary'];
   const DRAFT_KEY = 'oklch-palette-draft';
@@ -129,7 +152,8 @@ require '../includes/header.php';
     scaleMode = mode;
     document.getElementById('mode-oklch').classList.toggle('active', mode === 'oklch');
     document.getElementById('mode-tintshade').classList.toggle('active', mode === 'tint-shade');
-    document.getElementById('mode-badge').textContent = mode === 'oklch' ? 'oklch color theory' : 'tint / shade';
+    const _badge = document.getElementById('mode-badge');
+    if (_badge) _badge.textContent = mode === 'oklch' ? 'oklch color theory' : 'tint / shade';
     const stops = getActiveStops();
     colors.forEach(col => {
       col.scale = getScale(col.hex).map((h, i) => {
@@ -198,13 +222,18 @@ require '../includes/header.php';
       updateOklchBadge(col.id, col.hex);
     });
 
-    if (colors.length < MAX_COLORS) {
-      const btn = document.createElement('button');
-      btn.className = 'add-color-card';
-      btn.innerHTML = `<div class="add-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Add color`;
-      btn.addEventListener('click', addColor);
-      grid.appendChild(btn);
-    }
+    const actionsCard = document.createElement('div');
+    actionsCard.className = 'picker-actions-card';
+    actionsCard.innerHTML = (colors.length < MAX_COLORS ? `
+      <button class="picker-action picker-action--add" onclick="addColor()">
+        <div class="add-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        Add color
+      </button>` : '') + `
+      <button class="picker-action picker-action--lib" onclick="openPresetsModal()">
+        <div class="add-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="4" rx=".75"/><rect x="10" y="3" width="4" height="4" rx=".75"/><rect x="17" y="3" width="4" height="4" rx=".75"/><rect x="3" y="10" width="4" height="4" rx=".75"/><rect x="10" y="10" width="4" height="4" rx=".75"/><rect x="17" y="10" width="4" height="4" rx=".75"/></svg></div>
+        Color library
+      </button>`;
+    grid.appendChild(actionsCard);
   }
 
   function renderScales() {
@@ -363,9 +392,11 @@ require '../includes/header.php';
   }
 
   function copyOutput() {
-    copyText(currentTab === 'css' ? genCSS() : genJSON(), 'Copied!');
+    const raw = currentTab === 'css' ? genCSS() : genJSON();
+    copyText(raw, 'Copied!');
     const lbl = document.getElementById('copy-label');
     lbl.textContent = 'Copied!'; setTimeout(() => lbl.textContent = 'Copy', 2000);
+    recordExport('palette', currentTab === 'css' ? 'CSS variables' : 'Figma JSON', colors.map(c => c.name).join(' · '), raw);
   }
 
   // ── SAVE / LOAD ──────────────────────────────────────
@@ -385,17 +416,37 @@ require '../includes/header.php';
     showToast('Palette saved');
   }
 
-  // Init — check for ?load=<id>, then build scales and render
+  // Init — check for picker handoff, ?load=<id>, or draft
+  let _fromPicker = false, _fromPickerCount = 0;
+
   (function () {
+    // ── Picker handoff ──────────────────────────────────
+    const handoffRaw = localStorage.getItem('picker-palette-handoff');
+    if (handoffRaw) {
+      try {
+        const hexes = JSON.parse(handoffRaw);
+        if (Array.isArray(hexes) && hexes.length) {
+          const names = ['primary','secondary','tertiary','quaternary'];
+          colors = hexes.slice(0, MAX_COLORS).map((hex, i) => ({
+            id: 'c' + i, name: names[i] || ('color-' + (i + 1)), hex, scale: []
+          }));
+          nextId = colors.length;
+          _fromPicker = true;
+          _fromPickerCount = colors.length;
+        }
+      } catch(_) {}
+      localStorage.removeItem('picker-palette-handoff');
+    }
+
     const id = new URLSearchParams(location.search).get('load');
-    if (id) {
+    if (!_fromPicker && id) {
       const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       const palette = all.find(p => p.id === id);
       if (palette && palette.colors.length >= 1) {
         colors = palette.colors.map((c, i) => ({ id: 'c' + i, name: c.name, hex: c.hex, scale: [] }));
         nextId = colors.length;
       }
-    } else {
+    } else if (!_fromPicker) {
       try {
         const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
         if (draft?.colors?.length >= 1) {
@@ -407,7 +458,8 @@ require '../includes/header.php';
             scaleMode = draft.mode;
             document.getElementById('mode-oklch').classList.toggle('active', scaleMode === 'oklch');
             document.getElementById('mode-tintshade').classList.toggle('active', scaleMode === 'tint-shade');
-            document.getElementById('mode-badge').textContent = scaleMode === 'oklch' ? 'oklch color theory' : 'tint / shade';
+            const _badge2 = document.getElementById('mode-badge');
+            if (_badge2) _badge2.textContent = scaleMode === 'oklch' ? 'oklch color theory' : 'tint / shade';
           }
         }
       } catch (_) { }
@@ -421,6 +473,17 @@ require '../includes/header.php';
     });
     document.getElementById('stop-count').value = stopCount;
     renderPickers(); renderScales(); updateOutput();
+
+    if (_fromPicker) {
+      colors.slice(0, _fromPickerCount).forEach((col, i) => {
+        const card = document.querySelector('.picker-card[data-id="' + col.id + '"]');
+        if (!card) return;
+        const rgb = hexToRgb(col.hex) || [255, 255, 255];
+        card.style.setProperty('--glow-solid', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.55)');
+        card.style.setProperty('--glow-dim',   'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
+        setTimeout(() => card.classList.add('new-from-picker'), i * 120);
+      });
+    }
   })();
 
   function openExportModal() {
@@ -430,7 +493,119 @@ require '../includes/header.php';
   function closeExportModal() {
     document.getElementById('export-modal').classList.remove('open');
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
+
+  // ── PRESETS ──────────────────────────────────────────
+  const PRESETS = [
+    { name: 'Gray',   L: 0.649, C: 0,     H: 0 },
+    { name: 'Slate',  L: 0.645, C: 0.018, H: 256 },
+    { name: 'Red',    L: 0.647, C: 0.176, H: 17 },
+    { name: 'Blue',   L: 0.629, C: 0.187, H: 252 },
+    { name: 'Green',  L: 0.623, C: 0.178, H: 145 },
+    { name: 'Yellow', L: 0.725, C: 0.187, H: 91 },
+    { name: 'Orange', L: 0.670, C: 0.185, H: 55 },
+    { name: 'Purple', L: 0.637, C: 0.185, H: 295 },
+    { name: 'Pink',   L: 0.641, C: 0.185, H: 343 },
+    { name: 'Cyan',   L: 0.623, C: 0.178, H: 210 },
+    { name: 'Teal',   L: 0.618, C: 0.182, H: 180 },
+    { name: 'Indigo', L: 0.632, C: 0.185, H: 275 },
+    { name: 'Amber',  L: 0.733, C: 0.194, H: 75 },
+    { name: 'Lime',   L: 0.703, C: 0.205, H: 120 },
+    { name: 'Mint',   L: 0.609, C: 0.192, H: 165 },
+    { name: 'Tomato', L: 0.657, C: 0.183, H: 25 },
+  ];
+
+  function openPresetsModal() {
+    renderPresetsGrid();
+    document.getElementById('presets-modal').classList.add('open');
+  }
+  function closePresetsModal() {
+    document.getElementById('presets-modal').classList.remove('open');
+  }
+
+  function renderPresetsGrid() {
+    const grid = document.getElementById('presets-grid');
+    grid.innerHTML = PRESETS.map(p => {
+      const seedHex = oklchToHex(p.L, p.C, p.H);
+      const swatches = genScaleWithStops(seedHex, [50, 200, 400, 600, 800, 950]);
+      const swatchHtml = swatches.map(h => `<span class="preset-swatch" style="background:${h}"></span>`).join('');
+      return `<button class="preset-card" onclick="loadPreset('${p.name}','${seedHex}')">
+        <div class="preset-swatches">${swatchHtml}</div>
+        <span class="preset-name">${p.name}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function loadPreset(name, seedHex) {
+    const id = 'c' + nextId++;
+    const stops = getActiveStops();
+    const scale = getScale(seedHex).map((h, i) => {
+      const [L, C, H] = rgbToOklch(...hexToRgb(h));
+      return { stop: stops[i], hex: h, L, C, H };
+    });
+    colors.push({ id, name: name.toLowerCase(), hex: seedHex, scale });
+    closePresetsModal();
+    renderPickers();
+    renderScales();
+    updateOutput();
+  }
+
+  // ── APPLY-TIP ────────────────────────────────────────
+  const TIP_KEY = 'palette-apply-tip-dismissed';
+
+  function showApplyTip() {
+    if (localStorage.getItem(TIP_KEY) || localStorage.getItem('site-theme')) return;
+    setTimeout(() => {
+      const tip = document.getElementById('apply-tip');
+      if (tip) tip.classList.add('visible');
+    }, 1500);
+  }
+
+  function dismissApplyTip() {
+    localStorage.setItem(TIP_KEY, '1');
+    const tip = document.getElementById('apply-tip');
+    if (tip) tip.classList.remove('visible');
+  }
+
+  // ── THEME APPLICATION ────────────────────────────────
+  const THEME_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+  function applyTheme() {
+    const hexScale = genScaleWithStops(colors[0].hex, THEME_STOPS);
+    const vars = {};
+    hexScale.forEach((hex, i) => {
+      const [L, C, H] = rgbToOklch(...hexToRgb(hex));
+      vars['--color-primary-' + THEME_STOPS[i]] = 'oklch(' + (L * 100).toFixed(1) + '% ' + C.toFixed(3) + ' ' + H.toFixed(1) + ')';
+    });
+    Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+    localStorage.setItem('site-theme', JSON.stringify(vars));
+    syncApplyBtn();
+    dismissApplyTip();
+    showToast('Theme applied');
+  }
+
+  function resetTheme() {
+    localStorage.removeItem('site-theme');
+    THEME_STOPS.forEach(s => document.documentElement.style.removeProperty('--color-primary-' + s));
+    syncApplyBtn();
+    showToast('Theme reset');
+  }
+
+  function toggleTheme() {
+    localStorage.getItem('site-theme') ? resetTheme() : applyTheme();
+  }
+
+  function syncApplyBtn() {
+    const active = !!localStorage.getItem('site-theme');
+    const btn = document.getElementById('apply-btn');
+    if (!btn) return;
+    btn.querySelector('.apply-label').textContent = active ? 'Remove styling' : 'Apply to site';
+    btn.classList.toggle('btn-applied', active);
+  }
+
+  syncApplyBtn();
+  showApplyTip();
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeExportModal(); closePresetsModal(); dismissApplyTip(); } });
 </script>
 
 <?php require '../includes/footer.php'; ?>

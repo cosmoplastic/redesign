@@ -70,21 +70,31 @@ function clampToGamut(L,C,H){
 }
 
 /* palette scale generator
-   Lightness curve derived from Tailwind v4's OKLCH palette.
-   Chroma ratios relative to the input color's chroma.
+   Lightness is computed RELATIVE to the seed color so the scale is
+   always monotonic regardless of input lightness.
+   SCALE_LIGHT_T: fraction of [L0 → L_MAX] for stops below 500 (lighter).
+   SCALE_DARK_T:  fraction of [L0 → L_MIN] for stops above 500 (darker).
+   Chroma ratios are relative to the input color's chroma.
    Stop 500 always returns the exact input hex unchanged.           */
-const SCALE_LIGHTNESS = {25:.982,50:.967,75:.952,100:.940,200:.897,300:.838,400:.758,600:.645,700:.553,800:.460,900:.370,950:.257,975:.178};
-const SCALE_CHROMA    = {25:.040,50:.090,75:.140,100:.200,200:.380,300:.620,400:.870,600:1.04,700:.920,800:.740,900:.580,950:.420,975:.300};
-const SCALE_STOPS     = [50,100,200,300,400,500,600,700,800,900];
+const L_SCALE_MAX   = 0.985;
+const L_SCALE_MIN   = 0.115;
+const SCALE_LIGHT_T = {25:.980,50:.955,75:.930,100:.900,200:.815,300:.675,400:.420};
+const SCALE_DARK_T  = {600:.135,700:.330,800:.560,900:.795,950:.915,975:.970};
+const SCALE_CHROMA  = {25:.040,50:.090,75:.140,100:.200,200:.380,300:.620,400:.870,600:1.04,700:.920,800:.740,900:.580,950:.420,975:.300};
+const SCALE_STOPS   = [50,100,200,300,400,500,600,700,800,900];
 /* All 14 stops in priority order — first 10 = standard Tailwind-style scale */
-const ALL_STOPS       = [50,100,200,300,400,500,600,700,800,900,950,25,75,975];
+const ALL_STOPS     = [50,100,200,300,400,500,600,700,800,900,950,25,75,975];
 
 function genScaleWithStops(hex, stops){
   const [r,g,b]=hexToRgb(hex);
-  const [,C,H]=rgbToOklch(r,g,b);
+  const [L0,C,H]=rgbToOklch(r,g,b);
+  const rangeUp = L_SCALE_MAX - L0;
+  const rangeDn = L0 - L_SCALE_MIN;
   return stops.map(stop=>{
     if(stop===500) return hex;
-    const tL=SCALE_LIGHTNESS[stop];
+    const tL = stop < 500
+      ? L0 + SCALE_LIGHT_T[stop] * rangeUp
+      : L0 - SCALE_DARK_T[stop]  * rangeDn;
     const [,cC]=clampToGamut(tL, C*SCALE_CHROMA[stop], H);
     return rgbToHex(...oklchToRgb(tL,cC,H));
   });
@@ -105,4 +115,14 @@ function showToast(msg){
 function copyText(text, msg){
   navigator.clipboard.writeText(text);
   showToast(msg||'Copied!');
+}
+
+/* export history */
+const EXPORT_HISTORY_KEY = 'oklch-export-history';
+function recordExport(tool, format, label, content){
+  try {
+    const h = JSON.parse(localStorage.getItem(EXPORT_HISTORY_KEY)||'[]');
+    h.unshift({ id:'e-'+Date.now(), ts:Date.now(), tool, format, label, content });
+    localStorage.setItem(EXPORT_HISTORY_KEY, JSON.stringify(h.slice(0,100)));
+  } catch(_){}
 }

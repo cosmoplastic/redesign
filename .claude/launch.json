@@ -4,7 +4,7 @@
     {
       "name": "php-dev",
       "runtimeExecutable": "php",
-      "runtimeArgs": ["-S", "localhost:8765", "-t", "/Users/ryanpugh/Websites/redesign"],
+      "runtimeArgs": ["-d", "upload_max_filesize=512M", "-d", "post_max_size=520M", "-d", "memory_limit=1G", "-d", "max_execution_time=0", "-d", "max_input_time=3600", "-S", "localhost:8765", "-t", "/Users/ryanpugh/Websites/oneredesigns.com", "/Users/ryanpugh/Websites/oneredesigns.com/router.php"],
       "port": 8765
     }
   ]

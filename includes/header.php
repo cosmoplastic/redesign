@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/version.php';
 // Variables expected from caller:
-// $pageTitle  (string) — page <title>
-// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide'
-// $shellClass (string, optional) — extra class appended to .shell
+// $pageTitle       (string) — page <title>
+// $pageDescription (string, optional) — meta description / og:description
+// $activePage      (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
+// $shellClass      (string, optional) — extra class appended to .shell
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,16 +13,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
+    <?php if (!empty($pageDescription)): ?>
+        <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>">
+        <meta property="og:description" content="<?= htmlspecialchars($pageDescription) ?>">
+        <meta name="twitter:description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <?php endif; ?>
+    <meta property="og:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/assets/style.css">
+    <script>
+        (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();
+    </script>
+    <link rel="stylesheet" href="/assets/style.css?v=<?= APP_VERSION ?>">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
+    <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/favicon/site.webmanifest">
 </head>
 
 <body>
 
     <div class="shell<?= isset($shellClass) ? ' ' . htmlspecialchars($shellClass) : '' ?>">
+
+        <div class="mob-header">
+            <button class="mob-menu-btn" onclick="document.querySelector('.shell').classList.toggle('nav-open')"
+                aria-label="Open menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            <a href="/" class="mob-logo">ONE <em>design</em></a>
+        </div>
+        <div class="mob-backdrop" onclick="document.querySelector('.shell').classList.remove('nav-open')"></div>
 
         <aside>
             <div class="sidebar-logo">
@@ -45,13 +78,6 @@
                         <path d="M2 12h10" />
                     </svg>
                     Palette generator
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                    Contrast checker
-                    <span class="soon">Soon</span>
                 </a>
                 <a href="/color-picker/" class="sidebar-link<?= $activePage === 'picker' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
@@ -91,9 +117,9 @@
                     <svg viewBox="0 0 24 24">
                         <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                     </svg>
-                    Saved palettes
+                    Saved
                 </a>
-                <a href="#" class="sidebar-link">
+                <a href="/export-history/" class="sidebar-link<?= $activePage === 'export-history' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <circle cx="18" cy="5" r="3" />
                         <circle cx="6" cy="12" r="3" />
@@ -102,9 +128,9 @@
                         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                     </svg>
                     Export history
-                    <span class="soon">Soon</span>
                 </a>
             </div>
-            <div class="sidebar-footer">one.design<br>v1.0 · 5 tools available<br><a href="/admin/"
-                    class="sidebar-footer-admin">admin</a></div>
+            <div class="sidebar-footer"><a href="/admin/" class="sidebar-footer-admin">admin</a><br>Built, not
+                bought<br><a href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener"
+                    class="sidebar-footer-link">Ryan Pugh</a></div>
         </aside>
