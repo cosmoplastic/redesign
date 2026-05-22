@@ -78,25 +78,30 @@ require '../includes/header.php';
             264°)</span>
         </div>
         <div class="stage-buttons">
-          <button class="stage-copy-btn" id="stage-save" onclick="saveColor()">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
-            </svg>
-            Save
-          </button>
           <button class="stage-copy-btn" id="stage-copy" onclick="copyText(getHex(),'Hex copied')">
             <svg viewBox="0 0 24 24">
               <rect x="9" y="9" width="13" height="13" rx="2" />
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
             </svg>
-            Copy hex
+            Copy
+          </button>
+          <button class="stage-copy-btn stage-save-btn" id="stage-save" onclick="saveColor()">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+            </svg>
+            Save to palette
           </button>
         </div>
       </div>
 
       <div class="output-scroll">
 
-        <div id="harmony-section">
+        <div class="output-step">
+          <div class="out-section-title">Contrast</div>
+          <div class="contrast-grid" id="contrast-grid"></div>
+        </div>
+
+        <div class="output-step" id="harmony-section">
           <div class="harmony-header">
             <span class="out-section-title">Harmony</span>
             <div class="harmony-tabs" id="harmony-tabs">
@@ -110,23 +115,17 @@ require '../includes/header.php';
           <div class="harmony-chips" id="harmony-chips"></div>
         </div>
 
-        <div id="saved-colors-section" style="display:none;">
-          <div class="saved-colors-header">
-            <span class="out-section-title">Saved</span>
-            <button class="btn btn-primary" onclick="createPalette()">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M8 12h8M12 8v8"/>
-              </svg>
-              Create palette
-            </button>
-          </div>
+        <div class="output-step output-step--palette" id="saved-colors-section" style="display:none;">
+          <div class="out-section-title">Palette</div>
           <div class="saved-color-list" id="saved-color-list"></div>
-        </div>
-
-        <div>
-          <div class="out-section-title">Contrast</div>
-          <div class="contrast-grid" id="contrast-grid"></div>
+          <button class="btn btn-primary output-palette-btn" onclick="createPalette()">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a10 10 0 010 20"/>
+              <path d="M2 12h10"/>
+            </svg>
+            Open in palette generator
+          </button>
         </div>
 
       </div>
@@ -394,15 +393,23 @@ require '../includes/header.php';
     const grid = document.getElementById('contrast-grid'); grid.innerHTML = '';
     [{ label: 'vs white', bg: '#ffffff' }, { label: 'vs black', bg: '#000000' }].forEach(({ label, bg }) => {
       const ratio = contrastRatio(hex, bg);
+      const isWhite = bg === '#ffffff';
+      const previewBorder = isWhite
+        ? 'border:1px solid rgba(0,0,0,0.12);'
+        : 'border:1px solid rgba(255,255,255,0.06);';
       const card = document.createElement('div'); card.className = 'contrast-card';
       card.innerHTML = `
-      <div class="contrast-against"><div class="contrast-swatch-dot" style="background:${bg}"></div>${label}</div>
-      <div class="contrast-ratio">${ratio.toFixed(2)}<span>:1</span></div>
-      <div class="contrast-badges">
-        <span class="wcag-badge ${ratio >= 3 ? 'wcag-pass' : 'wcag-fail'}">AA Lg</span>
-        <span class="wcag-badge ${ratio >= 4.5 ? 'wcag-pass' : 'wcag-fail'}">AA</span>
-        <span class="wcag-badge ${ratio >= 7 ? 'wcag-pass' : 'wcag-fail'}">AAA</span>
-      </div>`;
+        <div class="contrast-preview" style="background:${bg};${previewBorder}">
+          <div class="contrast-preview-inner" style="background:${hex}"></div>
+        </div>
+        <div class="contrast-info">
+          <div class="contrast-against">${label}</div>
+          <div class="contrast-ratio">${ratio.toFixed(2)}<span>:1</span></div>
+          <div class="contrast-badges">
+            <span class="wcag-badge ${ratio >= 4.5 ? 'wcag-pass' : 'wcag-fail'}">AA ${ratio >= 4.5 ? '✓' : '×'}</span>
+            <span class="wcag-badge ${ratio >= 7 ? 'wcag-pass' : 'wcag-fail'}">AAA ${ratio >= 7 ? '✓' : '×'}</span>
+          </div>
+        </div>`;
       grid.appendChild(card);
     });
   }
@@ -514,7 +521,8 @@ require '../includes/header.php';
     const section = document.getElementById('saved-colors-section');
     const list    = document.getElementById('saved-color-list');
     if (!section || !list) return;
-    section.style.display = savedColors.length ? 'block' : 'none';
+    // Use flex so the column layout (list + button) works correctly
+    section.style.display = savedColors.length ? 'flex' : 'none';
     list.innerHTML = '';
     savedColors.forEach(({ hex }) => {
       const item = document.createElement('div');

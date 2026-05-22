@@ -1,5 +1,6 @@
 <?php
-$pageTitle = 'ONE design';
+$pageTitle = 'ONE design — Tools for Designers who Care About the Details';
+$pageDescription = 'A growing collection of free design tools — OKLCH palette generator, color picker, gradient builder, and more. Made by a designer, for designers.';
 $activePage = 'index';
 require 'includes/header.php';
 ?>
@@ -9,7 +10,9 @@ require 'includes/header.php';
     <div class="topbar">
         <div class="topbar-greeting">
             <h2>Tools for designers who <br><em>care about the details</em></h2>
-            <p>A growing collection of tools for designers — made by <a href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener" style="color: inherit;">a designer</a>.</p>
+            <p>A growing collection of tools for designers — made by <a
+                    href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener"
+                    style="color: inherit;">a designer</a>.</p>
         </div>
     </div>
 

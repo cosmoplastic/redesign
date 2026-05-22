@@ -1,9 +1,10 @@
 <?php
 require_once __DIR__ . '/version.php';
 // Variables expected from caller:
-// $pageTitle  (string) — page <title>
-// $activePage (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
-// $shellClass (string, optional) — extra class appended to .shell
+// $pageTitle       (string) — page <title>
+// $pageDescription (string, optional) — meta description / og:description
+// $activePage      (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
+// $shellClass      (string, optional) — extra class appended to .shell
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +14,11 @@ require_once __DIR__ . '/version.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
     <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
+    <?php if (!empty($pageDescription)): ?>
+        <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>">
+        <meta property="og:description" content="<?= htmlspecialchars($pageDescription) ?>">
+        <meta name="twitter:description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <?php endif; ?>
     <meta property="og:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +28,7 @@ require_once __DIR__ . '/version.php';
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
     <script>
-      (function(){try{var t=localStorage.getItem('site-theme');if(t){var v=JSON.parse(t),r=document.documentElement;for(var k in v)r.style.setProperty(k,v[k]);}}catch(e){}})();
+        (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();
     </script>
     <link rel="stylesheet" href="/assets/style.css?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
