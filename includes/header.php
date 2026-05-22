@@ -12,10 +12,18 @@ require_once __DIR__ . '/version.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
+    <meta property="og:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
+    <script>
+      (function(){try{var t=localStorage.getItem('site-theme');if(t){var v=JSON.parse(t),r=document.documentElement;for(var k in v)r.style.setProperty(k,v[k]);}}catch(e){}})();
+    </script>
     <link rel="stylesheet" href="/assets/style.css?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">

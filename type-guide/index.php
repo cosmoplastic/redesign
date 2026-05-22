@@ -84,7 +84,7 @@ require '../includes/header.php';
       </div>
 
       <div class="grad-section" style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
-        <button class="btn" style="width:100%;justify-content:center;" onclick="saveTypeguide()">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveTypeguide()">
           <svg viewBox="0 0 24 24">
             <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
           </svg>

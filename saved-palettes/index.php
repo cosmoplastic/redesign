@@ -25,7 +25,7 @@ require '../includes/header.php';
     </div>
     <h3>No saved palettes</h3>
     <p>Generate a palette and hit <em>Save palette</em> to keep it here.</p>
-    <a href="/palette/" class="btn btn-pill" style="margin-top:4px">Open palette generator</a>
+    <a href="/palette/" class="btn btn-primary" style="margin-top:4px">Open palette generator</a>
   </div>
 
   <p class="section-label" style="margin-top:40px">Type guides</p>
@@ -41,10 +41,44 @@ require '../includes/header.php';
     </div>
     <h3>No saved type guides</h3>
     <p>Set up your type scale and hit <em>Save</em> to keep it here.</p>
-    <a href="/type-guide/" class="btn btn-pill" style="margin-top:4px">Open type guide</a>
+    <a href="/type-guide/" class="btn btn-primary" style="margin-top:4px">Open type guide</a>
+  </div>
+
+  <div id="export-footer" style="display:none; margin-top:48px; padding-top:24px; border-top:1px solid var(--border)">
+    <button class="btn btn-primary" onclick="openExportModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Export all styles
+    </button>
   </div>
 
 </main>
+
+<div class="export-modal" id="export-all-modal">
+  <div class="export-modal-backdrop" onclick="closeExportModal()"></div>
+  <div class="export-modal-box">
+    <div class="export-modal-header">
+      <span style="font-family:var(--mono);font-size:13px;font-weight:500">Export all styles</span>
+      <div class="export-modal-actions">
+        <button class="btn btn-primary" id="export-copy-btn" onclick="copyExportCSS()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+        <button class="export-modal-close" onclick="closeExportModal()" aria-label="Close">&times;</button>
+      </div>
+    </div>
+    <div class="export-modal-body">
+      <pre class="export-modal-code" id="export-modal-code"></pre>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -62,17 +96,17 @@ require '../includes/header.php';
   }
 
   // ── PALETTES ──────────────────────────────────────────────────
-  const PAL_KEY  = 'oklch-palettes';
+  const PAL_KEY = 'oklch-palettes';
   const TYPE_KEY = 'oklch-type-saves';
 
   function loadPalettes() { return JSON.parse(localStorage.getItem(PAL_KEY) || '[]'); }
   function savePalettes(p) { localStorage.setItem(PAL_KEY, JSON.stringify(p)); }
 
   function genCSSForPalette(palette) {
-    const stops = [50,100,200,300,400,500,600,700,800,900];
+    const stops = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
     return palette.colors.map(c => {
       return genScale(c.hex).map((hex, i) =>
-        `--color-${c.name.toLowerCase().replace(/\s+/g,'-')}-${stops[i]}: ${hex};`
+        `--color-${c.name.toLowerCase().replace(/\s+/g, '-')}-${stops[i]}: ${hex};`
       ).join('\n');
     }).join('\n');
   }
@@ -234,6 +268,74 @@ require '../includes/header.php';
 
   renderPalettes();
   renderTypes();
+
+  // ── EXPORT FOOTER VISIBILITY ──────────────────────────────────
+  function updateExportFooter() {
+    const hasSaved = loadPalettes().length || loadTypeSaves().length;
+    document.getElementById('export-footer').style.display = hasSaved ? '' : 'none';
+  }
+  updateExportFooter();
+
+  // ── EXPORT ALL STYLES MODAL ───────────────────────────────────
+  const STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+  function genAllExportCSS() {
+    const palettes = loadPalettes();
+    const types    = loadTypeSaves();
+    const lines    = [];
+
+    if (palettes.length) {
+      lines.push('/* ── Color Palettes ─────────────────────────── */');
+      lines.push(':root {');
+      palettes.forEach(p => {
+        lines.push('');
+        lines.push(`  /* ${p.name} */`);
+        p.colors.forEach(c => {
+          const slug = c.name.toLowerCase().replace(/\s+/g, '-');
+          genScale(c.hex).forEach((hex, i) => {
+            lines.push(`  --color-${slug}-${STOPS[i]}: ${hex};`);
+          });
+        });
+      });
+      lines.push('}');
+    }
+
+    if (types.length) {
+      types.forEach(t => {
+        if (lines.length) lines.push('');
+        lines.push(`/* ── Type Guide: ${t.name} ─────────────────── */`);
+        lines.push(genTypeCSSFromSave(t));
+      });
+    }
+
+    return lines.join('\n');
+  }
+
+  function openExportModal() {
+    const css = genAllExportCSS();
+    document.getElementById('export-modal-code').textContent = css;
+    document.getElementById('export-all-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeExportModal() {
+    document.getElementById('export-all-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function copyExportCSS() {
+    const code = document.getElementById('export-modal-code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('export-copy-btn');
+      const orig = btn.innerHTML;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.innerHTML = orig; }, 1600);
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeExportModal();
+  });
 </script>
 
 <?php require '../includes/footer.php'; ?>

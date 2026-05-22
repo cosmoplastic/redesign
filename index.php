@@ -8,12 +8,8 @@ require 'includes/header.php';
 
     <div class="topbar">
         <div class="topbar-greeting">
-            <h2 id="greeting-text"></h2>
-            <p>What are you building today?</p>
-        </div>
-        <div class="badge">
-            <span class="badge-dot"></span>
-            5 tools available · more coming
+            <h2>Tools for designers who <br><em>care about the details</em></h2>
+            <p>A growing collection of tools for designers — made by <a href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener" style="color: inherit;">a designer</a>.</p>
         </div>
     </div>
 
@@ -171,45 +167,6 @@ require 'includes/header.php';
         ctx.fillStyle = oklchToHex(0.6, 0.178, 264); ctx.fill();
     })();
 
-    // ── Greeting name ────────────────────────────────────────────
-    (function () {
-        const NAME_KEY = 'greeting-name';
-        const greetingEl = document.getElementById('greeting-text');
-
-        function timeOfDay() {
-            const h = new Date().getHours();
-            if (h < 12) return 'morning';
-            if (h < 17) return 'afternoon';
-            return 'evening';
-        }
-
-        function renderGreeting(name) {
-            const display = name || 'designer';
-            greetingEl.innerHTML = `Good ${timeOfDay()}, <em class="greeting-name-wrap">${display}<button class="greeting-edit-btn" id="greeting-edit" aria-label="Edit name" title="Edit name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></em>`;
-            document.getElementById('greeting-edit').addEventListener('click', openEdit);
-        }
-
-        function openEdit() {
-            const name = localStorage.getItem(NAME_KEY) || '';
-            greetingEl.innerHTML = `Good ${timeOfDay()}, <em><input class="greeting-input" id="greeting-input" type="text" value="${name}" placeholder="your name" maxlength="32" spellcheck="false" autocomplete="off"></em>`;
-            const input = document.getElementById('greeting-input');
-            input.focus();
-            input.select();
-            function commit() {
-                const val = input.value.trim();
-                if (val) localStorage.setItem(NAME_KEY, val);
-                else localStorage.removeItem(NAME_KEY);
-                renderGreeting(val);
-            }
-            input.addEventListener('blur', commit);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-                if (e.key === 'Escape') { input.removeEventListener('blur', commit); renderGreeting(localStorage.getItem(NAME_KEY) || ''); }
-            });
-        }
-
-        renderGreeting(localStorage.getItem(NAME_KEY) || '');
-    })();
 
 </script>
 

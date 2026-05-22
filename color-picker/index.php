@@ -16,14 +16,6 @@ require '../includes/header.php';
         </svg>
         Export
       </button>
-      <div class="harmony-tabs" id="harmony-tabs">
-        <button class="htab active" data-mode="none">None</button>
-        <button class="htab" data-mode="complementary">Complementary</button>
-        <button class="htab" data-mode="triadic">Triadic</button>
-        <button class="htab" data-mode="analogous">Analogous</button>
-        <button class="htab" data-mode="split">Split</button>
-        <button class="htab" data-mode="tetradic">Tetradic</button>
-      </div>
     </div>
   </div>
 
@@ -85,24 +77,58 @@ require '../includes/header.php';
           <span class="stage-oklch" id="stage-oklch">oklch(60.0% 0.178
             264°)</span>
         </div>
-        <button class="stage-copy-btn" id="stage-copy" onclick="copyText(getHex(),'Hex copied')">
-          <svg viewBox="0 0 24 24">
-            <rect x="9" y="9" width="13" height="13" rx="2" />
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-          </svg>
-          Copy hex
-        </button>
+        <div class="stage-buttons">
+          <button class="stage-copy-btn" id="stage-save" onclick="saveColor()">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+            </svg>
+            Save
+          </button>
+          <button class="stage-copy-btn" id="stage-copy" onclick="copyText(getHex(),'Hex copied')">
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
+            Copy hex
+          </button>
+        </div>
       </div>
 
       <div class="output-scroll">
-        <div id="harmony-section" style="display:none;">
-          <div class="out-section-title" id="harmony-label">Harmony</div>
-          <div class="harmony-strip" id="harmony-strip"></div>
+
+        <div id="harmony-section">
+          <div class="harmony-header">
+            <span class="out-section-title">Harmony</span>
+            <div class="harmony-tabs" id="harmony-tabs">
+              <button class="harmony-tab active" data-type="complementary">Complementary</button>
+              <button class="harmony-tab" data-type="analogous">Analogous</button>
+              <button class="harmony-tab" data-type="triadic">Triadic</button>
+              <button class="harmony-tab" data-type="split">Split</button>
+              <button class="harmony-tab" data-type="tetradic">Tetradic</button>
+            </div>
+          </div>
+          <div class="harmony-chips" id="harmony-chips"></div>
         </div>
+
+        <div id="saved-colors-section" style="display:none;">
+          <div class="saved-colors-header">
+            <span class="out-section-title">Saved</span>
+            <button class="btn btn-primary" onclick="createPalette()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12h8M12 8v8"/>
+              </svg>
+              Create palette
+            </button>
+          </div>
+          <div class="saved-color-list" id="saved-color-list"></div>
+        </div>
+
         <div>
           <div class="out-section-title">Contrast</div>
           <div class="contrast-grid" id="contrast-grid"></div>
         </div>
+
       </div>
     </div>
 
@@ -137,7 +163,8 @@ require '../includes/header.php';
 <script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
   let state = { L: 0.60, C: 0.178, H: 264, A: 1.0 };
-  let harmonyMode = 'none', activeHarmonyIdx = 0;
+  let harmonyMode = 'complementary';
+  let savedColors = []; // declared early so renderHarmony() can read it at init time
   const DRAFT_KEY = 'oklch-picker-draft';
   let _draftTimer;
   function persistDraft() {
@@ -253,10 +280,11 @@ require '../includes/header.php';
     const stageOklch = document.getElementById('stage-oklch');
     stageOklch.style.color = tc2;
     stageOklch.textContent = `oklch(${(state.L * 100).toFixed(1)}% ${state.C.toFixed(3)} ${Math.round(state.H)}°)`;
-    const stageCopy = document.getElementById('stage-copy');
-    stageCopy.style.color = tc;
-    stageCopy.style.borderColor = lum > .5 ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.22)';
-    stageCopy.style.background = lum > .5 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)';
+    const stageButtonStyle = { color: tc, borderColor: lum > .5 ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.22)', background: lum > .5 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)' };
+    ['stage-copy','stage-save'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) { btn.style.color = stageButtonStyle.color; btn.style.borderColor = stageButtonStyle.borderColor; btn.style.background = stageButtonStyle.background; }
+    });
     document.getElementById('hex-input').value = hex;
     document.getElementById('hex-preview').style.background = hex;
   }
@@ -286,30 +314,75 @@ require '../includes/header.php';
     });
   }
 
-  function getHarmonyHues(mode, H) {
-    const m = { 'complementary': [H, (H + 180) % 360], 'triadic': [H, (H + 120) % 360, (H + 240) % 360], 'analogous': [H, (H + 30) % 360, (H - 30 + 360) % 360], 'split': [H, (H + 150) % 360, (H + 210) % 360], 'tetradic': [H, (H + 90) % 360, (H + 180) % 360, (H + 270) % 360] };
-    return m[mode] || [H];
+  // ── HARMONY ──────────────────────────────────────────────────
+  const HARMONY_STEPS = {
+    complementary: [{ angle: 180, label: 'Complement · 180°' }],
+    analogous:     [{ angle: -60, label: '−60°' }, { angle: -30, label: '−30°' }, { angle: 30, label: '+30°' }, { angle: 60, label: '+60°' }],
+    triadic:       [{ angle: 120, label: '120°' }, { angle: 240, label: '240°' }],
+    split:         [{ angle: 150, label: '150°' }, { angle: 210, label: '210°' }],
+    tetradic:      [{ angle: 90, label: '90°' }, { angle: 180, label: '180°' }, { angle: 270, label: '270°' }],
+  };
+
+  function setHarmonyMode(type) {
+    harmonyMode = type;
+    document.querySelectorAll('.harmony-tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.type === type));
+    renderHarmony();
+    persistDraft();
   }
 
-  const HARMONY_NAMES = { complementary: ['Base', 'Complement'], triadic: ['Base', 'Triad 2', 'Triad 3'], analogous: ['Base', 'Analog +30', 'Analog −30'], split: ['Base', 'Split 1', 'Split 2'], tetradic: ['Base', 'Tetrad 2', 'Tetrad 3', 'Tetrad 4'] };
-
   function renderHarmony() {
-    const section = document.getElementById('harmony-section');
-    const strip = document.getElementById('harmony-strip');
-    const label = document.getElementById('harmony-label');
-    if (harmonyMode === 'none') { section.style.display = 'none'; return; }
-    section.style.display = 'block';
-    label.textContent = harmonyMode.charAt(0).toUpperCase() + harmonyMode.slice(1) + ' harmony';
-    const hues = getHarmonyHues(harmonyMode, state.H);
-    const names = HARMONY_NAMES[harmonyMode] || [];
-    strip.innerHTML = '';
-    hues.forEach((h, i) => {
-      const hex = oklchToHex(state.L, state.C, h);
-      const div = document.createElement('div');
-      div.className = 'harmony-swatch' + (i === activeHarmonyIdx ? ' active' : '');
-      div.innerHTML = `<div class="harmony-swatch-color" style="background:${hex}"></div><div class="harmony-swatch-label">${names[i] || 'Color ' + (i + 1)}</div>`;
-      div.addEventListener('click', () => { if (i === 0) return; state.H = h; activeHarmonyIdx = i; syncAll(); });
-      strip.appendChild(div);
+    const container = document.getElementById('harmony-chips');
+    if (!container) return;
+    const steps = HARMONY_STEPS[harmonyMode];
+    if (!steps) return;
+    const savedHexes = new Set(savedColors.map(c => c.hex.toLowerCase()));
+    container.innerHTML = '';
+    steps.forEach(step => {
+      const hue = ((state.H + step.angle) % 360 + 360) % 360;
+      const hex = oklchToHex(state.L, state.C, hue);
+      const alreadySaved = savedHexes.has(hex.toLowerCase());
+      const scaleHtml = genScaleWithStops(hex, [100, 300, 500, 700, 900])
+        .map(h => `<div class="harmony-chip-sw" style="background:${h}"></div>`).join('');
+      const chip = document.createElement('div');
+      chip.className = 'harmony-chip';
+      chip.title = 'Click to load';
+      chip.innerHTML = `
+        <div class="harmony-chip-scale" style="cursor:pointer">${scaleHtml}</div>
+        <div class="harmony-chip-info">
+          <span class="harmony-chip-lbl">${step.label}</span>
+          <span class="harmony-chip-hex">${hex}</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="harmony-chip-add harmony-chip-load" title="Load into picker">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><polyline points="5 12 12 5 19 12"/><line x1="12" y1="5" x2="12" y2="19"/></svg>
+            Load
+          </button>
+          <button class="harmony-chip-add harmony-chip-save${alreadySaved ? ' chip-saved' : ''}" title="${alreadySaved ? 'Already saved' : 'Save color'}"${alreadySaved ? ' disabled' : ''}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            ${alreadySaved ? 'Saved' : 'Save'}
+          </button>
+        </div>`;
+      // Load: set picker to this hue
+      chip.querySelector('.harmony-chip-load').addEventListener('click', () => {
+        state.H = hue; syncAll();
+      });
+      // Scale click also loads
+      chip.querySelector('.harmony-chip-scale').addEventListener('click', () => {
+        state.H = hue; syncAll();
+      });
+      // Save to saved list
+      if (!alreadySaved) {
+        chip.querySelector('.harmony-chip-save').addEventListener('click', () => {
+          if (savedColors.some(c => c.hex === hex)) return;
+          savedColors.push({ hex });
+          localStorage.setItem(PICKER_SAVES_KEY, JSON.stringify(savedColors));
+          renderSavedColors();
+          renderHarmony(); // refresh saved states
+          showToast('Color saved');
+        });
+      }
+      container.appendChild(chip);
     });
   }
 
@@ -371,9 +444,8 @@ require '../includes/header.php';
   });
 
   document.getElementById('harmony-tabs').addEventListener('click', e => {
-    const btn = e.target.closest('.htab'); if (!btn) return;
-    document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active'); harmonyMode = btn.dataset.mode; activeHarmonyIdx = 0; renderHarmony();
+    const btn = e.target.closest('.harmony-tab'); if (!btn) return;
+    setHarmonyMode(btn.dataset.type);
   });
 
   document.addEventListener('keydown', e => {
@@ -391,10 +463,10 @@ require '../includes/header.php';
       if (draft.C != null) state.C = draft.C;
       if (draft.H != null) state.H = draft.H;
       if (draft.A != null) state.A = draft.A;
-      if (draft.harmonyMode) {
+      if (draft.harmonyMode && HARMONY_STEPS[draft.harmonyMode]) {
         harmonyMode = draft.harmonyMode;
-        document.querySelectorAll('.htab').forEach(t =>
-          t.classList.toggle('active', t.dataset.mode === harmonyMode));
+        document.querySelectorAll('.harmony-tab').forEach(t =>
+          t.classList.toggle('active', t.dataset.type === harmonyMode));
       }
     }
   } catch (_) { }
@@ -407,6 +479,66 @@ require '../includes/header.php';
     document.getElementById('export-modal').classList.remove('open');
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
+
+  // ── SAVED COLORS ─────────────────────────────────────
+  const PICKER_SAVES_KEY    = 'picker-saved-colors';
+  const PICKER_HANDOFF_KEY  = 'picker-palette-handoff';
+
+  function loadSavedColors() {
+    try { savedColors = JSON.parse(localStorage.getItem(PICKER_SAVES_KEY) || '[]'); }
+    catch(_) { savedColors = []; }
+  }
+
+  function saveColor() {
+    const hex = getHex();
+    if (savedColors.some(c => c.hex === hex)) { showToast('Already saved'); return; }
+    savedColors.push({ hex });
+    localStorage.setItem(PICKER_SAVES_KEY, JSON.stringify(savedColors));
+    renderSavedColors();
+    showToast('Color saved');
+  }
+
+  function removeSavedColor(hex) {
+    savedColors = savedColors.filter(c => c.hex !== hex);
+    localStorage.setItem(PICKER_SAVES_KEY, JSON.stringify(savedColors));
+    renderSavedColors();
+  }
+
+  function loadSavedColor(hex) {
+    const rgb = hexToRgb(hex); if (!rgb) return;
+    const [L, C, H] = rgbToOklch(...rgb);
+    state.L = L; state.C = C; state.H = H; syncAll();
+  }
+
+  function renderSavedColors() {
+    const section = document.getElementById('saved-colors-section');
+    const list    = document.getElementById('saved-color-list');
+    if (!section || !list) return;
+    section.style.display = savedColors.length ? 'block' : 'none';
+    list.innerHTML = '';
+    savedColors.forEach(({ hex }) => {
+      const item = document.createElement('div');
+      item.className = 'saved-color-item';
+      item.innerHTML = `
+        <div class="saved-color-swatch" style="background:${hex}"></div>
+        <span class="saved-color-hex">${hex}</span>
+        <button class="saved-color-remove" onclick="event.stopPropagation();removeSavedColor('${hex}')" aria-label="Remove">
+          <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+        </button>`;
+      item.addEventListener('click', () => loadSavedColor(hex));
+      list.appendChild(item);
+    });
+  }
+
+  function createPalette() {
+    if (!savedColors.length) return;
+    localStorage.setItem(PICKER_HANDOFF_KEY, JSON.stringify(savedColors.map(c => c.hex)));
+    window.location.href = '/palette/';
+  }
+
+  loadSavedColors();
+  renderSavedColors();
+  renderHarmony(); // re-render chips now that saved state is known
 </script>
 
 <?php require '../includes/footer.php'; ?>
