@@ -19,17 +19,21 @@ require '../includes/header.php';
       <div class="apply-btn-wrap">
         <button class="btn" id="apply-btn" onclick="toggleTheme()">
           <svg viewBox="0 0 24 24">
-            <rect x="2" y="3" width="20" height="14" rx="2"/>
-            <path d="M8 21h8M12 17v4"/>
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
           </svg>
           <span class="apply-label">Apply to site</span>
         </button>
         <div class="apply-tip" id="apply-tip" role="tooltip">
           <button class="apply-tip-close" onclick="dismissApplyTip()" aria-label="Dismiss">
-            <svg viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg>
+            <svg viewBox="0 0 10 10">
+              <line x1="2" y1="2" x2="8" y2="8" />
+              <line x1="8" y1="2" x2="2" y2="8" />
+            </svg>
           </button>
           <p class="apply-tip-title">See it live</p>
-          <p class="apply-tip-body">Hit Apply to site and watch your palette take over every surface of the app — instantly.</p>
+          <p class="apply-tip-body">Hit Apply to site and watch your palette take over every surface of the app —
+            instantly.</p>
         </div>
       </div>
       <button class="btn" onclick="openExportModal()">
@@ -426,7 +430,7 @@ require '../includes/header.php';
       try {
         const hexes = JSON.parse(handoffRaw);
         if (Array.isArray(hexes) && hexes.length) {
-          const names = ['primary','secondary','tertiary','quaternary'];
+          const names = ['primary', 'secondary', 'tertiary', 'quaternary'];
           colors = hexes.slice(0, MAX_COLORS).map((hex, i) => ({
             id: 'c' + i, name: names[i] || ('color-' + (i + 1)), hex, scale: []
           }));
@@ -434,7 +438,7 @@ require '../includes/header.php';
           _fromPicker = true;
           _fromPickerCount = colors.length;
         }
-      } catch(_) {}
+      } catch (_) { }
       localStorage.removeItem('picker-palette-handoff');
     }
 
@@ -479,7 +483,7 @@ require '../includes/header.php';
       if (!card) return;
       const rgb = hexToRgb(col.hex) || [255, 255, 255];
       card.style.setProperty('--glow-solid', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.55)');
-      card.style.setProperty('--glow-dim',   'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
+      card.style.setProperty('--glow-dim', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
       setTimeout(() => card.classList.add('new-from-picker'), i * 120);
     });
   })();
@@ -520,21 +524,21 @@ require '../includes/header.php';
 
   // ── PRESETS ──────────────────────────────────────────
   const PRESETS = [
-    { name: 'Gray',   L: 0.649, C: 0,     H: 0 },
-    { name: 'Slate',  L: 0.645, C: 0.018, H: 256 },
-    { name: 'Red',    L: 0.647, C: 0.176, H: 17 },
-    { name: 'Blue',   L: 0.629, C: 0.187, H: 252 },
-    { name: 'Green',  L: 0.623, C: 0.178, H: 145 },
+    { name: 'Gray', L: 0.649, C: 0, H: 0 },
+    { name: 'Slate', L: 0.645, C: 0.018, H: 256 },
+    { name: 'Red', L: 0.647, C: 0.176, H: 17 },
+    { name: 'Blue', L: 0.629, C: 0.187, H: 252 },
+    { name: 'Green', L: 0.623, C: 0.178, H: 145 },
     { name: 'Yellow', L: 0.725, C: 0.187, H: 91 },
     { name: 'Orange', L: 0.670, C: 0.185, H: 55 },
     { name: 'Purple', L: 0.637, C: 0.185, H: 295 },
-    { name: 'Pink',   L: 0.641, C: 0.185, H: 343 },
-    { name: 'Cyan',   L: 0.623, C: 0.178, H: 210 },
-    { name: 'Teal',   L: 0.618, C: 0.182, H: 180 },
+    { name: 'Pink', L: 0.641, C: 0.185, H: 343 },
+    { name: 'Cyan', L: 0.623, C: 0.178, H: 210 },
+    { name: 'Teal', L: 0.618, C: 0.182, H: 180 },
     { name: 'Indigo', L: 0.632, C: 0.185, H: 275 },
-    { name: 'Amber',  L: 0.733, C: 0.194, H: 75 },
-    { name: 'Lime',   L: 0.703, C: 0.205, H: 120 },
-    { name: 'Mint',   L: 0.609, C: 0.192, H: 165 },
+    { name: 'Amber', L: 0.733, C: 0.194, H: 75 },
+    { name: 'Lime', L: 0.703, C: 0.205, H: 120 },
+    { name: 'Mint', L: 0.609, C: 0.192, H: 165 },
     { name: 'Tomato', L: 0.657, C: 0.183, H: 25 },
   ];
 
