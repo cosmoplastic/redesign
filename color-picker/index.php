@@ -87,7 +87,7 @@ require '../includes/header.php';
           </button>
           <button class="stage-copy-btn stage-save-btn" id="stage-save" onclick="saveColor()">
             <svg viewBox="0 0 24 24">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
             </svg>
             Save to palette
           </button>
@@ -118,11 +118,11 @@ require '../includes/header.php';
         <div class="output-step output-step--palette" id="saved-colors-section" style="display:none;">
           <div class="out-section-title">Palette</div>
           <div class="saved-color-list" id="saved-color-list"></div>
-          <button class="btn btn-primary output-palette-btn" onclick="createPalette()">
+          <button class="btn btn-large output-palette-btn" onclick="createPalette()">
             <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a10 10 0 010 20"/>
-              <path d="M2 12h10"/>
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a10 10 0 010 20" />
+              <path d="M2 12h10" />
             </svg>
             Open in palette generator
           </button>
@@ -141,7 +141,9 @@ require '../includes/header.php';
   <div class="export-modal-backdrop" onclick="closeExportModal()"></div>
   <div class="export-modal-box">
     <div class="export-modal-header">
-      <span style="font-size:12px;font-weight:500;color:var(--color-text-400);letter-spacing:.05em;text-transform:uppercase;">Color formats</span>
+      <span
+        style="font-size:12px;font-weight:500;color:var(--color-text-400);letter-spacing:.05em;text-transform:uppercase;">Color
+        formats</span>
       <div class="export-modal-actions">
         <button class="btn" onclick="copyHexRecord()">
           <svg viewBox="0 0 24 24">
@@ -280,7 +282,7 @@ require '../includes/header.php';
     stageOklch.style.color = tc2;
     stageOklch.textContent = `oklch(${(state.L * 100).toFixed(1)}% ${state.C.toFixed(3)} ${Math.round(state.H)}°)`;
     const stageButtonStyle = { color: tc, borderColor: lum > .5 ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.22)', background: lum > .5 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)' };
-    ['stage-copy','stage-save'].forEach(id => {
+    ['stage-copy', 'stage-save'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) { btn.style.color = stageButtonStyle.color; btn.style.borderColor = stageButtonStyle.borderColor; btn.style.background = stageButtonStyle.background; }
     });
@@ -316,10 +318,10 @@ require '../includes/header.php';
   // ── HARMONY ──────────────────────────────────────────────────
   const HARMONY_STEPS = {
     complementary: [{ angle: 180, label: 'Complement · 180°' }],
-    analogous:     [{ angle: -60, label: '−60°' }, { angle: -30, label: '−30°' }, { angle: 30, label: '+30°' }, { angle: 60, label: '+60°' }],
-    triadic:       [{ angle: 120, label: '120°' }, { angle: 240, label: '240°' }],
-    split:         [{ angle: 150, label: '150°' }, { angle: 210, label: '210°' }],
-    tetradic:      [{ angle: 90, label: '90°' }, { angle: 180, label: '180°' }, { angle: 270, label: '270°' }],
+    analogous: [{ angle: -60, label: '−60°' }, { angle: -30, label: '−30°' }, { angle: 30, label: '+30°' }, { angle: 60, label: '+60°' }],
+    triadic: [{ angle: 120, label: '120°' }, { angle: 240, label: '240°' }],
+    split: [{ angle: 150, label: '150°' }, { angle: 210, label: '210°' }],
+    tetradic: [{ angle: 90, label: '90°' }, { angle: 180, label: '180°' }, { angle: 270, label: '270°' }],
   };
 
   function setHarmonyMode(type) {
@@ -488,12 +490,12 @@ require '../includes/header.php';
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExportModal(); });
 
   // ── SAVED COLORS ─────────────────────────────────────
-  const PICKER_SAVES_KEY    = 'picker-saved-colors';
-  const PICKER_HANDOFF_KEY  = 'picker-palette-handoff';
+  const PICKER_SAVES_KEY = 'picker-saved-colors';
+  const PICKER_HANDOFF_KEY = 'picker-palette-handoff';
 
   function loadSavedColors() {
     try { savedColors = JSON.parse(localStorage.getItem(PICKER_SAVES_KEY) || '[]'); }
-    catch(_) { savedColors = []; }
+    catch (_) { savedColors = []; }
   }
 
   function saveColor() {
@@ -519,7 +521,7 @@ require '../includes/header.php';
 
   function renderSavedColors() {
     const section = document.getElementById('saved-colors-section');
-    const list    = document.getElementById('saved-color-list');
+    const list = document.getElementById('saved-color-list');
     if (!section || !list) return;
     // Use flex so the column layout (list + button) works correctly
     section.style.display = savedColors.length ? 'flex' : 'none';

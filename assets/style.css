@@ -613,6 +613,11 @@ main.panel {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.btn-large {
+  font-size: 15px;
+  padding: 12px 24px;
+}
+
 .btn svg {
   width: 13px;
   height: 13px;
@@ -1171,6 +1176,12 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   margin-bottom: 48px;
 }
 
+@media (min-width: 1650px) {
+  .tools-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* tool card */
 .tool-card {
   background: var(--bg2);
@@ -1244,8 +1255,8 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .card-preview-tags {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 20px 24px;
+  gap: 7px;
+  padding: 18px 20px;
   justify-content: center;
   width: 100%;
   height: 100%;
@@ -1260,47 +1271,49 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .card-preview-tag {
   font-family: var(--mono);
   font-size: 11px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border);
-  color: var(--color-text-400);
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  color: var(--color-text-300);
 }
 
 .card-preview-type {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
+  gap: 0;
   padding: 20px 24px;
   width: 100%;
   height: 100%;
 }
 .card-preview-type-line {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 3px;
-  height: 3px;
+  height: 4px;
 }
 .card-preview-type-line:nth-child(1) {
-  width: 70%;
-  height: 14px;
-  border-radius: 4px;
+  width: 62%;
+  height: 20px;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 .card-preview-type-line:nth-child(2) {
-  width: 55%;
-  height: 9px;
-  border-radius: 3px;
-  margin-top: 2px;
+  width: 44%;
+  height: 13px;
+  border-radius: 4px;
+  margin-bottom: 14px;
 }
 .card-preview-type-line:nth-child(3) {
-  width: 90%;
-  margin-top: 6px;
+  width: 92%;
+  margin-bottom: 6px;
 }
 .card-preview-type-line:nth-child(4) {
-  width: 85%;
+  width: 84%;
+  margin-bottom: 6px;
 }
 .card-preview-type-line:nth-child(5) {
-  width: 60%;
+  width: 58%;
 }
 
 @keyframes grad-card-shift {
@@ -1693,6 +1706,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   height: 26px;
   border-radius: 50%;
   border: 2px solid transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition:
     transform 0.1s,
@@ -1705,7 +1719,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   transform: scale(1.15);
 }
 .shadow-palette-chip.active {
-  border-color: var(--color-text-primary);
+  border: 3px solid var(--color-text-100);
 }
 
 /* ── Palette swatch strip ─────────────────────────────────── */
@@ -1791,7 +1805,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .shadow-preview-cards {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 0;
 }
 
 .shadow-preview-card {
@@ -1880,7 +1894,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-token-row:hover {
   border-color: var(--color-border-strong, rgba(0, 0, 0, 0.2));
-  background: var(--color-surface, #fff);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .shadow-token-name {
@@ -1903,8 +1917,8 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .shadow-token-swatch {
   height: 26px;
   border-radius: 4px;
-  background: var(--color-surface, #fff);
-  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  background: var(--bg2);
+  border: 1px solid var(--border);
 }
 
 /* ── HARMONY SUGGESTIONS ──────────────────────────────── */
@@ -2402,9 +2416,8 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   flex-direction: column;
 }
 .output-palette-btn {
-  width: 100%;
-  justify-content: center;
-  margin-top: 8px;
+  display: flex;
+  margin: 8px auto 0;
 }
 
 .out-section-title {
@@ -3185,6 +3198,45 @@ textarea#main-input::placeholder {
   border-radius: var(--r-xl);
   border: 1px solid var(--border);
   transition: background 0.06s;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes gradIntroSweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  40% {
+    background-position: 100% 20%;
+  }
+  70% {
+    background-position: 40% 100%;
+  }
+  100% {
+    background-position: 50% 50%;
+  }
+}
+
+#grad-intro-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    oklch(58% 0.25 265),
+    oklch(67% 0.22 305),
+    oklch(72% 0.19 350),
+    oklch(66% 0.18 200),
+    oklch(60% 0.24 250)
+  );
+  background-size: 300% 300%;
+  animation: gradIntroSweep 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transition: opacity 0.55s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#grad-intro-overlay.fade-out {
+  opacity: 0;
 }
 
 .grad-track-outer {

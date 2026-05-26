@@ -474,16 +474,14 @@ require '../includes/header.php';
     document.getElementById('stop-count').value = stopCount;
     renderPickers(); renderScales(); updateOutput();
 
-    if (_fromPicker) {
-      colors.slice(0, _fromPickerCount).forEach((col, i) => {
-        const card = document.querySelector('.picker-card[data-id="' + col.id + '"]');
-        if (!card) return;
-        const rgb = hexToRgb(col.hex) || [255, 255, 255];
-        card.style.setProperty('--glow-solid', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.55)');
-        card.style.setProperty('--glow-dim',   'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
-        setTimeout(() => card.classList.add('new-from-picker'), i * 120);
-      });
-    }
+    colors.forEach((col, i) => {
+      const card = document.querySelector('.picker-card[data-id="' + col.id + '"]');
+      if (!card) return;
+      const rgb = hexToRgb(col.hex) || [255, 255, 255];
+      card.style.setProperty('--glow-solid', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.55)');
+      card.style.setProperty('--glow-dim',   'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
+      setTimeout(() => card.classList.add('new-from-picker'), i * 120);
+    });
   })();
 
   function openExportModal() {

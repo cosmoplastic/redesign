@@ -85,12 +85,15 @@ require 'includes/header.php';
                 <div class="card-preview-tags">
                     <div class="card-preview-tags-row">
                         <span class="card-preview-tag">camelCase</span>
-                        <span class="card-preview-tag">snake_case</span>
-                        <span class="card-preview-tag">UPPER CASE</span>
+                        <span class="card-preview-tag">PascalCase</span>
                     </div>
                     <div class="card-preview-tags-row">
-                        <span class="card-preview-tag">PascalCase</span>
+                        <span class="card-preview-tag">snake_case</span>
                         <span class="card-preview-tag">kebab-case</span>
+                    </div>
+                    <div class="card-preview-tags-row">
+                        <span class="card-preview-tag">SCREAMING_SNAKE</span>
+                        <span class="card-preview-tag">dot.case</span>
                     </div>
                 </div>
             </div>

@@ -653,6 +653,15 @@ require '../includes/header.php';
     initTrackClick();
     render();
     renderSavedGradients();
+
+    // ── Intro sweep overlay ────────────────────────────────
+    const introEl = document.createElement('div');
+    introEl.id = 'grad-intro-overlay';
+    document.getElementById('grad-preview').appendChild(introEl);
+    setTimeout(() => {
+      introEl.classList.add('fade-out');
+      introEl.addEventListener('transitionend', () => introEl.remove(), { once: true });
+    }, 1100);
   })();
 </script>
 
