@@ -116,19 +116,19 @@
   font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 1.65;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   --text-sm: font-family: var(--mono);
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 1.6;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   --text-xs: font-family: var(--mono);
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.03em;
   line-height: 1.5;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 
   /* labels — all caps, spaced */
   --text-label: font-family: var(--mono);
@@ -137,14 +137,14 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.4;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   --text-micro: font-family: var(--mono);
   font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1.4;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 /* ── APPLY TYPE SCALE TO ELEMENTS ── */
@@ -228,7 +228,7 @@ a:hover {
   font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 1.6;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .text-xs {
   font-family: var(--mono);
@@ -236,7 +236,7 @@ a:hover {
   font-weight: 400;
   letter-spacing: 0.03em;
   line-height: 1.5;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .text-label {
   font-family: var(--mono);
@@ -244,7 +244,7 @@ a:hover {
   font-weight: 400;
   letter-spacing: 0.1em;
   line-height: 1.4;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-transform: uppercase;
 }
 .text-micro {
@@ -253,7 +253,7 @@ a:hover {
   font-weight: 400;
   letter-spacing: 0.12em;
   line-height: 1.4;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-transform: uppercase;
 }
 
@@ -325,6 +325,9 @@ body::before {
 .fade-in-5 {
   animation: fadeSlide 0.4s ease 0.25s both;
 }
+.fade-in-6 {
+  animation: fadeSlide 0.4s ease 0.3s both;
+}
 
 /* ══════════════════════════════════════════════════
    LAYOUT
@@ -390,7 +393,7 @@ aside {
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   margin-top: 5px;
 }
 
@@ -456,7 +459,7 @@ aside {
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -470,7 +473,7 @@ aside {
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   line-height: 1.7;
 }
 .sidebar-footer-admin {
@@ -481,7 +484,7 @@ aside {
   transition: color 0.15s;
 }
 .sidebar-footer-admin:hover {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .sidebar-footer-link {
   color: var(--color-text-300);
@@ -578,19 +581,21 @@ main.panel {
 
 .btn-primary {
   font-weight: 600;
-  background: var(--color-text-300, #bcb7ae);
-  color: var(--color-text-900, #181511);
+  background: var(--color-primary-700);
+  color: var(--color-text-100);
+  border-color: var(--color-primary-300) !important;
   transition: background 0.13s ease-in-out;
 }
 .btn-primary:hover {
-  background: var(--color-text-200) !important;
-  color: var(--color-text-900, #181511);
+  background: var(--color-primary-500) !important;
+  color: var(--color-text-100) !important;
+  border-color: var(--color-primary-300) !important;
 }
 
 .btn-secondary {
   font-weight: 600;
-  background: var(--color-primary-600, #22211f);
-  color: var(--color-text-300, #bcb7ae);
+  background: var(--color-primary-600);
+  color: var(--color-text-300);
   transition: background 0.13s ease-in-out;
 }
 .btn-secondary:hover {
@@ -649,7 +654,7 @@ main.panel {
   padding: 5px 11px;
   border: 1px solid var(--border2);
   border-radius: 100px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .badge-dot {
@@ -671,7 +676,7 @@ main.panel {
   padding: 3px 7px;
   border-radius: 5px;
   border: 1px solid var(--border);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   white-space: nowrap;
 }
 
@@ -722,7 +727,7 @@ main.panel {
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-200);
   margin-bottom: 8px;
   display: block;
 }
@@ -814,7 +819,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 14px;
   text-align: center;
   flex-shrink: 0;
@@ -823,7 +828,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .slider-val {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 38px;
   text-align: right;
   flex-shrink: 0;
@@ -849,9 +854,9 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   letter-spacing: 0.03em;
   padding: 5px 12px;
   border-radius: 5px;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
@@ -860,7 +865,14 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .tab-btn.active {
   background: var(--bg3);
   color: var(--color-text-50);
-  border: 1px solid var(--border2);
+  border-color: var(--border2);
+}
+
+.tab-btn:active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border-color: var(--border3);
+  transition: all 0s;
 }
 
 /* ══════════════════════════════════════════════════
@@ -895,7 +907,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   opacity: 0;
   transition:
     opacity 0.15s,
@@ -932,7 +944,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   line-height: 1;
 }
 .greeting-input::placeholder {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-style: italic;
 }
 
@@ -1049,7 +1061,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .swatch-count-control {
   display: flex;
@@ -1062,7 +1074,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   border: 1px solid var(--border);
   background: transparent;
   border-radius: 5px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
@@ -1084,7 +1096,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   text-align: center;
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   padding: 0;
   -moz-appearance: textfield;
 }
@@ -1147,13 +1159,14 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 }
 .recent-tool {
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.04em;
 }
 .recent-time {
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.03em;
+  font: 1em sans-serif;
   min-width: 60px;
   text-align: right;
 }
@@ -1165,21 +1178,15 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   margin-bottom: 14px;
 }
 
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
   margin-bottom: 48px;
-}
-
-@media (min-width: 1650px) {
-  .tools-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
 /* tool card */
@@ -1240,7 +1247,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .card-preview-soon .soon-title {
@@ -1248,7 +1255,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-size: 22px;
   font-weight: 300;
   font-style: italic;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   margin-bottom: 6px;
 }
 
@@ -1377,7 +1384,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .card-meta {
   font-size: 10px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.05em;
 }
 
@@ -1389,7 +1396,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   transition:
     background 0.15s,
     border-color 0.15s,
@@ -1468,7 +1475,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 100%;
   padding: 2px 0;
   border-bottom: 1px solid transparent;
@@ -1480,7 +1487,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .name-input:hover {
   border-bottom-color: var(--border2);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .name-input:focus {
   border-bottom-color: var(--border3);
@@ -1491,7 +1498,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   display: block;
   margin-top: 10px;
   font-size: 10px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-family: var(--mono);
   white-space: nowrap;
 }
@@ -1514,7 +1521,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
     opacity 0.15s,
     background 0.15s,
     border-color 0.15s;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .picker-card:hover .remove-btn {
@@ -1594,7 +1601,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   transition:
     border-color 0.2s,
     background 0.2s;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -1604,7 +1611,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .add-color-card:hover {
   border-color: var(--border3);
   background: rgba(255, 255, 255, 0.02);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .add-icon {
@@ -1645,7 +1652,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -2057,7 +2064,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   border-radius: var(--r-sm);
   border: 1px solid var(--border2);
   background: transparent;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2118,7 +2125,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .swatches {
@@ -2425,7 +2432,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   margin-bottom: 10px;
 }
 
@@ -2557,7 +2564,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 56px;
   flex-shrink: 0;
 }
@@ -2565,7 +2572,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .format-value {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2573,12 +2580,12 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 }
 
 .format-copy {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   transition: color 0.13s;
   flex-shrink: 0;
 }
 .format-row:hover .format-copy {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .format-copy svg {
   width: 12px;
@@ -2626,7 +2633,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.06em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-align: center;
 }
 
@@ -2735,7 +2742,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   border-radius: 5px;
   border: none;
   background: transparent;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   transition: all 0.12s;
   letter-spacing: 0.02em;
@@ -2788,7 +2795,7 @@ textarea#main-input {
 }
 
 textarea#main-input::placeholder {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .input-meta {
@@ -2803,7 +2810,7 @@ textarea#main-input::placeholder {
 .input-stats {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.04em;
   display: flex;
   align-items: center;
@@ -2811,7 +2818,7 @@ textarea#main-input::placeholder {
 }
 
 .stat-dot {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .tx-section {
@@ -2901,7 +2908,7 @@ textarea#main-input::placeholder {
 .tx-card-desc {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   line-height: 1.5;
   letter-spacing: 0.01em;
   text-transform: none;
@@ -2910,7 +2917,7 @@ textarea#main-input::placeholder {
 .tx-card-preview {
   font-family: var(--mono);
   font-size: 10px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.02em;
   margin-top: 4px;
   white-space: nowrap;
@@ -2920,7 +2927,7 @@ textarea#main-input::placeholder {
 }
 
 .tx-card:hover .tx-card-preview {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .tx-card::after {
@@ -3151,7 +3158,7 @@ textarea#main-input::placeholder {
   border-radius: var(--r-sm);
   border: 1px solid var(--border2);
   background: transparent;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   transition:
     background 0.12s,
@@ -3296,7 +3303,7 @@ textarea#main-input::placeholder {
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .grad-code-section {
@@ -3394,7 +3401,7 @@ textarea#main-input::placeholder {
 .angle-unit {
   font-family: var(--mono);
   font-size: 13px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .dir-presets {
@@ -3410,7 +3417,7 @@ textarea#main-input::placeholder {
   border-radius: 4px;
   border: 1px solid var(--border);
   background: transparent;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   font-size: 11px;
   display: flex;
@@ -3425,7 +3432,7 @@ textarea#main-input::placeholder {
 
 .dir-presets button:hover {
   background: rgba(255, 255, 255, 0.07);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   border-color: var(--border2);
 }
 .dir-presets span {
@@ -3493,7 +3500,7 @@ textarea#main-input::placeholder {
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   padding: 2px 0;
   transition: border-color 0.1s;
 }
@@ -3514,7 +3521,7 @@ textarea#main-input::placeholder {
   border-bottom: 1px solid transparent;
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-align: right;
   padding: 2px 0;
   -moz-appearance: textfield;
@@ -3536,7 +3543,7 @@ textarea#main-input::placeholder {
 .stop-pos-label {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .stop-remove {
@@ -3555,7 +3562,7 @@ textarea#main-input::placeholder {
     background 0.12s,
     border-color 0.12s,
     color 0.12s;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   flex-shrink: 0;
 }
 
@@ -3593,7 +3600,7 @@ textarea#main-input::placeholder {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.08em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-transform: uppercase;
   transition:
     border-color 0.12s,
@@ -3604,7 +3611,7 @@ textarea#main-input::placeholder {
 
 .add-stop-btn:hover {
   border-color: var(--border3);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: rgba(255, 255, 255, 0.02);
 }
 .add-stop-btn svg {
@@ -3684,7 +3691,7 @@ textarea#main-input::placeholder {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -3709,7 +3716,7 @@ textarea#main-input::placeholder {
   font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 60px;
   flex-shrink: 0;
   overflow: hidden;
@@ -3754,7 +3761,7 @@ textarea#main-input::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   transition:
     background 0.12s,
     border-color 0.12s,
@@ -3800,7 +3807,7 @@ textarea#main-input::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   margin-bottom: 4px;
 }
 
@@ -3816,17 +3823,17 @@ textarea#main-input::placeholder {
 
 .palettes-empty h3 {
   font-size: 18px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .palettes-empty p {
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   max-width: 280px;
   line-height: 1.7;
 }
 .palettes-empty em {
   font-style: italic;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 /* ── 404 ── */
@@ -3854,7 +3861,7 @@ textarea#main-input::placeholder {
   margin-bottom: 16px;
 }
 .not-found-desc {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   max-width: 320px;
   margin: 0 auto 32px;
   line-height: 1.7;
@@ -3880,7 +3887,7 @@ textarea#main-input::placeholder {
 .type-save-tag {
   font-size: 10px;
   font-weight: 500;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 44px;
   flex-shrink: 0;
   letter-spacing: 0.04em;
@@ -3909,13 +3916,13 @@ textarea#main-input::placeholder {
   padding: 8px 24px;
   font-size: 10px;
   letter-spacing: 0.04em;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-align: center;
   pointer-events: none;
   z-index: 10;
 }
 .site-footer-link {
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   text-decoration: none;
   pointer-events: all;
   transition: color 0.15s;
@@ -4183,7 +4190,7 @@ textarea#main-input::placeholder {
   border-radius: var(--r-sm);
   background: transparent;
   border: 1px solid var(--border);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4196,7 +4203,7 @@ textarea#main-input::placeholder {
 }
 .export-modal-close:hover {
   background: var(--bg3);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 .export-modal-body {
   flex: 1;
@@ -4270,7 +4277,7 @@ textarea#main-input::placeholder {
   flex-shrink: 0;
   font-size: 12px;
   font-weight: 500;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-family: var(--mono);
@@ -4314,7 +4321,7 @@ textarea#main-input::placeholder {
   padding: 5px 8px;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   letter-spacing: 0.03em;
 }
 
@@ -4332,7 +4339,7 @@ textarea#main-input::placeholder {
 .type-scale-device {
   font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 54px;
   flex-shrink: 0;
   text-transform: uppercase;
@@ -4345,7 +4352,7 @@ textarea#main-input::placeholder {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 13px;
   text-align: center;
   -moz-appearance: textfield;
@@ -4374,7 +4381,7 @@ textarea#main-input::placeholder {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 12px;
   cursor: pointer;
 }
@@ -4393,7 +4400,7 @@ textarea#main-input::placeholder {
 .type-font-label {
   font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   width: 54px;
   flex-shrink: 0;
   text-transform: uppercase;
@@ -4406,7 +4413,7 @@ textarea#main-input::placeholder {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 12px;
   min-width: 0;
 }
@@ -4420,7 +4427,7 @@ textarea#main-input::placeholder {
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
@@ -4431,7 +4438,7 @@ textarea#main-input::placeholder {
 }
 .type-font-load:hover {
   background: var(--bg4);
-  color: var(--color-text-400);
+  color: var(--color-text-300);
 }
 
 .type-font-hint {
@@ -4458,7 +4465,7 @@ textarea#main-input::placeholder {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   cursor: pointer;
   min-width: 0;
   transition: border-color 0.15s;
@@ -4528,7 +4535,7 @@ textarea#main-input::placeholder {
   background: none;
   outline: none;
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-family: var(--mono);
 }
 .font-picker-search::placeholder {
@@ -4562,7 +4569,7 @@ textarea#main-input::placeholder {
   border: none;
   cursor: pointer;
   text-align: left;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   transition: background 0.1s;
   font-family: inherit;
 }
@@ -4633,7 +4640,7 @@ textarea#main-input::placeholder {
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -4660,7 +4667,7 @@ textarea#main-input::placeholder {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 5px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   font-size: 11px;
   cursor: pointer;
   min-width: 0;
@@ -4774,7 +4781,7 @@ textarea#main-input::placeholder {
 
 .eh-format {
   font-size: 12px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -4802,7 +4809,7 @@ textarea#main-input::placeholder {
 .eh-preview {
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--color-text-400);
+  color: var(--color-text-300);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);

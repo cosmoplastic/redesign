@@ -65,7 +65,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Color picker</span>
+                    <span class="card-title">OKLCH Color picker</span>
                 </div>
                 <p class="card-desc">Pick colors natively in the OKLCH space. Drag
                     the gamut canvas, spin the hue wheel, and export in any format —
@@ -206,30 +206,30 @@ require 'includes/header.php';
     .shadow-card-demo {
         display: flex;
         align-items: flex-end;
-        gap: 16px;
+        gap: 40px;
     }
 
     .demo-card {
-        background: #363533;
-        border-radius: 6px;
+        background: rgba(54, 53, 51, 0.01);
+        border-radius: 0.375rem;
     }
 
     .demo-card--xs {
         width: 36px;
         height: 36px;
-        box-shadow: 0 1px 12px rgb(255 255 255 / 45%)
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
     }
 
     .demo-card--md {
         width: 52px;
         height: 52px;
-        box-shadow: 0 1px 13px rgb(255 255 255 / 45%)
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
     }
 
     .demo-card--xl {
         width: 36px;
         height: 70px;
-        box-shadow: 0 1px 12px rgb(255 255 255 / 45%)
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
     }
 </style>
 <?php require 'includes/footer.php'; ?>

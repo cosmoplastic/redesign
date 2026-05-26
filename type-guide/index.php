@@ -27,11 +27,11 @@ require '../includes/header.php';
           <select class="type-ratio-select" id="d-ratio">
             <option value="1.067">Minor Second · 1.067</option>
             <option value="1.125" selected>Major Second · 1.125</option>
-            <option value="1.200">Minor Third · 1.200</option>
-            <option value="1.250">Major Third · 1.250</option>
+            <option value="1.2">Minor Third · 1.200</option>
+            <option value="1.25">Major Third · 1.250</option>
             <option value="1.333">Perfect Fourth · 1.333</option>
             <option value="1.414">Aug. Fourth · 1.414</option>
-            <option value="1.500">Perfect Fifth · 1.500</option>
+            <option value="1.5">Perfect Fifth · 1.500</option>
             <option value="1.618">Golden Ratio · 1.618</option>
           </select>
         </div>
@@ -47,11 +47,11 @@ require '../includes/header.php';
           <select class="type-ratio-select" id="m-ratio">
             <option value="1.067">Minor Second · 1.067</option>
             <option value="1.125" selected>Major Second · 1.125</option>
-            <option value="1.200">Minor Third · 1.200</option>
-            <option value="1.250">Major Third · 1.250</option>
+            <option value="1.2">Minor Third · 1.200</option>
+            <option value="1.25">Major Third · 1.250</option>
             <option value="1.333">Perfect Fourth · 1.333</option>
             <option value="1.414">Aug. Fourth · 1.414</option>
-            <option value="1.500">Perfect Fifth · 1.500</option>
+            <option value="1.5">Perfect Fifth · 1.500</option>
             <option value="1.618">Golden Ratio · 1.618</option>
           </select>
         </div>

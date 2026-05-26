@@ -481,6 +481,26 @@ require '../includes/header.php';
   } catch (_) { }
   syncAll();
 
+  // ── First-visit hue spin ──────────────────────────────
+  const PICKER_INTRO_KEY = 'picker-intro-seen';
+  if (!localStorage.getItem(PICKER_INTRO_KEY)) {
+    localStorage.setItem(PICKER_INTRO_KEY, '1');
+    const landingH = state.H;
+    const dur = 1600;
+    const t0 = performance.now();
+    (function spin(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out: fast start, slow land
+      state.H = (landingH + 360 * ease) % 360;
+      updateHueThumb();
+      updateStage();
+      document.getElementById('h-slider').value = state.H;
+      document.getElementById('h-val').textContent = Math.round(state.H) + '°';
+      if (p < 1) requestAnimationFrame(spin);
+      else { state.H = landingH; syncAll(); }
+    })(performance.now());
+  }
+
   function openExportModal() {
     document.getElementById('export-modal').classList.add('open');
   }

@@ -484,6 +484,32 @@ require '../includes/header.php';
     });
   })();
 
+  // Handle BFCache restoration (Safari/Firefox may restore page from cache on forward navigation)
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    const handoffRaw = localStorage.getItem('picker-palette-handoff');
+    if (!handoffRaw) return;
+    try {
+      const hexes = JSON.parse(handoffRaw);
+      if (Array.isArray(hexes) && hexes.length) {
+        const names = ['primary', 'secondary', 'tertiary', 'quaternary'];
+        colors = hexes.slice(0, MAX_COLORS).map((hex, i) => ({
+          id: 'c' + i, name: names[i] || ('color-' + (i + 1)), hex, scale: []
+        }));
+        nextId = colors.length;
+        localStorage.removeItem('picker-palette-handoff');
+        const stops = getActiveStops();
+        colors.forEach(c => {
+          c.scale = getScale(c.hex).map((h, j) => {
+            const [L, C, H] = rgbToOklch(...hexToRgb(h));
+            return { stop: stops[j], hex: h, L, C, H };
+          });
+        });
+        renderPickers(); renderScales(); updateOutput();
+      }
+    } catch (_) { }
+  });
+
   function openExportModal() {
     updateOutput();
     document.getElementById('export-modal').classList.add('open');
