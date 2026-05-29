@@ -9,7 +9,7 @@ require '../includes/header.php';
   <div class="topbar">
     <div class="topbar-greeting">
       <h2>Saved <em>work</em></h2>
-      <p>Your color palettes and type guides.</p>
+      <p>Your color palettes, gradients, and type guides.</p>
     </div>
   </div>
 
@@ -26,6 +26,20 @@ require '../includes/header.php';
     <h3>No saved palettes</h3>
     <p>Generate a palette and hit <em>Save palette</em> to keep it here.</p>
     <a href="/palette/" class="btn btn-primary" style="margin-top:4px">Open palette generator</a>
+  </div>
+
+  <p class="section-label" style="margin-top:40px">Gradients</p>
+  <div class="palettes-grid" id="gradients-grid"></div>
+  <div class="palettes-empty" id="gradients-empty" style="display:none">
+    <div class="palettes-empty-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+        <line x1="4" y1="22" x2="4" y2="15"/>
+      </svg>
+    </div>
+    <h3>No saved gradients</h3>
+    <p>Build a gradient and hit <em>Save</em> to keep it here.</p>
+    <a href="/gradient/" class="btn btn-primary" style="margin-top:4px">Open gradient studio</a>
   </div>
 
   <p class="section-label" style="margin-top:40px">Type guides</p>
@@ -96,8 +110,9 @@ require '../includes/header.php';
   }
 
   // ── PALETTES ──────────────────────────────────────────────────
-  const PAL_KEY = 'oklch-palettes';
+  const PAL_KEY  = 'oklch-palettes';
   const TYPE_KEY = 'oklch-type-saves';
+  const GRAD_KEY = 'oklch-gradients';
 
   function loadPalettes() { return JSON.parse(localStorage.getItem(PAL_KEY) || '[]'); }
   function savePalettes(p) { localStorage.setItem(PAL_KEY, JSON.stringify(p)); }
@@ -247,6 +262,62 @@ require '../includes/header.php';
     return card;
   }
 
+  // ── GRADIENTS ─────────────────────────────────────────────────
+  function loadGradients()   { return JSON.parse(localStorage.getItem(GRAD_KEY) || '[]'); }
+  function saveGradients(g)  { localStorage.setItem(GRAD_KEY, JSON.stringify(g)); }
+
+  function buildGradientCard(g) {
+    const card = document.createElement('div');
+    card.className = 'palette-card fade-in';
+
+    const header = document.createElement('div'); header.className = 'palette-card-header';
+    const nameInput = document.createElement('input');
+    nameInput.className = 'palette-name-input'; nameInput.type = 'text';
+    nameInput.value = g.name; nameInput.spellcheck = false;
+    nameInput.addEventListener('change', () => {
+      const all = loadGradients(), item = all.find(x => x.id === g.id);
+      if (item) { item.name = nameInput.value.trim() || g.name; saveGradients(all); }
+    });
+    const meta = document.createElement('div'); meta.className = 'palette-card-meta';
+    const chip1 = document.createElement('span'); chip1.className = 'palette-meta-chip';
+    chip1.textContent = g.gradType === 'linear' ? `linear · ${g.angle}°` : 'radial';
+    const chip2 = document.createElement('span'); chip2.className = 'palette-meta-chip';
+    chip2.textContent = `${g.stops.length} stops`;
+    const chip3 = document.createElement('span'); chip3.className = 'palette-meta-chip';
+    chip3.textContent = timeAgo(g.savedAt);
+    meta.appendChild(chip1); meta.appendChild(chip2); meta.appendChild(chip3);
+    header.appendChild(nameInput); header.appendChild(meta);
+    card.appendChild(header);
+
+    // Gradient preview bar
+    const preview = document.createElement('div');
+    preview.style.cssText = `height:52px;border-radius:var(--r);margin-bottom:0;background:${g.css};border:1px solid var(--border)`;
+    card.appendChild(preview);
+
+    const footer = document.createElement('div'); footer.className = 'palette-card-footer';
+    const openBtn = document.createElement('a'); openBtn.className = 'btn'; openBtn.href = `/gradient/?load=${g.id}`;
+    openBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Open`;
+    const copyBtn = document.createElement('button'); copyBtn.className = 'btn';
+    copyBtn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy CSS`;
+    copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(`background: ${g.css};`); showToast('CSS copied!'); });
+    const deleteBtn = document.createElement('button'); deleteBtn.className = 'palette-delete-btn'; deleteBtn.title = 'Delete';
+    deleteBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+    deleteBtn.addEventListener('click', () => {
+      card.style.transition = 'opacity .2s, transform .2s'; card.style.opacity = '0'; card.style.transform = 'scale(0.97)';
+      setTimeout(() => {
+        saveGradients(loadGradients().filter(x => x.id !== g.id)); card.remove();
+        if (!document.querySelector('#gradients-grid .palette-card')) {
+          document.getElementById('gradients-grid').style.display = 'none';
+          document.getElementById('gradients-empty').style.display = 'flex';
+        }
+        updateExportFooter();
+      }, 200);
+    });
+    footer.appendChild(openBtn); footer.appendChild(copyBtn); footer.appendChild(deleteBtn);
+    card.appendChild(footer);
+    return card;
+  }
+
   // ── RENDER ────────────────────────────────────────────────────
   function renderPalettes() {
     const palettes = loadPalettes();
@@ -266,12 +337,22 @@ require '../includes/header.php';
     [...saves].reverse().forEach((t, i) => { const c = buildTypeCard(t); c.style.animationDelay = (i * .05) + 's'; grid.appendChild(c); });
   }
 
+  function renderGradients() {
+    const grads = loadGradients();
+    const grid  = document.getElementById('gradients-grid');
+    const empty = document.getElementById('gradients-empty');
+    if (!grads.length) { grid.style.display = 'none'; empty.style.display = 'flex'; return; }
+    grid.style.display = ''; empty.style.display = 'none'; grid.innerHTML = '';
+    [...grads].reverse().forEach((g, i) => { const c = buildGradientCard(g); c.style.animationDelay = (i * .05) + 's'; grid.appendChild(c); });
+  }
+
   renderPalettes();
+  renderGradients();
   renderTypes();
 
   // ── EXPORT FOOTER VISIBILITY ──────────────────────────────────
   function updateExportFooter() {
-    const hasSaved = loadPalettes().length || loadTypeSaves().length;
+    const hasSaved = loadPalettes().length || loadTypeSaves().length || loadGradients().length;
     document.getElementById('export-footer').style.display = hasSaved ? '' : 'none';
   }
   updateExportFooter();
@@ -306,6 +387,18 @@ require '../includes/header.php';
         lines.push(`/* ── Type Guide: ${t.name} ─────────────────── */`);
         lines.push(genTypeCSSFromSave(t));
       });
+    }
+
+    const grads = loadGradients();
+    if (grads.length) {
+      if (lines.length) lines.push('');
+      lines.push('/* ── Gradients ─────────────────────────────── */');
+      lines.push(':root {');
+      grads.forEach(g => {
+        const slug = g.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'gradient';
+        lines.push(`  --gradient-${slug}: ${g.css};`);
+      });
+      lines.push('}');
     }
 
     return lines.join('\n');

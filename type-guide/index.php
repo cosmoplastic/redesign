@@ -27,11 +27,11 @@ require '../includes/header.php';
           <select class="type-ratio-select" id="d-ratio">
             <option value="1.067">Minor Second · 1.067</option>
             <option value="1.125" selected>Major Second · 1.125</option>
-            <option value="1.200">Minor Third · 1.200</option>
-            <option value="1.250">Major Third · 1.250</option>
+            <option value="1.2">Minor Third · 1.200</option>
+            <option value="1.25">Major Third · 1.250</option>
             <option value="1.333">Perfect Fourth · 1.333</option>
             <option value="1.414">Aug. Fourth · 1.414</option>
-            <option value="1.500">Perfect Fifth · 1.500</option>
+            <option value="1.5">Perfect Fifth · 1.500</option>
             <option value="1.618">Golden Ratio · 1.618</option>
           </select>
         </div>
@@ -47,11 +47,11 @@ require '../includes/header.php';
           <select class="type-ratio-select" id="m-ratio">
             <option value="1.067">Minor Second · 1.067</option>
             <option value="1.125" selected>Major Second · 1.125</option>
-            <option value="1.200">Minor Third · 1.200</option>
-            <option value="1.250">Major Third · 1.250</option>
+            <option value="1.2">Minor Third · 1.200</option>
+            <option value="1.25">Major Third · 1.250</option>
             <option value="1.333">Perfect Fourth · 1.333</option>
             <option value="1.414">Aug. Fourth · 1.414</option>
-            <option value="1.500">Perfect Fifth · 1.500</option>
+            <option value="1.5">Perfect Fifth · 1.500</option>
             <option value="1.618">Golden Ratio · 1.618</option>
           </select>
         </div>
@@ -63,14 +63,18 @@ require '../includes/header.php';
           <span class="type-font-label">Heading</span>
           <button class="font-picker-trigger" id="heading-picker-trigger" onclick="openFontPicker('heading')">
             <span class="font-picker-trigger-name" id="heading-picker-name">Fraunces</span>
-            <svg viewBox="0 0 24 24" class="font-picker-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg viewBox="0 0 24 24" class="font-picker-chevron">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
         </div>
         <div class="font-picker-row">
           <span class="type-font-label">Body</span>
           <button class="font-picker-trigger" id="body-picker-trigger" onclick="openFontPicker('body')">
             <span class="font-picker-trigger-name" id="body-picker-name">DM Mono</span>
-            <svg viewBox="0 0 24 24" class="font-picker-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg viewBox="0 0 24 24" class="font-picker-chevron">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
         </div>
       </div>
@@ -117,11 +121,11 @@ require '../includes/header.php';
 <div class="font-picker-dropdown" id="font-picker-dropdown">
   <div class="font-picker-search-wrap">
     <svg viewBox="0 0 24 24" class="font-picker-search-icon" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
-    <input type="text" class="font-picker-search" id="font-picker-search"
-      placeholder="Search fonts…" autocomplete="off" spellcheck="false"
-      oninput="renderFontList(this.value)">
+    <input type="text" class="font-picker-search" id="font-picker-search" placeholder="Search fonts…" autocomplete="off"
+      spellcheck="false" oninput="renderFontList(this.value)">
   </div>
   <div class="font-picker-list" id="font-picker-list"></div>
 </div>
@@ -392,76 +396,76 @@ require '../includes/header.php';
   let fontPickerObserver = null;
 
   const GOOGLE_FONTS = [
-    { name: 'Inter',             cat: 'Sans' },
-    { name: 'Roboto',            cat: 'Sans' },
-    { name: 'Open Sans',         cat: 'Sans' },
-    { name: 'Lato',              cat: 'Sans' },
-    { name: 'Montserrat',        cat: 'Sans' },
-    { name: 'Poppins',           cat: 'Sans' },
-    { name: 'Nunito',            cat: 'Sans' },
-    { name: 'Raleway',           cat: 'Sans' },
-    { name: 'Oswald',            cat: 'Sans' },
-    { name: 'Ubuntu',            cat: 'Sans' },
-    { name: 'Work Sans',         cat: 'Sans' },
-    { name: 'Rubik',             cat: 'Sans' },
-    { name: 'Noto Sans',         cat: 'Sans' },
-    { name: 'DM Sans',           cat: 'Sans' },
-    { name: 'Outfit',            cat: 'Sans' },
+    { name: 'Inter', cat: 'Sans' },
+    { name: 'Roboto', cat: 'Sans' },
+    { name: 'Open Sans', cat: 'Sans' },
+    { name: 'Lato', cat: 'Sans' },
+    { name: 'Montserrat', cat: 'Sans' },
+    { name: 'Poppins', cat: 'Sans' },
+    { name: 'Nunito', cat: 'Sans' },
+    { name: 'Raleway', cat: 'Sans' },
+    { name: 'Oswald', cat: 'Sans' },
+    { name: 'Ubuntu', cat: 'Sans' },
+    { name: 'Work Sans', cat: 'Sans' },
+    { name: 'Rubik', cat: 'Sans' },
+    { name: 'Noto Sans', cat: 'Sans' },
+    { name: 'DM Sans', cat: 'Sans' },
+    { name: 'Outfit', cat: 'Sans' },
     { name: 'Plus Jakarta Sans', cat: 'Sans' },
-    { name: 'Figtree',           cat: 'Sans' },
-    { name: 'Manrope',           cat: 'Sans' },
-    { name: 'Mulish',            cat: 'Sans' },
-    { name: 'Karla',             cat: 'Sans' },
-    { name: 'Barlow',            cat: 'Sans' },
-    { name: 'Cabin',             cat: 'Sans' },
-    { name: 'Jost',              cat: 'Sans' },
-    { name: 'Quicksand',         cat: 'Sans' },
-    { name: 'Source Sans 3',     cat: 'Sans' },
-    { name: 'Nunito Sans',       cat: 'Sans' },
-    { name: 'IBM Plex Sans',     cat: 'Sans' },
-    { name: 'Sora',              cat: 'Sans' },
-    { name: 'Lexend',            cat: 'Sans' },
-    { name: 'Playfair Display',  cat: 'Serif' },
-    { name: 'Merriweather',      cat: 'Serif' },
-    { name: 'Lora',              cat: 'Serif' },
-    { name: 'EB Garamond',       cat: 'Serif' },
-    { name: 'Cormorant Garamond',cat: 'Serif' },
+    { name: 'Figtree', cat: 'Sans' },
+    { name: 'Manrope', cat: 'Sans' },
+    { name: 'Mulish', cat: 'Sans' },
+    { name: 'Karla', cat: 'Sans' },
+    { name: 'Barlow', cat: 'Sans' },
+    { name: 'Cabin', cat: 'Sans' },
+    { name: 'Jost', cat: 'Sans' },
+    { name: 'Quicksand', cat: 'Sans' },
+    { name: 'Source Sans 3', cat: 'Sans' },
+    { name: 'Nunito Sans', cat: 'Sans' },
+    { name: 'IBM Plex Sans', cat: 'Sans' },
+    { name: 'Sora', cat: 'Sans' },
+    { name: 'Lexend', cat: 'Sans' },
+    { name: 'Playfair Display', cat: 'Serif' },
+    { name: 'Merriweather', cat: 'Serif' },
+    { name: 'Lora', cat: 'Serif' },
+    { name: 'EB Garamond', cat: 'Serif' },
+    { name: 'Cormorant Garamond', cat: 'Serif' },
     { name: 'Libre Baskerville', cat: 'Serif' },
-    { name: 'Bitter',            cat: 'Serif' },
-    { name: 'Crimson Text',      cat: 'Serif' },
-    { name: 'PT Serif',          cat: 'Serif' },
-    { name: 'Fraunces',          cat: 'Serif' },
-    { name: 'DM Serif Display',  cat: 'Serif' },
-    { name: 'Young Serif',       cat: 'Serif' },
-    { name: 'Bodoni Moda',       cat: 'Serif' },
-    { name: 'Cardo',             cat: 'Serif' },
-    { name: 'Spectral',          cat: 'Serif' },
-    { name: 'IBM Plex Serif',    cat: 'Serif' },
-    { name: 'Source Serif 4',    cat: 'Serif' },
-    { name: 'Cormorant',         cat: 'Serif' },
-    { name: 'Roboto Mono',       cat: 'Mono' },
-    { name: 'Source Code Pro',   cat: 'Mono' },
-    { name: 'JetBrains Mono',    cat: 'Mono' },
-    { name: 'Fira Code',         cat: 'Mono' },
-    { name: 'Space Mono',        cat: 'Mono' },
-    { name: 'DM Mono',           cat: 'Mono' },
-    { name: 'IBM Plex Mono',     cat: 'Mono' },
-    { name: 'Inconsolata',       cat: 'Mono' },
-    { name: 'Courier Prime',     cat: 'Mono' },
-    { name: 'Fira Mono',         cat: 'Mono' },
-    { name: 'Abril Fatface',     cat: 'Display' },
-    { name: 'Bebas Neue',        cat: 'Display' },
-    { name: 'Righteous',         cat: 'Display' },
-    { name: 'Lobster',           cat: 'Display' },
-    { name: 'Pacifico',          cat: 'Display' },
-    { name: 'Permanent Marker',  cat: 'Display' },
-    { name: 'Dancing Script',    cat: 'Display' },
-    { name: 'Caveat',            cat: 'Display' },
-    { name: 'Satisfy',           cat: 'Display' },
-    { name: 'Sacramento',        cat: 'Display' },
-    { name: 'Russo One',         cat: 'Display' },
-    { name: 'Comfortaa',         cat: 'Display' },
-    { name: 'Alfa Slab One',     cat: 'Display' },
+    { name: 'Bitter', cat: 'Serif' },
+    { name: 'Crimson Text', cat: 'Serif' },
+    { name: 'PT Serif', cat: 'Serif' },
+    { name: 'Fraunces', cat: 'Serif' },
+    { name: 'DM Serif Display', cat: 'Serif' },
+    { name: 'Young Serif', cat: 'Serif' },
+    { name: 'Bodoni Moda', cat: 'Serif' },
+    { name: 'Cardo', cat: 'Serif' },
+    { name: 'Spectral', cat: 'Serif' },
+    { name: 'IBM Plex Serif', cat: 'Serif' },
+    { name: 'Source Serif 4', cat: 'Serif' },
+    { name: 'Cormorant', cat: 'Serif' },
+    { name: 'Roboto Mono', cat: 'Mono' },
+    { name: 'Source Code Pro', cat: 'Mono' },
+    { name: 'JetBrains Mono', cat: 'Mono' },
+    { name: 'Fira Code', cat: 'Mono' },
+    { name: 'Space Mono', cat: 'Mono' },
+    { name: 'DM Mono', cat: 'Mono' },
+    { name: 'IBM Plex Mono', cat: 'Mono' },
+    { name: 'Inconsolata', cat: 'Mono' },
+    { name: 'Courier Prime', cat: 'Mono' },
+    { name: 'Fira Mono', cat: 'Mono' },
+    { name: 'Abril Fatface', cat: 'Display' },
+    { name: 'Bebas Neue', cat: 'Display' },
+    { name: 'Righteous', cat: 'Display' },
+    { name: 'Lobster', cat: 'Display' },
+    { name: 'Pacifico', cat: 'Display' },
+    { name: 'Permanent Marker', cat: 'Display' },
+    { name: 'Dancing Script', cat: 'Display' },
+    { name: 'Caveat', cat: 'Display' },
+    { name: 'Satisfy', cat: 'Display' },
+    { name: 'Sacramento', cat: 'Display' },
+    { name: 'Russo One', cat: 'Display' },
+    { name: 'Comfortaa', cat: 'Display' },
+    { name: 'Alfa Slab One', cat: 'Display' },
   ];
 
   function openFontPicker(which) {
@@ -477,7 +481,7 @@ require '../includes/header.php';
     if (left + W > window.innerWidth - 8) left = window.innerWidth - W - 8;
 
     const dropdown = document.getElementById('font-picker-dropdown');
-    dropdown.style.top  = (rect.bottom + 4) + 'px';
+    dropdown.style.top = (rect.bottom + 4) + 'px';
     dropdown.style.left = left + 'px';
     dropdown.style.width = W + 'px';
     dropdown.classList.add('open');
@@ -531,7 +535,7 @@ require '../includes/header.php';
     const check = isActive
       ? `<svg class="font-picker-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
       : '';
-    return `<button class="font-picker-item${isActive ? ' active' : ''}" data-font="${f.name}" onclick="applyFont('${f.name.replace(/'/g,"\\'")}')">
+    return `<button class="font-picker-item${isActive ? ' active' : ''}" data-font="${f.name}" onclick="applyFont('${f.name.replace(/'/g, "\\'")}')">
       <span class="font-picker-item-name" style="font-family:${ff}">${f.name}</span>${check}
     </button>`;
   }

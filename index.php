@@ -65,7 +65,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Color picker</span>
+                    <span class="card-title">OKLCH Color picker</span>
                 </div>
                 <p class="card-desc">Pick colors natively in the OKLCH space. Drag
                     the gamut canvas, spin the hue wheel, and export in any format —
@@ -85,12 +85,15 @@ require 'includes/header.php';
                 <div class="card-preview-tags">
                     <div class="card-preview-tags-row">
                         <span class="card-preview-tag">camelCase</span>
-                        <span class="card-preview-tag">snake_case</span>
-                        <span class="card-preview-tag">UPPER CASE</span>
+                        <span class="card-preview-tag">PascalCase</span>
                     </div>
                     <div class="card-preview-tags-row">
-                        <span class="card-preview-tag">PascalCase</span>
+                        <span class="card-preview-tag">snake_case</span>
                         <span class="card-preview-tag">kebab-case</span>
+                    </div>
+                    <div class="card-preview-tags-row">
+                        <span class="card-preview-tag">SCREAMING_SNAKE</span>
+                        <span class="card-preview-tag">dot.case</span>
                     </div>
                 </div>
             </div>
@@ -135,6 +138,28 @@ require 'includes/header.php';
                 </div>
             </div>
         </a>
+        <a href="/shadow/" class="tool-card fade-in-6">
+            <div class="card-preview card-preview--shadow">
+                <div class="shadow-card-demo">
+                    <div class="demo-card demo-card--xs"></div>
+                    <div class="demo-card demo-card--md"></div>
+                    <div class="demo-card demo-card--xl"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-header">
+                    <span class="card-title">Shadow &amp; elevation</span>
+                </div>
+                <p class="card-desc">Build a semantic shadow scale tinted from your palette. Preview on light and dark
+                    surfaces and export as CSS tokens or Figma JSON.</p>
+                <div class="card-footer">
+                    <span class="card-meta">Palette tint · Light &amp; dark · CSS export</span>
+                    <div class="card-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg></div>
+                </div>
+            </div>
+        </a>
 
     </div>
 </main>
@@ -172,5 +197,39 @@ require 'includes/header.php';
 
 
 </script>
+<style>
+    .card-preview--shadow {
+        align-items: center;
+        justify-content: center;
+    }
 
+    .shadow-card-demo {
+        display: flex;
+        align-items: flex-end;
+        gap: 40px;
+    }
+
+    .demo-card {
+        background: rgba(54, 53, 51, 0.01);
+        border-radius: 0.375rem;
+    }
+
+    .demo-card--xs {
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
+    }
+
+    .demo-card--md {
+        width: 52px;
+        height: 52px;
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
+    }
+
+    .demo-card--xl {
+        width: 36px;
+        height: 70px;
+        box-shadow: 0 4px 65px 0 rgba(255, 255, 255, 0.25), 0 4px 45px 0 rgba(255, 255, 255, 0.25), 0 4px 25px 0 rgba(255, 255, 255, 0.25), 0 1px 5px 0 rgba(255, 255, 255, 0.26);
+    }
+</style>
 <?php require 'includes/footer.php'; ?>
