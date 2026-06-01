@@ -69,9 +69,11 @@ if (isset($_POST['password'])) {
   if ($_POST['password'] === ADMIN_PASS) {
     $_SESSION['admin'] = true;
     $_SESSION['admin_time'] = time();
-  } else {
-    $authErr = true;
+    header('Location: /admin/');
+    exit;
   }
+  header('Location: /admin/?err=1');
+  exit;
 }
 $authed = !empty($_SESSION['admin']);
 
@@ -119,7 +121,7 @@ if ($authed) {
       exit;
     }
     $type = $_POST['upload_type'] ?? 'file';
-    $hours = max(1, min(720, intval($_POST['expire_hours'] ?? 24)));
+    $hours = max(1, min(720, intval($_POST['expire_hours'] ?? 72)));
     $token = bin2hex(random_bytes(8));
     $orig = preg_replace('/[^a-zA-Z0-9._\-]/', '_', basename($_FILES['upload']['name']));
     $mime = $_FILES['upload']['type'] ?: 'application/octet-stream';
@@ -172,7 +174,7 @@ if ($authed) {
       if (!$found)
         $snips[] = ['id' => $id, 'label' => $label, 'text' => $text, 'created' => time(), 'updated' => time()];
       file_put_contents($snipsFile, json_encode(array_values($snips), JSON_PRETTY_PRINT));
-      echo json_encode(['ok' => true, 'snips' => array_values($snips)]);
+      echo json_encode(['ok' => true, 'id' => $id, 'snips' => array_values($snips)]);
       exit;
     }
 
@@ -811,6 +813,19 @@ if ($authed) {
       background: rgba(255, 255, 255, 0.11);
     }
 
+    .snip-status {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text4);
+      letter-spacing: 0.02em;
+      min-height: 14px;
+      transition: color .15s;
+    }
+
+    .snip-status.saving { color: var(--text4); }
+    .snip-status.saved { color: var(--text3); }
+    .snip-status.error { color: #f87171; }
+
     .snip-text-preview {
       font-size: 12px;
       color: var(--text2);
@@ -904,7 +919,7 @@ if ($authed) {
       <form method="POST" class="lock-field">
         <label for="pw">Passcode</label>
         <input class="lock-input" type="password" id="pw" name="password" autocomplete="off" autofocus>
-        <div class="lock-error <?= !empty($authErr) ? 'show' : '' ?>">Incorrect passcode.</div>
+        <div class="lock-error <?= isset($_GET['err']) ? 'show' : '' ?>">Incorrect passcode.</div>
         <button class="lock-submit" type="submit">Unlock</button>
       </form>
     </div>
@@ -951,8 +966,8 @@ if ($authed) {
         <div class="expire-row">
           <span class="expire-label">Expires after</span>
           <button class="expire-btn" data-hours="1" onclick="setExpiry('file',1,this)">1h</button>
-          <button class="expire-btn active" data-hours="24" onclick="setExpiry('file',24,this)">24h</button>
-          <button class="expire-btn" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
+          <button class="expire-btn" data-hours="24" onclick="setExpiry('file',24,this)">24h</button>
+          <button class="expire-btn active" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
           <button class="expire-btn" data-hours="168" onclick="setExpiry('file',168,this)">1 week</button>
         </div>
         <div class="upload-progress" id="file-progress">
@@ -973,8 +988,9 @@ if ($authed) {
           <input class="snip-label-input" type="text" id="snip-label" placeholder="Label (optional)">
           <textarea class="snip-textarea" id="snip-text" placeholder="Paste anything — a URL, code, note…"></textarea>
           <div class="snip-form-row">
+            <span class="snip-status" id="snip-status"></span>
             <div style="flex:1"></div>
-            <button class="btn btn-primary snip-save-btn" onclick="saveSnip()">Save snippet</button>
+            <button class="btn btn-primary snip-save-btn" onclick="clearSnipForm()">New snippet</button>
           </div>
         </div>
         <div class="item-list" id="snip-list"></div>
@@ -1017,7 +1033,7 @@ if ($authed) {
     const BASE = window.location.origin;
     const MAX_UPLOAD_BYTES = <?= MAX_UPLOAD_MB * 1024 * 1024 ?>;
     const MAX_UPLOAD_LABEL = '<?= MAX_UPLOAD_MB ?> MB';
-    let fileExpiry = 24;
+    let fileExpiry = 72;
     let imgExpiry = 72;
     let editingSnipId = null;
 
@@ -1132,31 +1148,76 @@ if ($authed) {
       });
     }
 
-    // ── Snippets ─────────────────────────────────────────────────────
-    async function saveSnip() {
+    // ── Snippets (auto-save) ─────────────────────────────────────────
+    let _snipSaveTimer;
+    let _snipSavePromise = Promise.resolve();
+
+    function setSnipStatus(text, cls) {
+      const el = document.getElementById('snip-status');
+      if (!el) return;
+      el.textContent = text;
+      el.className = 'snip-status' + (cls ? ' ' + cls : '');
+    }
+
+    function scheduleSnipAutoSave() {
+      clearTimeout(_snipSaveTimer);
+      _snipSaveTimer = setTimeout(triggerSnipAutoSave, 800);
+    }
+
+    function triggerSnipAutoSave() {
+      _snipSaveTimer = null;
+      const id = editingSnipId;
       const label = document.getElementById('snip-label').value.trim();
       const text = document.getElementById('snip-text').value;
       if (!text.trim()) return;
+      _snipSavePromise = _snipSavePromise.then(() => doSnipSave(id, label, text));
+    }
+
+    function flushPendingSnipSave() {
+      if (_snipSaveTimer) {
+        clearTimeout(_snipSaveTimer);
+        triggerSnipAutoSave();
+      }
+    }
+
+    async function doSnipSave(id, label, text) {
+      setSnipStatus('Saving…', 'saving');
       const fd = new FormData();
       fd.append('action', 'save_snip');
-      fd.append('id', editingSnipId || '');
+      fd.append('id', id || '');
       fd.append('label', label);
       fd.append('text', text);
-      const res = await fetch('/admin/', { method: 'POST', body: fd });
-      const json = await res.json();
-      if (json.ok) {
-        document.getElementById('snip-label').value = '';
-        document.getElementById('snip-text').value = '';
-        editingSnipId = null;
-        renderSnips(json.snips);
-        showToast('Snippet saved');
+      try {
+        const res = await fetch('/admin/', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (json.ok) {
+          if (!id && json.id && !editingSnipId) editingSnipId = json.id;
+          _lastDataString = '';
+          renderSnips(json.snips);
+          setSnipStatus('Saved', 'saved');
+        } else {
+          setSnipStatus('Save failed', 'error');
+        }
+      } catch (_) {
+        setSnipStatus('Save failed', 'error');
       }
     }
 
     function editSnip(id, label, text) {
+      flushPendingSnipSave();
       editingSnipId = id;
       document.getElementById('snip-label').value = label;
       document.getElementById('snip-text').value = text;
+      document.getElementById('snip-text').focus();
+      setSnipStatus('Saved', 'saved');
+    }
+
+    function clearSnipForm() {
+      flushPendingSnipSave();
+      editingSnipId = null;
+      document.getElementById('snip-label').value = '';
+      document.getElementById('snip-text').value = '';
+      setSnipStatus('');
       document.getElementById('snip-text').focus();
     }
 
@@ -1201,25 +1262,24 @@ if ($authed) {
     function renderFiles(files) {
       const el = document.getElementById('file-list');
       const list = files.filter(f => f.type === 'file');
-      if (!list.length) { el.className = 'item-list'; el.innerHTML = '<div class="empty-state">No active files</div>'; return; }
-      el.className = 'item-grid';
+      el.className = 'item-list';
+      if (!list.length) { el.innerHTML = '<div class="empty-state">No active files</div>'; return; }
       el.innerHTML = '';
       list.slice().reverse().forEach(f => {
         const url = BASE + '/admin/?token=' + f.token;
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-      <div class="item-card-preview">
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+      <div class="item-row-icon">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       </div>
-      <div class="item-card-body">
-        <div class="item-card-name" title="${f.name}">${f.name}</div>
-        <div class="item-card-sub"><span>${fmtSize(f.size)}</span><span>${timeLeft(f.expires)}</span></div>
+      <div class="item-meta">
+        <div class="item-name" title="${f.name}">${f.name}</div>
+        <div class="item-sub"><span>${fmtSize(f.size)}</span><span>${timeLeft(f.expires)}</span></div>
       </div>
-      <div class="item-card-actions">
-        <a class="card-dl-btn" href="${url}" download="${f.name}">
+      <div class="item-actions">
+        <a class="icon-btn" title="Download" href="${url}" download="${f.name}">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download
         </a>
         <button class="icon-btn" title="Copy link" onclick="copyAndToast('${url}')">
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -1228,7 +1288,7 @@ if ($authed) {
           <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
         </button>
       </div>`;
-        el.appendChild(card);
+        el.appendChild(row);
       });
     }
 
@@ -1295,11 +1355,17 @@ if ($authed) {
     }
 
     // ── Load data ────────────────────────────────────────────────────
+    let _lastDataString = '';
     async function loadData() {
       const fd = new FormData();
       fd.append('action', 'get_data');
       const res = await fetch('/admin/', { method: 'POST', body: fd });
-      const json = await res.json();
+      if (!res.ok) return;
+      const text = await res.text();
+      if (text === _lastDataString) return;
+      _lastDataString = text;
+      let json;
+      try { json = JSON.parse(text); } catch (_) { return; }
       renderFiles(json.files || []);
       renderImages(json.files || []);
       renderSnips(json.snips || []);
@@ -1317,6 +1383,7 @@ if ($authed) {
     // ── Session watchdog ─────────────────────────────────────────────
     <?php if ($authed): ?>
       let _sessionInterval;
+      let _dataPollInterval;
 
       async function pingSession() {
         const fd = new FormData();
@@ -1329,6 +1396,7 @@ if ($authed) {
 
       function showSessionExpired() {
         clearInterval(_sessionInterval);
+        clearInterval(_dataPollInterval);
         const overlay = document.getElementById('session-overlay');
         overlay.classList.remove('hidden');
         setTimeout(() => document.getElementById('reauth-pw').focus(), 50);
@@ -1351,6 +1419,8 @@ if ($authed) {
           document.getElementById('reauth-pw').value = '';
           document.getElementById('reauth-error').classList.remove('show');
           _sessionInterval = setInterval(pingSession, 60000);
+          _dataPollInterval = setInterval(() => loadData().catch(() => {}), 30000);
+          loadData();
         } else {
           document.getElementById('reauth-error').classList.add('show');
         }
@@ -1359,8 +1429,11 @@ if ($authed) {
       // ── Init ─────────────────────────────────────────────────────────
       bindUploadZone('file-zone', 'file-input', 'file');
       bindUploadZone('img-zone', 'img-input', 'image');
+      document.getElementById('snip-label').addEventListener('input', scheduleSnipAutoSave);
+      document.getElementById('snip-text').addEventListener('input', scheduleSnipAutoSave);
       loadData();
       _sessionInterval = setInterval(pingSession, 60000);
+      _dataPollInterval = setInterval(() => loadData().catch(() => {}), 30000);
     <?php endif; ?>
   </script>
 

@@ -125,9 +125,14 @@ require '../includes/header.php';
     return card;
   }
 
+  let _txI = 0;
   function renderGrid(id, transforms) {
     const el = document.getElementById(id);
-    transforms.forEach(tx => el.appendChild(makeCard(tx)));
+    transforms.forEach(tx => {
+      const card = makeCard(tx);
+      card.style.setProperty('--tx-i', _txI++);
+      el.appendChild(card);
+    });
   }
 
   renderGrid('standard-grid', TRANSFORMS.standard);

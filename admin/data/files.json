@@ -1,1 +1,20 @@
-[]
+[
+    {
+        "token": "27e312336d1df804",
+        "name": "files.zip",
+        "mime": "application\/zip",
+        "type": "file",
+        "size": 5737,
+        "expires": 1780349750,
+        "uploaded": 1780090550
+    },
+    {
+        "token": "3a46a078aba1de3a",
+        "name": "BR4931_f_3.jpg",
+        "mime": "image\/jpeg",
+        "type": "image",
+        "size": 120361,
+        "expires": 1780349788,
+        "uploaded": 1780090588
+    }
+]

@@ -2864,6 +2864,13 @@ textarea#main-input::placeholder {
   }
 }
 
+@keyframes txCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 .tx-card {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -2880,6 +2887,8 @@ textarea#main-input::placeholder {
   flex-direction: column;
   gap: 6px;
   user-select: none;
+  animation: txCardIn 0.3s ease both;
+  animation-delay: calc(var(--tx-i, 0) * 30ms);
 }
 
 .tx-card:hover {
