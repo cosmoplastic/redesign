@@ -1,17 +1,15 @@
 <?php
 $pageTitle = 'Palette Generator — ONE design';
 $activePage = 'palette';
+$shellClass = 'full-height';
 require '../includes/header.php';
 ?>
 
-<main class="scrollable">
+<main class="panel">
 
-  <div class="topbar">
-    <div class="topbar-greeting">
-      <h2>Palette <em>generator</em></h2>
-      <p>Pick your colors, get a full scale.</p>
-    </div>
-    <div class="topbar-right">
+  <div class="topstrip">
+    <span class="topstrip-title">Palette <em>generator</em></span>
+    <div class="topstrip-actions">
       <div class="tabs">
         <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
         <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
@@ -52,6 +50,7 @@ require '../includes/header.php';
     </div>
   </div>
 
+  <div class="panel-scroll">
   <div class="palette-sections">
 
     <div class="pickers-grid" id="pickers-grid"></div>
@@ -69,6 +68,7 @@ require '../includes/header.php';
       <div class="scales-section" id="scales-section"></div>
     </div>
   </div><!-- /.palette-sections -->
+  </div><!-- /.panel-scroll -->
 
 </main>
 </div>
@@ -406,18 +406,26 @@ require '../includes/header.php';
   // ── SAVE / LOAD ──────────────────────────────────────
   const STORAGE_KEY = 'oklch-palettes';
 
-  function savePalette() {
-    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    const name = colors.slice(0, 2).map(c => c.name).join(' · ');
-    all.push({
-      id: 'p-' + Date.now(), name, savedAt: Date.now(),
-      colors: colors.map(c => ({ name: c.name, hex: c.hex }))
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  function refreshSaveLabel() {
+    const exists = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]').length > 0;
     const lbl = document.getElementById('save-label');
-    lbl.textContent = 'Saved!';
-    setTimeout(() => lbl.textContent = 'Save palette', 2000);
-    showToast('Palette saved');
+    if (lbl) lbl.textContent = exists ? 'Update palette' : 'Save palette';
+  }
+
+  function savePalette() {
+    // Single-palette model: saving updates your one palette rather than stacking up new ones.
+    const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const existed = prev.length > 0;
+    const id = prev[0]?.id || ('p-' + Date.now());
+    const name = colors.slice(0, 2).map(c => c.name).join(' · ');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([{
+      id, name, savedAt: Date.now(),
+      colors: colors.map(c => ({ name: c.name, hex: c.hex }))
+    }]));
+    const lbl = document.getElementById('save-label');
+    lbl.textContent = existed ? 'Updated!' : 'Saved!';
+    setTimeout(refreshSaveLabel, 2000);
+    showToast(existed ? 'Palette updated' : 'Palette saved');
   }
 
   // Init — check for picker handoff, ?load=<id>, or draft
@@ -486,6 +494,8 @@ require '../includes/header.php';
       card.style.setProperty('--glow-dim', 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.2)');
       setTimeout(() => card.classList.add('new-from-picker'), i * 120);
     });
+
+    refreshSaveLabel();
   })();
 
   // Handle BFCache restoration (Safari/Firefox may restore page from cache on forward navigation)

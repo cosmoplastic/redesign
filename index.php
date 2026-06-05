@@ -138,6 +138,34 @@ require 'includes/header.php';
                 </div>
             </div>
         </a>
+        <a href="/button-maker/" class="tool-card fade-in-7">
+            <div class="card-preview card-preview--buttons">
+                <div class="bm-home-preview">
+                    <div class="bm-home-row">
+                        <div class="bm-home-btn bm-home-btn--filled">Primary</div>
+                        <div class="bm-home-btn bm-home-btn--outlined">Secondary</div>
+                    </div>
+                    <div class="bm-home-row">
+                        <div class="bm-home-btn bm-home-btn--filled bm-home-btn--sm">Button</div>
+                        <div class="bm-home-btn bm-home-btn--outlined bm-home-btn--sm">Button</div>
+                        <div class="bm-home-btn bm-home-btn--ghost bm-home-btn--sm">Ghost</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-header">
+                    <span class="card-title">Button maker</span>
+                </div>
+                <p class="card-desc">Design primary and secondary buttons in three sizes. Dial in border radius, padding, font size, and weight — then export production-ready CSS.</p>
+                <div class="card-footer">
+                    <span class="card-meta">Primary · Secondary · 3 sizes · CSS export</span>
+                    <div class="card-arrow"><svg viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg></div>
+                </div>
+            </div>
+        </a>
+
         <a href="/shadow/" class="tool-card fade-in-6">
             <div class="card-preview card-preview--shadow">
                 <div class="shadow-card-demo">

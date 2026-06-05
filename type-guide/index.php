@@ -9,6 +9,21 @@ require '../includes/header.php';
 
   <div class="topstrip">
     <span class="topstrip-title">Typography <em>guide</em></span>
+    <div class="topstrip-actions">
+      <button class="btn" onclick="openExportModal()">
+        <svg viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+        </svg>
+        Export CSS
+      </button>
+      <button class="btn btn-primary" onclick="saveTypeguide()">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+        </svg>
+        Save
+      </button>
+    </div>
   </div>
 
   <div class="workspace">
@@ -85,22 +100,6 @@ require '../includes/header.php';
           <button class="tab-btn active" id="prev-desktop" onclick="setPreview('desktop')">Desktop</button>
           <button class="tab-btn" id="prev-mobile" onclick="setPreview('mobile')">Mobile</button>
         </div>
-      </div>
-
-      <div class="grad-section" style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
-        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveTypeguide()">
-          <svg viewBox="0 0 24 24">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
-          </svg>
-          Save
-        </button>
-        <button class="btn" style="width:100%;justify-content:center;" onclick="openExportModal()">
-          <svg viewBox="0 0 24 24">
-            <rect x="9" y="9" width="13" height="13" rx="2" />
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-          </svg>
-          Export CSS
-        </button>
       </div>
 
     </div>

@@ -42,6 +42,19 @@ require '../includes/header.php';
     <a href="/gradient/" class="btn btn-primary" style="margin-top:4px">Open gradient studio</a>
   </div>
 
+  <p class="section-label" style="margin-top:40px">Buttons</p>
+  <div class="palettes-grid" id="buttons-grid"></div>
+  <div class="palettes-empty" id="buttons-empty" style="display:none">
+    <div class="palettes-empty-icon">
+      <svg viewBox="0 0 24 24">
+        <rect x="2" y="8" width="20" height="8" rx="3" />
+      </svg>
+    </div>
+    <h3>No saved buttons</h3>
+    <p>Design a button and hit <em>Save</em> to keep it here.</p>
+    <a href="/button-maker/" class="btn btn-primary" style="margin-top:4px">Open button maker</a>
+  </div>
+
   <p class="section-label" style="margin-top:40px">Type guides</p>
   <div class="palettes-grid" id="type-saves-grid"></div>
   <div class="palettes-empty" id="type-saves-empty" style="display:none">
@@ -113,6 +126,7 @@ require '../includes/header.php';
   const PAL_KEY  = 'oklch-palettes';
   const TYPE_KEY = 'oklch-type-saves';
   const GRAD_KEY = 'oklch-gradients';
+  const BTN_KEY  = 'oklch-buttons';
 
   function loadPalettes() { return JSON.parse(localStorage.getItem(PAL_KEY) || '[]'); }
   function savePalettes(p) { localStorage.setItem(PAL_KEY, JSON.stringify(p)); }
@@ -318,6 +332,128 @@ require '../includes/header.php';
     return card;
   }
 
+  // ── BUTTONS ───────────────────────────────────────────────────
+  const SYSTEM_STACK = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+  const loadedBtnFonts = new Set();
+
+  function loadButtons()  { try { return JSON.parse(localStorage.getItem(BTN_KEY) || '[]'); } catch (_) { return []; } }
+  function saveButtons(b) { localStorage.setItem(BTN_KEY, JSON.stringify(b)); }
+
+  function slugify(str, fallback) {
+    return (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fallback;
+  }
+
+  function btnFontStack(st)  { return st.fontStack || SYSTEM_STACK; }
+  function isGoogleFont(st)  { return st.fontFamily && st.fontFamily !== 'System UI'; }
+  function btnFontImport(st) { return `https://fonts.googleapis.com/css2?family=${encodeURIComponent(st.fontFamily)}:wght@300;400;500;600;700&display=swap`; }
+
+  function ensureBtnFont(st) {
+    if (!isGoogleFont(st) || loadedBtnFonts.has(st.fontFamily)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = btnFontImport(st);
+    document.head.appendChild(link);
+    loadedBtnFonts.add(st.fontFamily);
+  }
+
+  function buttonPreviewStyle(st, variant) {
+    const p = variant === 'primary' ? 'p' : 's';
+    const bg     = st[p + 'BgOn']     ? st[p + 'Bg']     : 'transparent';
+    const border = st[p + 'BorderOn'] ? st[p + 'Border'] : 'transparent';
+    return `font-family:${btnFontStack(st)};font-size:${st.fontSize}px;font-weight:${st.fontWeight};`
+         + `padding:${st.padV}px ${st.padH}px;border-radius:${st.radius}px;`
+         + `border:1.5px solid ${border};background:${bg};color:${st[p + 'Text']};`
+         + `opacity:${(st[p + 'Opacity'] ?? 100) / 100};`;
+  }
+
+  function genButtonCSS(b, slugOverride, skipImport) {
+    const st = b.s, px = (v, sc) => Math.round(v * sc);
+    const cls = 'btn-' + (slugOverride || slugify(b.name, 'button'));
+    return [
+      ...(!skipImport && isGoogleFont(st) ? [`@import url('${btnFontImport(st)}');`, ''] : []),
+      `.${cls} {`,
+      '  display: inline-flex;',
+      '  align-items: center;',
+      '  justify-content: center;',
+      '  gap: 6px;',
+      `  font-family: ${btnFontStack(st)};`,
+      `  font-size: ${st.fontSize}px;`,
+      `  font-weight: ${st.fontWeight};`,
+      `  padding: ${st.padV}px ${st.padH}px;`,
+      `  border-radius: ${st.radius}px;`,
+      '  border: 1.5px solid transparent;',
+      '  line-height: 1;',
+      '  cursor: pointer;',
+      '  white-space: nowrap;',
+      '}',
+      `.${cls}-lg { font-size: ${px(st.fontSize, 1.2)}px; padding: ${px(st.padV, 1.3)}px ${px(st.padH, 1.3)}px; }`,
+      `.${cls}-sm { font-size: ${px(st.fontSize, 0.82)}px; padding: ${px(st.padV, 0.72)}px ${px(st.padH, 0.72)}px; }`,
+      `.${cls}-primary {`,
+      `  background: ${st.pBgOn ? st.pBg : 'transparent'};`,
+      `  color: ${st.pText};`,
+      ...(st.pBorderOn ? [`  border-color: ${st.pBorder};`] : []),
+      ...((st.pOpacity ?? 100) < 100 ? [`  opacity: ${(st.pOpacity / 100).toFixed(2)};`] : []),
+      '}',
+      `.${cls}-secondary {`,
+      `  background: ${st.sBgOn ? st.sBg : 'transparent'};`,
+      `  color: ${st.sText};`,
+      ...(st.sBorderOn ? [`  border-color: ${st.sBorder};`] : []),
+      ...((st.sOpacity ?? 100) < 100 ? [`  opacity: ${(st.sOpacity / 100).toFixed(2)};`] : []),
+      '}',
+    ].join('\n');
+  }
+
+  function buildButtonCard(b) {
+    ensureBtnFont(b.s);
+    const card = document.createElement('div');
+    card.className = 'palette-card fade-in';
+
+    const header = document.createElement('div'); header.className = 'palette-card-header';
+    const nameInput = document.createElement('input');
+    nameInput.className = 'palette-name-input'; nameInput.type = 'text';
+    nameInput.value = b.name; nameInput.spellcheck = false;
+    nameInput.addEventListener('change', () => {
+      const all = loadButtons(), item = all.find(x => x.id === b.id);
+      if (item) { item.name = nameInput.value.trim() || b.name; saveButtons(all); }
+    });
+    const meta = document.createElement('div'); meta.className = 'palette-card-meta';
+    const c1 = document.createElement('span'); c1.className = 'palette-meta-chip'; c1.textContent = `${b.s.radius}px radius`;
+    const c2 = document.createElement('span'); c2.className = 'palette-meta-chip'; c2.textContent = `${b.s.fontSize}px`;
+    const c3 = document.createElement('span'); c3.className = 'palette-meta-chip'; c3.textContent = timeAgo(b.savedAt);
+    meta.appendChild(c1); meta.appendChild(c2); meta.appendChild(c3);
+    header.appendChild(nameInput); header.appendChild(meta);
+    card.appendChild(header);
+
+    const preview = document.createElement('div'); preview.className = 'btn-save-preview';
+    preview.innerHTML =
+      `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'primary')}">Primary</button>`
+    + `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'secondary')}">Secondary</button>`;
+    card.appendChild(preview);
+
+    const footer = document.createElement('div'); footer.className = 'palette-card-footer';
+    const openBtn = document.createElement('a'); openBtn.className = 'btn'; openBtn.href = `/button-maker/?load=${b.id}`;
+    openBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Open`;
+    const copyBtn = document.createElement('button'); copyBtn.className = 'btn';
+    copyBtn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy CSS`;
+    copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(genButtonCSS(b)); showToast('CSS copied!'); });
+    const deleteBtn = document.createElement('button'); deleteBtn.className = 'palette-delete-btn'; deleteBtn.title = 'Delete';
+    deleteBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+    deleteBtn.addEventListener('click', () => {
+      card.style.transition = 'opacity .2s, transform .2s'; card.style.opacity = '0'; card.style.transform = 'scale(0.97)';
+      setTimeout(() => {
+        saveButtons(loadButtons().filter(x => x.id !== b.id)); card.remove();
+        if (!document.querySelector('#buttons-grid .palette-card')) {
+          document.getElementById('buttons-grid').style.display = 'none';
+          document.getElementById('buttons-empty').style.display = 'flex';
+        }
+        updateExportFooter();
+      }, 200);
+    });
+    footer.appendChild(openBtn); footer.appendChild(copyBtn); footer.appendChild(deleteBtn);
+    card.appendChild(footer);
+    return card;
+  }
+
   // ── RENDER ────────────────────────────────────────────────────
   function renderPalettes() {
     const palettes = loadPalettes();
@@ -346,13 +482,23 @@ require '../includes/header.php';
     [...grads].reverse().forEach((g, i) => { const c = buildGradientCard(g); c.style.animationDelay = (i * .05) + 's'; grid.appendChild(c); });
   }
 
+  function renderButtons() {
+    const btns  = loadButtons();
+    const grid  = document.getElementById('buttons-grid');
+    const empty = document.getElementById('buttons-empty');
+    if (!btns.length) { grid.style.display = 'none'; empty.style.display = 'flex'; return; }
+    grid.style.display = ''; empty.style.display = 'none'; grid.innerHTML = '';
+    [...btns].reverse().forEach((b, i) => { const c = buildButtonCard(b); c.style.animationDelay = (i * .05) + 's'; grid.appendChild(c); });
+  }
+
   renderPalettes();
   renderGradients();
+  renderButtons();
   renderTypes();
 
   // ── EXPORT FOOTER VISIBILITY ──────────────────────────────────
   function updateExportFooter() {
-    const hasSaved = loadPalettes().length || loadTypeSaves().length || loadGradients().length;
+    const hasSaved = loadPalettes().length || loadTypeSaves().length || loadGradients().length || loadButtons().length;
     document.getElementById('export-footer').style.display = hasSaved ? '' : 'none';
   }
   updateExportFooter();
@@ -399,6 +545,28 @@ require '../includes/header.php';
         lines.push(`  --gradient-${slug}: ${g.css};`);
       });
       lines.push('}');
+    }
+
+    const buttons = loadButtons();
+    if (buttons.length) {
+      if (lines.length) lines.push('');
+      lines.push('/* ── Buttons ───────────────────────────────── */');
+      const usedSlugs = {};
+      buttons.forEach(b => {
+        let slug = slugify(b.name, 'button');
+        if (usedSlugs[slug]) { usedSlugs[slug]++; slug = `${slug}-${usedSlugs[slug]}`; }
+        else usedSlugs[slug] = 1;
+        lines.push('');
+        lines.push(genButtonCSS(b, slug, true)); // skip per-block @import — hoisted below
+      });
+    }
+
+    // Hoist any Google-Font @imports to the very top (CSS requires them before all rules)
+    const imports = [...new Set(buttons.filter(b => isGoogleFont(b.s)).map(b => btnFontImport(b.s)))];
+    if (imports.length) {
+      const importLines = imports.map(u => `@import url('${u}');`);
+      importLines.push('');
+      lines.unshift(...importLines);
     }
 
     return lines.join('\n');

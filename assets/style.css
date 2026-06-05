@@ -517,6 +517,14 @@ main.panel {
   overflow: hidden;
 }
 
+/* scrolling content area beneath a fixed topstrip */
+.panel-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 36px 40px 64px;
+}
+
 .topstrip {
   padding: 13px 28px;
   border-bottom: 1px solid var(--border);
@@ -3212,7 +3220,6 @@ textarea#main-input::placeholder {
 .grad-preview {
   height: 220px;
   border-radius: var(--r-xl);
-  border: 1px solid var(--border);
   transition: background 0.06s;
   position: relative;
   overflow: hidden;
@@ -4846,4 +4853,429 @@ textarea#main-input::placeholder {
 .btn-sm svg {
   width: 13px;
   height: 13px;
+}
+
+/* ══════════════════════════════════════════════════
+   BUTTON MAKER
+══════════════════════════════════════════════════ */
+
+/* ── Left panel slider controls ── */
+.bm-slider-row {
+  margin-top: 16px;
+}
+
+.bm-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 7px;
+}
+
+.bm-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-400);
+}
+
+.bm-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-200);
+}
+
+.bm-slider {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  accent-color: var(--color-primary-500);
+}
+
+/* ── Color swatches ── */
+.bm-color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.bm-color-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.bm-color-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.16s;
+}
+
+.bm-row-off .bm-color-control {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Layer toggle switch ── */
+.bm-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 30px;
+  height: 17px;
+  cursor: pointer;
+}
+
+.bm-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.bm-switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--border2);
+  transition: background 0.16s;
+}
+
+.bm-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.16s;
+}
+
+.bm-switch input:checked + .bm-switch-track {
+  background: var(--color-primary-500);
+}
+
+.bm-switch input:checked + .bm-switch-track::after {
+  transform: translateX(13px);
+}
+
+.bm-switch-spacer {
+  width: 30px;
+  flex-shrink: 0;
+}
+
+/* ── Pull-from-palette trigger ── */
+.bm-palette-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg2);
+  color: var(--color-text-400);
+  cursor: pointer;
+  transition:
+    color 0.14s,
+    border-color 0.14s;
+}
+
+.bm-palette-btn:hover {
+  color: var(--color-text-100);
+  border-color: var(--border2);
+}
+
+.bm-palette-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Palette popover ── */
+.bm-pop {
+  position: fixed;
+  z-index: 200;
+  width: 248px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.bm-pop.open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bm-pop-pal {
+  margin-bottom: 14px;
+}
+.bm-pop-pal:last-child {
+  margin-bottom: 0;
+}
+
+.bm-pop-pal-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-200);
+  margin-bottom: 8px;
+}
+
+.bm-pop-color {
+  margin-bottom: 8px;
+}
+.bm-pop-color:last-child {
+  margin-bottom: 0;
+}
+
+.bm-pop-color-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--color-text-400);
+  margin-bottom: 4px;
+}
+
+.bm-pop-scale {
+  display: flex;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.bm-pop-sw {
+  flex: 1;
+  height: 24px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.bm-pop-sw:hover {
+  transform: scaleY(1.25);
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 0 1.5px var(--bg2),
+    0 0 0 2.5px #fff;
+}
+
+.bm-pop-empty {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--color-text-400);
+  text-align: center;
+  padding: 8px 4px;
+}
+.bm-pop-empty a {
+  color: var(--color-primary-400);
+  text-decoration: none;
+}
+.bm-pop-empty a:hover {
+  text-decoration: underline;
+}
+
+.bm-swatch-wrap {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.bm-swatch {
+  width: 38px;
+  height: 24px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  transition:
+    transform 0.14s,
+    box-shadow 0.14s;
+}
+
+.bm-swatch-wrap:hover .bm-swatch {
+  transform: scale(1.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.bm-color-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+/* ── Preview area ── */
+.bm-preview-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 48px 56px;
+}
+
+.bm-preview-inner {
+  width: 100%;
+  max-width: 540px;
+}
+
+.bm-preview-header {
+  display: grid;
+  grid-template-columns: 72px 1fr 1fr;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bm-col-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-400);
+}
+
+.bm-size-row {
+  display: grid;
+  grid-template-columns: 72px 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.bm-size-row:last-child {
+  border-bottom: none;
+}
+
+.bm-size-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-400);
+}
+
+.bm-btn-cell {
+  display: flex;
+  align-items: center;
+}
+
+.bm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1;
+  cursor: default;
+  white-space: nowrap;
+}
+
+/* ── Saved-work button card preview ── */
+.btn-save-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 28px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+.btn-save-demo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+}
+
+/* ── Homepage card preview ── */
+.card-preview--buttons {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bm-home-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.bm-home-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bm-home-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.bm-home-btn--filled {
+  background: var(--color-primary-500);
+  color: #fff;
+}
+
+.bm-home-btn--outlined {
+  background: transparent;
+  color: var(--color-primary-400);
+  border-color: var(--color-primary-500);
+}
+
+.bm-home-btn--ghost {
+  background: transparent;
+  color: var(--color-text-400);
+}
+
+.bm-home-btn--sm {
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* ── fade-in-7 ── */
+.fade-in-7 {
+  animation: fadeSlide 0.4s ease 0.35s both;
 }

@@ -1,17 +1,15 @@
 <?php
 $pageTitle = 'Shadow & Elevation — ONE design';
 $activePage = 'shadow';
+$shellClass = 'full-height';
 require '../includes/header.php';
 ?>
 
-<main class="scrollable">
+<main class="panel">
 
-  <div class="topbar">
-    <div class="topbar-greeting">
-      <h2>Shadow <em>& elevation</em></h2>
-      <p>Build a shadow scale from your palette.</p>
-    </div>
-    <div class="topbar-right">
+  <div class="topstrip">
+    <span class="topstrip-title">Shadow <em>& elevation</em></span>
+    <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
           <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -28,6 +26,7 @@ require '../includes/header.php';
     </div>
   </div>
 
+  <div class="panel-scroll">
   <div class="palette-sections">
 
     <!-- ── LEFT COLUMN: controls ──────────────────────── -->
@@ -143,6 +142,7 @@ require '../includes/header.php';
     </div>
 
   </div><!-- /.palette-sections -->
+  </div><!-- /.panel-scroll -->
 
 </main>
 </div>

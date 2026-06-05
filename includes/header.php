@@ -71,7 +71,7 @@ require_once __DIR__ . '/version.php';
                 <p class="tagline">For designers</p>
             </div>
             <div class="sidebar-section">
-                <div class="sidebar-section-label">Tools</div>
+                <div class="sidebar-section-label">Design</div>
                 <a href="/" class="sidebar-link<?= $activePage === 'index' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -103,14 +103,6 @@ require_once __DIR__ . '/version.php';
                     </svg>
                     Gradient studio
                 </a>
-                <a href="/case-converter/" class="sidebar-link<?= $activePage === 'case-converter' ? ' active' : '' ?>">
-                    <svg viewBox="0 0 24 24">
-                        <polyline points="4 7 4 4 20 4 20 7" />
-                        <line x1="9" y1="20" x2="15" y2="20" />
-                        <line x1="12" y1="4" x2="12" y2="20" />
-                    </svg>
-                    Case converter
-                </a>
                 <a href="/type-guide/" class="sidebar-link<?= $activePage === 'type-guide' ? ' active' : '' ?>">
                     <svg viewBox="0 0 24 24">
                         <line x1="3" y1="5" x2="21" y2="5" />
@@ -128,7 +120,24 @@ require_once __DIR__ . '/version.php';
                     </svg>
                     Shadow &amp; Elevation
                 </a>
+                <a href="/button-maker/" class="sidebar-link<?= $activePage === 'button-maker' ? ' active' : '' ?>">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="2" y="8" width="20" height="8" rx="3" />
+                    </svg>
+                    Button maker
+                </a>
 
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">Tools</div>
+                <a href="/case-converter/" class="sidebar-link<?= $activePage === 'case-converter' ? ' active' : '' ?>">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="4 7 4 4 20 4 20 7" />
+                        <line x1="9" y1="20" x2="15" y2="20" />
+                        <line x1="12" y1="4" x2="12" y2="20" />
+                    </svg>
+                    Case converter
+                </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Workspace</div>
