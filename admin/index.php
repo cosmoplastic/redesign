@@ -353,6 +353,9 @@ if ($authed) {
     }
 
     .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       background: transparent;
       border: 1px solid var(--border);
       border-radius: var(--r-sm);
@@ -367,6 +370,39 @@ if ($authed) {
     .logout-btn:hover {
       border-color: var(--border2);
       color: var(--text2);
+    }
+
+    /* Icon glyphs (SVG masked so they inherit the button text color) */
+    .btn-icon {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      background-color: currentColor;
+      -webkit-mask: var(--icon) center / contain no-repeat;
+      mask: var(--icon) center / contain no-repeat;
+    }
+
+    /* Home link on the lock screen */
+    .lock-home {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text3);
+      transition: color .15s;
+    }
+
+    .lock-home:hover {
+      color: var(--text2);
+    }
+
+    .lock-home .btn-icon {
+      width: 14px;
+      height: 14px;
     }
 
     /* Tabs */
@@ -936,6 +972,9 @@ if ($authed) {
         <div class="lock-error <?= isset($_GET['err']) ? 'show' : '' ?>">Incorrect passcode.</div>
         <button class="lock-submit" type="submit">Unlock</button>
       </form>
+      <a href="/" class="lock-home">
+        <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Back to home
+      </a>
     </div>
 
   <?php else: ?>
@@ -956,9 +995,11 @@ if ($authed) {
       <div class="admin-header">
         <div class="admin-title">Admin <em>tools</em></div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <a href="/" class="logout-btn" style="text-decoration:none;">← Home</a>
+          <a href="/" class="logout-btn" style="text-decoration:none;">
+            <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Home</a>
           <form method="POST" style="margin:0;">
-            <button class="logout-btn" name="logout" value="1">Lock</button>
+            <button class="logout-btn" name="logout" value="1">
+              <span class="btn-icon" style="--icon:url(/assets/icons/lock.svg)"></span>Lock</button>
           </form>
         </div>
       </div>

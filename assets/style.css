@@ -4864,6 +4864,40 @@ textarea#main-input::placeholder {
   margin-top: 16px;
 }
 
+/* ── Typeface weight + size row ── */
+.bm-type-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.bm-select {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--bg2);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--color-text-200);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 28px 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.bm-select:hover {
+  border-color: var(--border2);
+}
+.bm-select:focus {
+  outline: none;
+  border-color: var(--border3);
+}
+
 .bm-slider-head {
   display: flex;
   justify-content: space-between;
@@ -5139,13 +5173,13 @@ textarea#main-input::placeholder {
 
 .bm-preview-inner {
   width: 100%;
-  max-width: 540px;
+  max-width: 660px;
 }
 
 .bm-preview-header {
   display: grid;
-  grid-template-columns: 72px 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: 64px 1fr 1fr 1fr;
+  gap: 18px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -5160,8 +5194,8 @@ textarea#main-input::placeholder {
 
 .bm-size-row {
   display: grid;
-  grid-template-columns: 72px 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: 64px 1fr 1fr 1fr;
+  gap: 18px;
   align-items: center;
   padding: 32px 0;
   border-bottom: 1px solid var(--border);

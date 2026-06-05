@@ -42,24 +42,25 @@ require '../includes/header.php';
           </button>
         </div>
 
-        <div class="bm-slider-row">
-          <div class="bm-slider-head">
-            <span class="bm-label">Font size</span>
-            <span class="bm-val" id="val-fs">14px</span>
-          </div>
-          <input type="range" class="bm-slider" id="sl-fs" min="11" max="20" step="1" value="14">
-        </div>
-
-        <div class="bm-slider-row">
-          <div class="bm-slider-head">
-            <span class="bm-label">Weight</span>
-          </div>
-          <div class="tabs" style="margin-top:8px">
-            <button class="tab-btn" id="fw-300" onclick="setFontWeight(300)">300</button>
-            <button class="tab-btn" id="fw-400" onclick="setFontWeight(400)">400</button>
-            <button class="tab-btn active" id="fw-500" onclick="setFontWeight(500)">500</button>
-            <button class="tab-btn" id="fw-600" onclick="setFontWeight(600)">600</button>
-          </div>
+        <div class="bm-type-row">
+          <select class="bm-select" id="fw-select" onchange="setFontWeight(+this.value)" aria-label="Font weight">
+            <option value="300">Light</option>
+            <option value="400">Regular</option>
+            <option value="500" selected>Medium</option>
+            <option value="600">Semibold</option>
+          </select>
+          <select class="bm-select" id="fs-select" onchange="setFontSize(+this.value)" aria-label="Font size">
+            <option value="11">11px</option>
+            <option value="12">12px</option>
+            <option value="13">13px</option>
+            <option value="14" selected>14px</option>
+            <option value="15">15px</option>
+            <option value="16">16px</option>
+            <option value="17">17px</option>
+            <option value="18">18px</option>
+            <option value="19">19px</option>
+            <option value="20">20px</option>
+          </select>
         </div>
       </div>
 
@@ -223,6 +224,72 @@ require '../includes/header.php';
         </div>
       </div>
 
+      <div class="grad-section">
+        <div class="field-label">Tertiary</div>
+
+        <div class="bm-color-row">
+          <div class="bm-color-left">
+            <label class="bm-switch">
+              <input type="checkbox" class="bm-toggle" data-key="tBgOn">
+              <span class="bm-switch-track"></span>
+            </label>
+            <span class="bm-label">Background</span>
+          </div>
+          <div class="bm-color-control">
+            <button class="bm-palette-btn" data-target="tBg" title="Pull from saved palette" aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            </button>
+            <label class="bm-swatch-wrap">
+              <div class="bm-swatch" id="sw-t-bg"></div>
+              <input type="color" class="bm-color-input" id="in-t-bg" value="#2563eb">
+            </label>
+          </div>
+        </div>
+
+        <div class="bm-color-row">
+          <div class="bm-color-left">
+            <label class="bm-switch">
+              <input type="checkbox" class="bm-toggle" data-key="tBorderOn">
+              <span class="bm-switch-track"></span>
+            </label>
+            <span class="bm-label">Stroke</span>
+          </div>
+          <div class="bm-color-control">
+            <button class="bm-palette-btn" data-target="tBorder" title="Pull from saved palette" aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            </button>
+            <label class="bm-swatch-wrap">
+              <div class="bm-swatch" id="sw-t-border"></div>
+              <input type="color" class="bm-color-input" id="in-t-border" value="#2563eb">
+            </label>
+          </div>
+        </div>
+
+        <div class="bm-color-row">
+          <div class="bm-color-left">
+            <span class="bm-switch-spacer"></span>
+            <span class="bm-label">Text</span>
+          </div>
+          <div class="bm-color-control">
+            <button class="bm-palette-btn" data-target="tText" title="Pull from saved palette" aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            </button>
+            <label class="bm-swatch-wrap">
+              <div class="bm-swatch" id="sw-t-text"></div>
+              <input type="color" class="bm-color-input" id="in-t-text" value="#2563eb">
+            </label>
+          </div>
+        </div>
+
+        <div class="bm-slider-row">
+          <div class="bm-slider-head">
+            <span class="bm-label">Opacity</span>
+            <span class="bm-val" id="val-t-opacity">100%</span>
+          </div>
+          <input type="range" class="bm-slider" id="sl-t-opacity" min="10" max="100" step="1" value="100">
+        </div>
+      </div>
+
     </div>
 
     <!-- ── RIGHT: PREVIEW ──────────────────────────────── -->
@@ -233,24 +300,28 @@ require '../includes/header.php';
           <div></div>
           <div class="bm-col-label">Primary</div>
           <div class="bm-col-label">Secondary</div>
+          <div class="bm-col-label">Tertiary</div>
         </div>
 
         <div class="bm-size-row">
           <span class="bm-size-tag">Large</span>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-p-lg">Button</button></div>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-s-lg">Button</button></div>
+          <div class="bm-btn-cell"><button class="bm-btn" id="btn-t-lg">Button</button></div>
         </div>
 
         <div class="bm-size-row">
           <span class="bm-size-tag">Default</span>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-p-md">Button</button></div>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-s-md">Button</button></div>
+          <div class="bm-btn-cell"><button class="bm-btn" id="btn-t-md">Button</button></div>
         </div>
 
         <div class="bm-size-row">
           <span class="bm-size-tag">Small</span>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-p-sm">Button</button></div>
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-s-sm">Button</button></div>
+          <div class="bm-btn-cell"><button class="bm-btn" id="btn-t-sm">Button</button></div>
         </div>
 
       </div>
@@ -317,6 +388,10 @@ require '../includes/header.php';
     sBorder:   '#2563eb', sBorderOn: true,
     sText:     '#2563eb',
     sOpacity:  100,
+    tBg:       '#2563eb', tBgOn:     false,
+    tBorder:   '#2563eb', tBorderOn: false,
+    tText:     '#2563eb',
+    tOpacity:  100,
   };
 
   const SIZES = {
@@ -339,7 +414,7 @@ require '../includes/header.php';
     el.style.borderRadius = s.radius + 'px';
     el.style.border       = '1.5px solid transparent';
 
-    const p = variant === 'primary' ? 'p' : 's';
+    const p = variant === 'primary' ? 'p' : variant === 'secondary' ? 's' : 't';
     el.style.background  = s[p + 'BgOn']     ? s[p + 'Bg']     : 'transparent';
     el.style.color       = s[p + 'Text'];
     el.style.borderColor = s[p + 'BorderOn'] ? s[p + 'Border'] : 'transparent';
@@ -350,42 +425,39 @@ require '../includes/header.php';
     ['lg', 'md', 'sm'].forEach(sz => {
       applyBtn('btn-p-' + sz, 'primary', sz);
       applyBtn('btn-s-' + sz, 'secondary', sz);
+      applyBtn('btn-t-' + sz, 'tertiary', sz);
     });
 
-    // Typeface trigger
+    // Typeface controls
     const fpName = document.getElementById('font-picker-name');
     fpName.textContent = s.fontFamily;
     fpName.style.fontFamily = fontStackFor(s.fontFamily);
+    document.getElementById('fw-select').value = s.fontWeight;
+    document.getElementById('fs-select').value = s.fontSize;
 
     // Value labels
     document.getElementById('val-radius').textContent    = s.radius + 'px';
-    document.getElementById('val-fs').textContent        = s.fontSize + 'px';
     document.getElementById('val-pv').textContent        = s.padV + 'px';
     document.getElementById('val-ph').textContent        = s.padH + 'px';
     document.getElementById('val-p-opacity').textContent = s.pOpacity + '%';
     document.getElementById('val-s-opacity').textContent = s.sOpacity + '%';
+    document.getElementById('val-t-opacity').textContent = s.tOpacity + '%';
 
     // Color swatches + native input sync
-    document.getElementById('sw-p-bg').style.background     = s.pBg;
-    document.getElementById('sw-p-border').style.background = s.pBorder;
-    document.getElementById('sw-p-text').style.background   = s.pText;
-    document.getElementById('sw-s-bg').style.background     = s.sBg;
-    document.getElementById('sw-s-border').style.background = s.sBorder;
-    document.getElementById('sw-s-text').style.background   = s.sText;
-    document.getElementById('in-p-bg').value     = s.pBg;
-    document.getElementById('in-p-border').value = s.pBorder;
-    document.getElementById('in-p-text').value   = s.pText;
-    document.getElementById('in-s-bg').value     = s.sBg;
-    document.getElementById('in-s-border').value = s.sBorder;
-    document.getElementById('in-s-text').value   = s.sText;
+    [['p-bg', 'pBg'], ['p-border', 'pBorder'], ['p-text', 'pText'],
+     ['s-bg', 'sBg'], ['s-border', 'sBorder'], ['s-text', 'sText'],
+     ['t-bg', 'tBg'], ['t-border', 'tBorder'], ['t-text', 'tText']].forEach(([id, key]) => {
+      document.getElementById('sw-' + id).style.background = s[key];
+      document.getElementById('in-' + id).value = s[key];
+    });
 
     // Sync slider positions
     document.getElementById('sl-radius').value    = s.radius;
-    document.getElementById('sl-fs').value        = s.fontSize;
     document.getElementById('sl-pv').value        = s.padV;
     document.getElementById('sl-ph').value        = s.padH;
     document.getElementById('sl-p-opacity').value = s.pOpacity;
     document.getElementById('sl-s-opacity').value = s.sOpacity;
+    document.getElementById('sl-t-opacity').value = s.tOpacity;
 
     // Toggle states — sync checkbox + dim the row's color control when off
     document.querySelectorAll('.bm-toggle').forEach(cb => {
@@ -398,20 +470,16 @@ require '../includes/header.php';
   }
 
   // ── MUTATORS ───────────────────────────────────────────
-  function setFontWeight(w) {
-    s.fontWeight = w;
-    [300, 400, 500, 600].forEach(fw =>
-      document.getElementById('fw-' + fw).classList.toggle('active', fw === w));
-    render();
-  }
+  function setFontWeight(w) { s.fontWeight = w; render(); }
+  function setFontSize(v)   { s.fontSize = v;   render(); }
 
   // ── SLIDER WIRING ──────────────────────────────────────
   document.getElementById('sl-radius').addEventListener('input',    e => { s.radius   = +e.target.value; render(); });
-  document.getElementById('sl-fs').addEventListener('input',        e => { s.fontSize = +e.target.value; render(); });
   document.getElementById('sl-pv').addEventListener('input',        e => { s.padV     = +e.target.value; render(); });
   document.getElementById('sl-ph').addEventListener('input',        e => { s.padH     = +e.target.value; render(); });
   document.getElementById('sl-p-opacity').addEventListener('input', e => { s.pOpacity = +e.target.value; render(); });
   document.getElementById('sl-s-opacity').addEventListener('input', e => { s.sOpacity = +e.target.value; render(); });
+  document.getElementById('sl-t-opacity').addEventListener('input', e => { s.tOpacity = +e.target.value; render(); });
 
   // ── TOGGLE WIRING ──────────────────────────────────────
   document.querySelectorAll('.bm-toggle').forEach(cb => {
@@ -428,6 +496,9 @@ require '../includes/header.php';
   wireColor('in-s-bg',     'sBg');
   wireColor('in-s-border', 'sBorder');
   wireColor('in-s-text',   'sText');
+  wireColor('in-t-bg',     'tBg');
+  wireColor('in-t-border', 'tBorder');
+  wireColor('in-t-text',   'tText');
 
   // ── PULL FROM SAVED PALETTE ────────────────────────────
   const PAL_KEY = 'oklch-palettes';
@@ -491,11 +562,8 @@ require '../includes/header.php';
     const sw = e.target.closest('.bm-pop-sw');
     if (!sw || !popTargetKey) return;
     s[popTargetKey] = sw.dataset.hex;
-    // Pulling a color into a layer implies turning that layer on
-    if (popTargetKey === 'pBg') s.pBgOn = true;
-    if (popTargetKey === 'pBorder') s.pBorderOn = true;
-    if (popTargetKey === 'sBg') s.sBgOn = true;
-    if (popTargetKey === 'sBorder') s.sBorderOn = true;
+    // Pulling a color into a background/stroke layer implies turning that layer on
+    if (/(Bg|Border)$/.test(popTargetKey)) s[popTargetKey + 'On'] = true;
     render();
     closePop();
   });
@@ -556,6 +624,14 @@ require '../includes/header.php';
       `  color: ${s.sText};`,
       ...(s.sBorderOn ? [`  border-color: ${s.sBorder};`] : []),
       ...(s.sOpacity < 100 ? [`  opacity: ${(s.sOpacity / 100).toFixed(2)};`] : []),
+      '}',
+      '',
+      '/* Tertiary */',
+      '.btn-tertiary {',
+      `  background: ${s.tBgOn ? s.tBg : 'transparent'};`,
+      `  color: ${s.tText};`,
+      ...(s.tBorderOn ? [`  border-color: ${s.tBorder};`] : []),
+      ...(s.tOpacity < 100 ? [`  opacity: ${(s.tOpacity / 100).toFixed(2)};`] : []),
       '}',
     ].join('\n');
   }
@@ -792,10 +868,6 @@ require '../includes/header.php';
       delete s.secStyle;
     }
   } catch(_) {}
-
-  // Restore font-weight tab active state from loaded draft
-  [300, 400, 500, 600].forEach(fw =>
-    document.getElementById('fw-' + fw).classList.toggle('active', fw === s.fontWeight));
 
   // Load the active typeface (if it's a Google font)
   ensureFontLoaded(s.fontFamily);

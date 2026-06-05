@@ -357,7 +357,7 @@ require '../includes/header.php';
   }
 
   function buttonPreviewStyle(st, variant) {
-    const p = variant === 'primary' ? 'p' : 's';
+    const p = variant === 'primary' ? 'p' : variant === 'secondary' ? 's' : 't';
     const bg     = st[p + 'BgOn']     ? st[p + 'Bg']     : 'transparent';
     const border = st[p + 'BorderOn'] ? st[p + 'Border'] : 'transparent';
     return `font-family:${btnFontStack(st)};font-size:${st.fontSize}px;font-weight:${st.fontWeight};`
@@ -400,6 +400,14 @@ require '../includes/header.php';
       ...(st.sBorderOn ? [`  border-color: ${st.sBorder};`] : []),
       ...((st.sOpacity ?? 100) < 100 ? [`  opacity: ${(st.sOpacity / 100).toFixed(2)};`] : []),
       '}',
+      ...(st.tText != null ? [
+        `.${cls}-tertiary {`,
+        `  background: ${st.tBgOn ? st.tBg : 'transparent'};`,
+        `  color: ${st.tText};`,
+        ...(st.tBorderOn ? [`  border-color: ${st.tBorder};`] : []),
+        ...((st.tOpacity ?? 100) < 100 ? [`  opacity: ${(st.tOpacity / 100).toFixed(2)};`] : []),
+        '}',
+      ] : []),
     ].join('\n');
   }
 
@@ -427,7 +435,8 @@ require '../includes/header.php';
     const preview = document.createElement('div'); preview.className = 'btn-save-preview';
     preview.innerHTML =
       `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'primary')}">Primary</button>`
-    + `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'secondary')}">Secondary</button>`;
+    + `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'secondary')}">Secondary</button>`
+    + (b.s.tText != null ? `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'tertiary')}">Tertiary</button>` : '');
     card.appendChild(preview);
 
     const footer = document.createElement('div'); footer.className = 'palette-card-footer';
