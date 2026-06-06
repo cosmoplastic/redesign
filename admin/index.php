@@ -158,12 +158,10 @@ if ($authed) {
 
     if ($action === 'save_snip') {
       $id = !empty($_POST['id']) ? $_POST['id'] : ('s' . uniqid());
-      $label = trim($_POST['label'] ?? '');
       $text = $_POST['text'] ?? '';
       $found = false;
       foreach ($snips as &$s) {
         if ($s['id'] === $id) {
-          $s['label'] = $label;
           $s['text'] = $text;
           $s['updated'] = time();
           $found = true;
@@ -172,7 +170,7 @@ if ($authed) {
       }
       unset($s);
       if (!$found)
-        $snips[] = ['id' => $id, 'label' => $label, 'text' => $text, 'created' => time(), 'updated' => time()];
+        $snips[] = ['id' => $id, 'text' => $text, 'created' => time(), 'updated' => time()];
       file_put_contents($snipsFile, json_encode(array_values($snips), JSON_PRETTY_PRINT));
       echo json_encode(['ok' => true, 'id' => $id, 'snips' => array_values($snips)]);
       exit;
@@ -260,7 +258,7 @@ if ($authed) {
       font-family: var(--serif);
       font-size: 22px;
       font-weight: 300;
-      color: var(--accent);
+      color: var(--color-primary-100);
       letter-spacing: -0.01em;
     }
 
@@ -278,7 +276,7 @@ if ($authed) {
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--text4);
+      color: var(--color-primary-400);
     }
 
     .lock-input {
@@ -290,7 +288,7 @@ if ($authed) {
       font-family: var(--mono);
       font-size: 20px;
       letter-spacing: 0.3em;
-      color: var(--text);
+      color: var(--color-primary-100);
       outline: none;
       transition: border-color .15s;
     }
@@ -317,7 +315,7 @@ if ($authed) {
       border-radius: var(--r);
       font-family: var(--mono);
       font-size: 13px;
-      color: var(--text);
+      color: var(--color-primary-100);
       cursor: pointer;
       transition: background .15s, border-color .15s;
     }
@@ -344,7 +342,7 @@ if ($authed) {
       font-family: var(--serif);
       font-size: 22px;
       font-weight: 300;
-      color: var(--accent);
+      color: var(--color-primary-100);
       letter-spacing: -0.01em;
     }
 
@@ -355,21 +353,28 @@ if ($authed) {
     .logout-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
+      box-sizing: border-box;
+      height: 30px;
+      padding: 0 13px;
       background: transparent;
       border: 1px solid var(--border);
       border-radius: var(--r-sm);
-      padding: 5px 12px;
       font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text3);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--color-primary-300);
       cursor: pointer;
       transition: border-color .15s, color .15s;
     }
 
     .logout-btn:hover {
       border-color: var(--border2);
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     /* Icon glyphs (SVG masked so they inherit the button text color) */
@@ -392,12 +397,12 @@ if ($authed) {
       text-decoration: none;
       font-family: var(--mono);
       font-size: 12px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       transition: color .15s;
     }
 
     .lock-home:hover {
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     .lock-home .btn-icon {
@@ -424,19 +429,19 @@ if ($authed) {
       border-radius: var(--r-sm);
       font-family: var(--mono);
       font-size: 12px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       cursor: pointer;
       transition: background .15s, color .15s;
       white-space: nowrap;
     }
 
     .admin-tab:hover {
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     .admin-tab.active {
       background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
+      color: var(--color-primary-100);
     }
 
     /* Sections */
@@ -478,12 +483,12 @@ if ($authed) {
 
     .upload-zone-text {
       font-size: 13px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       pointer-events: none;
     }
 
     .upload-zone-text strong {
-      color: var(--text2);
+      color: var(--color-primary-200);
       font-weight: 500;
     }
 
@@ -497,7 +502,7 @@ if ($authed) {
 
     .expire-label {
       font-size: 11px;
-      color: var(--text4);
+      color: var(--color-primary-400);
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
@@ -509,20 +514,20 @@ if ($authed) {
       border-radius: 20px;
       font-family: var(--mono);
       font-size: 11px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       cursor: pointer;
       transition: all .15s;
     }
 
     .expire-btn:hover {
       border-color: var(--border2);
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     .expire-btn.active {
       background: rgba(255, 255, 255, 0.08);
       border-color: var(--border2);
-      color: var(--text);
+      color: var(--color-primary-100);
     }
 
     /* Item list */
@@ -556,7 +561,7 @@ if ($authed) {
     .item-row-icon svg {
       width: 16px;
       height: 16px;
-      stroke: var(--text3);
+      stroke: var(--color-primary-300);
       fill: none;
       stroke-width: 1.5;
       stroke-linecap: round;
@@ -582,7 +587,7 @@ if ($authed) {
 
     .item-name {
       font-size: 13px;
-      color: var(--text);
+      color: var(--color-primary-100);
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
@@ -591,7 +596,7 @@ if ($authed) {
 
     .item-sub {
       font-size: 11px;
-      color: var(--text4);
+      color: var(--color-primary-400);
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -599,7 +604,7 @@ if ($authed) {
 
     .item-url {
       font-size: 11px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       font-family: var(--mono);
       background: var(--bg3);
       border: 1px solid var(--border);
@@ -617,7 +622,7 @@ if ($authed) {
 
     .item-url:hover {
       border-color: var(--border2);
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     .item-actions {
@@ -639,13 +644,13 @@ if ($authed) {
       align-items: center;
       justify-content: center;
       transition: all .15s;
-      color: var(--text3);
+      color: var(--color-primary-300);
       flex-shrink: 0;
     }
 
     .icon-btn:hover {
       border-color: var(--border2);
-      color: var(--text2);
+      color: var(--color-primary-200);
     }
 
     .icon-btn.danger:hover {
@@ -691,7 +696,7 @@ if ($authed) {
     .item-card-preview svg {
       width: 28px;
       height: 28px;
-      stroke: var(--text3);
+      stroke: var(--color-primary-300);
       fill: none;
       stroke-width: 1.5;
       stroke-linecap: round;
@@ -715,7 +720,7 @@ if ($authed) {
     .item-card-name {
       font-size: 12px;
       font-weight: 500;
-      color: var(--text);
+      color: var(--color-primary-100);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -723,7 +728,7 @@ if ($authed) {
 
     .item-card-sub {
       font-size: 11px;
-      color: var(--text4);
+      color: var(--color-primary-400);
       margin-top: 3px;
       display: flex;
       gap: 8px;
@@ -749,7 +754,7 @@ if ($authed) {
       border-radius: var(--r-sm);
       font-family: var(--mono);
       font-size: 11px;
-      color: var(--text2);
+      color: var(--color-primary-200);
       text-decoration: none;
       transition: background .15s, border-color .15s, color .15s;
     }
@@ -767,7 +772,7 @@ if ($authed) {
     .card-dl-btn:hover {
       background: rgba(255, 255, 255, 0.09);
       border-color: var(--border3);
-      color: var(--text);
+      color: var(--color-primary-100);
     }
 
     /* Snippet editor */
@@ -787,27 +792,6 @@ if ($authed) {
       align-items: center;
     }
 
-    .snip-label-input {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 8px 12px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s;
-    }
-
-    .snip-label-input:focus {
-      border-color: var(--border3);
-    }
-
-    .snip-label-input::placeholder {
-      color: var(--text4);
-    }
-
     .snip-textarea {
       width: 100%;
       background: var(--bg3);
@@ -816,7 +800,7 @@ if ($authed) {
       padding: 10px 12px;
       font-family: var(--mono);
       font-size: 12px;
-      color: var(--text);
+      color: var(--color-primary-100);
       outline: none;
       resize: vertical;
       min-height: 140px;
@@ -829,7 +813,7 @@ if ($authed) {
     }
 
     .snip-textarea::placeholder {
-      color: var(--text4);
+      color: var(--color-primary-400);
     }
 
     @media (min-width: 1024px) {
@@ -845,7 +829,7 @@ if ($authed) {
       border-radius: var(--r);
       font-family: var(--mono);
       font-size: 12px;
-      color: var(--text);
+      color: var(--color-primary-100);
       cursor: pointer;
       transition: background .15s;
       white-space: nowrap;
@@ -858,38 +842,63 @@ if ($authed) {
     .snip-status {
       font-family: var(--mono);
       font-size: 11px;
-      color: var(--text4);
+      color: var(--color-primary-400);
       letter-spacing: 0.02em;
       min-height: 14px;
       transition: color .15s;
     }
 
     .snip-status.saving {
-      color: var(--text4);
+      color: var(--color-primary-400);
     }
 
     .snip-status.saved {
-      color: var(--text3);
+      color: var(--color-primary-300);
     }
 
     .snip-status.error {
       color: #f87171;
     }
 
-    .snip-text-preview {
+    /* Snippet rows — Apple Notes style: title, then date + preview inline */
+    .snip-row .item-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .snip-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
       font-size: 12px;
-      color: var(--text2);
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 60px;
+      line-height: 1.45;
+    }
+
+    .snip-date {
+      flex-shrink: 0;
+      color: var(--color-primary-200);
+      font-weight: 500;
+    }
+
+    .snip-preview {
+      min-width: 0;
+      color: var(--color-primary-400);
+      white-space: nowrap;
       overflow: hidden;
-      line-height: 1.6;
+      text-overflow: ellipsis;
+      text-transform: none;
+    }
+
+    .snip-preview-empty {
+      font-style: italic;
+      opacity: 0.8;
     }
 
     .empty-state {
       text-align: center;
       padding: 32px;
-      color: var(--text4);
+      color: var(--color-primary-400);
       font-size: 12px;
     }
 
@@ -927,7 +936,7 @@ if ($authed) {
 
     .upload-progress-name {
       font-size: 11px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -936,7 +945,7 @@ if ($authed) {
 
     .upload-progress-pct {
       font-size: 11px;
-      color: var(--text3);
+      color: var(--color-primary-300);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
       min-width: 32px;
@@ -1040,7 +1049,6 @@ if ($authed) {
       <!-- ── SNIPPETS ── -->
       <div class="admin-section" id="tab-snippets">
         <div class="snip-form" id="snip-form">
-          <input class="snip-label-input" type="text" id="snip-label" placeholder="Label (optional)">
           <textarea class="snip-textarea" id="snip-text" placeholder="Paste anything — a URL, code, note…"></textarea>
           <div class="snip-form-row">
             <span class="snip-status" id="snip-status"></span>
@@ -1222,10 +1230,9 @@ if ($authed) {
     function triggerSnipAutoSave() {
       _snipSaveTimer = null;
       const id = editingSnipId;
-      const label = document.getElementById('snip-label').value.trim();
       const text = document.getElementById('snip-text').value;
       if (!text.trim()) return;
-      _snipSavePromise = _snipSavePromise.then(() => doSnipSave(id, label, text));
+      _snipSavePromise = _snipSavePromise.then(() => doSnipSave(id, text));
     }
 
     function flushPendingSnipSave() {
@@ -1235,12 +1242,11 @@ if ($authed) {
       }
     }
 
-    async function doSnipSave(id, label, text) {
+    async function doSnipSave(id, text) {
       setSnipStatus('Saving…', 'saving');
       const fd = new FormData();
       fd.append('action', 'save_snip');
       fd.append('id', id || '');
-      fd.append('label', label);
       fd.append('text', text);
       try {
         const res = await fetch('/admin/', { method: 'POST', body: fd });
@@ -1258,10 +1264,9 @@ if ($authed) {
       }
     }
 
-    function editSnip(id, label, text) {
+    function editSnip(id, text) {
       flushPendingSnipSave();
       editingSnipId = id;
-      document.getElementById('snip-label').value = label;
       document.getElementById('snip-text').value = text;
       document.getElementById('snip-text').focus();
       setSnipStatus('Saved', 'saved');
@@ -1270,7 +1275,6 @@ if ($authed) {
     function clearSnipForm() {
       flushPendingSnipSave();
       editingSnipId = null;
-      document.getElementById('snip-label').value = '';
       document.getElementById('snip-text').value = '';
       setSnipStatus('');
       document.getElementById('snip-text').focus();
@@ -1327,7 +1331,7 @@ if ($authed) {
       if (!ts) return '';
       const d = new Date(ts * 1000);
       if (Number.isNaN(d.getTime())) return '';
-      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      return d.toLocaleDateString(undefined, { year: '2-digit', month: 'numeric', day: 'numeric' });
     }
 
     function renderFiles(files) {
@@ -1402,19 +1406,19 @@ if ($authed) {
       el.innerHTML = '';
       snips.slice().reverse().forEach(s => {
         const row = document.createElement('div');
-        row.className = 'item-row';
-        const hasLabel = Boolean((s.label || '').trim());
+        row.className = 'item-row snip-row';
         const text = String(s.text || '');
         const [firstLine, ...rest] = text.split(/\r?\n/);
-        const title = hasLabel ? (s.label || '').trim() : firstLine;
-        const preview = hasLabel ? text : rest.join('\n').trim();
+        const title = firstLine.trim();
+        const preview = rest.join('\n').trim();
         const dateText = formatSnipDate(s.created || s.updated);
         row.innerHTML = `
-      <div class="item-row-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
       <div class="item-meta">
-        <div class="item-name">${escapeHtml(title)}</div>
-        ${dateText ? `<div class="item-sub"><span>${dateText}</span></div>` : ''}
-        ${preview ? `<div class="snip-text-preview">${escapeHtml(preview)}</div>` : ''}
+        <div class="item-name">${escapeHtml(title) || 'Untitled'}</div>
+        <div class="snip-line">
+          ${dateText ? `<span class="snip-date">${dateText}</span>` : ''}
+          <span class="snip-preview${preview ? '' : ' snip-preview-empty'}">${preview ? escapeHtml(preview) : 'No additional text'}</span>
+        </div>
       </div>
       <div class="item-actions">
         <button class="icon-btn js-snip-copy" title="Copy text">
@@ -1428,7 +1432,7 @@ if ($authed) {
         </button>
       </div>`;
         row.querySelector('.js-snip-copy').addEventListener('click', () => copyAndToast(s.text));
-        row.querySelector('.js-snip-edit').addEventListener('click', () => editSnip(s.id, s.label || '', s.text));
+        row.querySelector('.js-snip-edit').addEventListener('click', () => editSnip(s.id, s.text));
         row.querySelector('.js-snip-delete').addEventListener('click', () => delSnip(s.id));
         el.appendChild(row);
       });
@@ -1509,7 +1513,6 @@ if ($authed) {
       // ── Init ─────────────────────────────────────────────────────────
       bindUploadZone('file-zone', 'file-input', 'file');
       bindUploadZone('img-zone', 'img-input', 'image');
-      document.getElementById('snip-label').addEventListener('input', scheduleSnipAutoSave);
       document.getElementById('snip-text').addEventListener('input', scheduleSnipAutoSave);
       loadData();
       _sessionInterval = setInterval(pingSession, 60000);
