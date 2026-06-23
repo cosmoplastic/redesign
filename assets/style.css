@@ -3983,7 +3983,7 @@ textarea#main-input::placeholder {
     align-items: center;
     justify-content: center;
     background: none;
-    border: 1px solid var(--border2);
+    border: none;
     border-radius: var(--r-sm);
     color: var(--color-text-300);
     cursor: pointer;

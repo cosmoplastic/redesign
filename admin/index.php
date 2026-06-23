@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../includes/version.php';
 
-define('ADMIN_PASS', '2230');
+require_once __DIR__ . '/../includes/admin-auth.php';
 define('MAX_UPLOAD_MB', 512);
 
 $dataDir = __DIR__ . '/data';
@@ -48,7 +48,8 @@ if (isset($_GET['token']) || isset($_GET['img'])) {
 }
 
 // ── Auth ─────────────────────────────────────────────────────────
-const SESSION_TTL = 1800; // 30 minutes
+// ADMIN_PASS + SESSION_TTL come from includes/admin-auth.php.
+// The login form lives at /password/ — this page only renders when authed.
 
 // Expire session if older than TTL
 if (!empty($_SESSION['admin']) && isset($_SESSION['admin_time'])) {
@@ -62,17 +63,7 @@ if (!empty($_SESSION['admin']) && isset($_SESSION['admin_time'])) {
 if (isset($_POST['logout'])) {
   $_SESSION = [];
   session_destroy();
-  header('Location: /admin/');
-  exit;
-}
-if (isset($_POST['password'])) {
-  if ($_POST['password'] === ADMIN_PASS) {
-    $_SESSION['admin'] = true;
-    $_SESSION['admin_time'] = time();
-    header('Location: /admin/');
-    exit;
-  }
-  header('Location: /admin/?err=1');
+  header('Location: /password/');
   exit;
 }
 $authed = !empty($_SESSION['admin']);
@@ -213,6 +204,14 @@ if ($authed) {
     }
   }
 }
+
+// Not signed in → send to the gate. (Keeps the lock screen and the panel on
+// separate URLs so a cached lock screen can never mask the panel after login.)
+if (!$authed) {
+  header('Location: /password/');
+  exit;
+}
+header('Cache-Control: no-store, must-revalidate');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -709,6 +708,7 @@ if ($authed) {
       object-fit: cover;
       border-bottom: 1px solid var(--border);
       display: block;
+      cursor: zoom-in;
     }
 
     .item-card-body {
@@ -902,6 +902,241 @@ if ($authed) {
       font-size: 12px;
     }
 
+    /* Page-wide drag & drop overlay */
+    .page-drop-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(10, 12, 16, 0.82);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .page-drop-overlay.show {
+      display: flex;
+    }
+
+    .page-drop-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: min(92%, 460px);
+      padding: 48px 32px;
+      border: 2px dashed var(--border3);
+      border-radius: var(--r-lg);
+      text-align: center;
+    }
+
+    .page-drop-box svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: var(--color-primary-100);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.9;
+    }
+
+    .page-drop-title {
+      font-family: var(--mono);
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      color: var(--color-primary-100);
+    }
+
+    .page-drop-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--color-primary-300);
+    }
+
+    /* ── Image lightbox ── */
+    .img-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 950;
+      display: none;
+    }
+
+    .img-lightbox.open {
+      display: block;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.86);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+    }
+
+    .lightbox-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 16px 20px 18px;
+      gap: 14px;
+    }
+
+    .lightbox-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .lightbox-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--color-primary-200);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .lightbox-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .lightbox-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-sizing: border-box;
+      height: 32px;
+      padding: 0 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--color-primary-100);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+
+    .lightbox-btn:hover {
+      background: rgba(255, 255, 255, 0.11);
+      border-color: var(--border3);
+    }
+
+    .lightbox-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .lightbox-icon-btn {
+      width: 32px;
+      padding: 0;
+    }
+
+    .lightbox-close {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .lightbox-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: var(--r);
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border2);
+      color: #fff;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+
+    .lightbox-nav:hover {
+      background: rgba(0, 0, 0, 0.8);
+      border-color: var(--border3);
+    }
+
+    .lightbox-prev {
+      left: 6px;
+    }
+
+    .lightbox-next {
+      right: 6px;
+    }
+
+    .lightbox-strip {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      overflow-x: auto;
+      flex-shrink: 0;
+      padding: 4px 2px;
+    }
+
+    .lightbox-thumb {
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: var(--r-sm);
+      border: 2px solid transparent;
+      opacity: 0.45;
+      cursor: pointer;
+      transition: opacity .15s, border-color .15s;
+    }
+
+    .lightbox-thumb:hover {
+      opacity: 0.8;
+    }
+
+    .lightbox-thumb.active {
+      opacity: 1;
+      border-color: var(--color-primary-200);
+    }
+
     .session-overlay {
       position: fixed;
       inset: 0;
@@ -917,24 +1152,33 @@ if ($authed) {
       display: none;
     }
 
-    .upload-progress {
+    /* Upload queue — one row per selected file (active animates, pending sit at 0%) */
+    .upload-queue {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 18px 0 4px;
+    }
+
+    .upload-queue:empty {
       display: none;
+      margin: 0;
+    }
+
+    .upload-row {
+      display: flex;
       flex-direction: column;
       gap: 7px;
     }
 
-    .upload-progress.show {
-      display: flex;
-    }
-
-    .upload-progress-header {
+    .upload-row-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
     }
 
-    .upload-progress-name {
+    .upload-row-name {
       font-size: 11px;
       color: var(--color-primary-300);
       overflow: hidden;
@@ -943,7 +1187,7 @@ if ($authed) {
       flex: 1;
     }
 
-    .upload-progress-pct {
+    .upload-row-pct {
       font-size: 11px;
       color: var(--color-primary-300);
       flex-shrink: 0;
@@ -952,14 +1196,19 @@ if ($authed) {
       text-align: right;
     }
 
-    .upload-progress-track {
+    .upload-row.pending .upload-row-name,
+    .upload-row.pending .upload-row-pct {
+      color: var(--color-primary-400);
+    }
+
+    .upload-row-track {
       height: 3px;
       background: rgba(255, 255, 255, 0.08);
       border-radius: 2px;
       overflow: hidden;
     }
 
-    .upload-progress-fill {
+    .upload-row-fill {
       height: 100%;
       width: 0%;
       background: var(--green);
@@ -970,23 +1219,6 @@ if ($authed) {
 </head>
 
 <body>
-
-  <?php if (!$authed): ?>
-
-    <div class="lock-card">
-      <div class="lock-title">Admin <em>access</em></div>
-      <form method="POST" class="lock-field">
-        <label for="pw">Passcode</label>
-        <input class="lock-input" type="password" id="pw" name="password" autocomplete="off" autofocus>
-        <div class="lock-error <?= isset($_GET['err']) ? 'show' : '' ?>">Incorrect passcode.</div>
-        <button class="lock-submit" type="submit">Unlock</button>
-      </form>
-      <a href="/" class="lock-home">
-        <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Back to home
-      </a>
-    </div>
-
-  <?php else: ?>
 
     <div class="session-overlay hidden" id="session-overlay">
       <div class="lock-card">
@@ -1031,18 +1263,10 @@ if ($authed) {
           <span class="expire-label">Expires after</span>
           <button class="expire-btn" data-hours="1" onclick="setExpiry('file',1,this)">1h</button>
           <button class="expire-btn" data-hours="24" onclick="setExpiry('file',24,this)">24h</button>
-          <button class="expire-btn active" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
-          <button class="expire-btn" data-hours="168" onclick="setExpiry('file',168,this)">1 week</button>
+          <button class="expire-btn" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
+          <button class="expire-btn active" data-hours="168" onclick="setExpiry('file',168,this)">1 week</button>
         </div>
-        <div class="upload-progress" id="file-progress">
-          <div class="upload-progress-header">
-            <span class="upload-progress-name"></span>
-            <span class="upload-progress-pct">0%</span>
-          </div>
-          <div class="upload-progress-track">
-            <div class="upload-progress-fill"></div>
-          </div>
-        </div>
+        <div class="upload-queue" id="file-queue"></div>
         <div class="item-list" id="file-list"></div>
       </div>
 
@@ -1071,24 +1295,52 @@ if ($authed) {
           <span class="expire-label">Expires after</span>
           <button class="expire-btn" data-hours="1" onclick="setExpiry('img',1,this)">1h</button>
           <button class="expire-btn" data-hours="24" onclick="setExpiry('img',24,this)">24h</button>
-          <button class="expire-btn active" data-hours="72" onclick="setExpiry('img',72,this)">3 days</button>
-          <button class="expire-btn" data-hours="168" onclick="setExpiry('img',168,this)">1 week</button>
+          <button class="expire-btn" data-hours="72" onclick="setExpiry('img',72,this)">3 days</button>
+          <button class="expire-btn active" data-hours="168" onclick="setExpiry('img',168,this)">1 week</button>
           <button class="expire-btn" data-hours="720" onclick="setExpiry('img',720,this)">1 month</button>
         </div>
-        <div class="upload-progress" id="img-progress">
-          <div class="upload-progress-header">
-            <span class="upload-progress-name"></span>
-            <span class="upload-progress-pct">0%</span>
-          </div>
-          <div class="upload-progress-track">
-            <div class="upload-progress-fill"></div>
-          </div>
-        </div>
+        <div class="upload-queue" id="img-queue"></div>
         <div class="item-list" id="img-list"></div>
       </div>
     </div>
 
-  <?php endif; ?>
+  <div class="page-drop-overlay" id="page-drop-overlay">
+    <div class="page-drop-box">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="7 9 12 4 17 9" />
+        <line x1="12" y1="4" x2="12" y2="16" />
+      </svg>
+      <div class="page-drop-title">Drop to upload</div>
+      <div class="page-drop-sub">Drop files anywhere on the page</div>
+    </div>
+  </div>
+
+  <!-- ── Image lightbox ── -->
+  <div class="img-lightbox" id="img-lightbox" aria-hidden="true">
+    <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
+    <div class="lightbox-content">
+      <div class="lightbox-topbar">
+        <span class="lightbox-name" id="lightbox-name"></span>
+        <div class="lightbox-actions">
+          <a class="lightbox-btn" id="lightbox-dl" download>
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </a>
+          <button class="lightbox-btn lightbox-icon-btn" id="lightbox-copy" title="Copy link">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+          <button class="lightbox-btn lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <div class="lightbox-stage">
+        <button class="lightbox-nav lightbox-prev" onclick="lightboxGo(-1)" aria-label="Previous">&lsaquo;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="">
+        <button class="lightbox-nav lightbox-next" onclick="lightboxGo(1)" aria-label="Next">&rsaquo;</button>
+      </div>
+      <div class="lightbox-strip" id="lightbox-strip"></div>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
   <script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
@@ -1096,8 +1348,8 @@ if ($authed) {
     const BASE = window.location.origin;
     const MAX_UPLOAD_BYTES = <?= MAX_UPLOAD_MB * 1024 * 1024 ?>;
     const MAX_UPLOAD_LABEL = '<?= MAX_UPLOAD_MB ?> MB';
-    let fileExpiry = 72;
-    let imgExpiry = 72;
+    let fileExpiry = 168;
+    let imgExpiry = 168;
     let editingSnipId = null;
 
     // ── Expiry ───────────────────────────────────────────────────────
@@ -1119,23 +1371,35 @@ if ($authed) {
     }
 
     // ── Upload ───────────────────────────────────────────────────────
-    function uploadFile(file, type) {
+    // Build a queue row for one file (starts pending at 0%).
+    function makeUploadRow(type, name) {
+      const container = document.getElementById(type === 'image' ? 'img-queue' : 'file-queue');
+      const row = document.createElement('div');
+      row.className = 'upload-row pending';
+      row.innerHTML = `
+        <div class="upload-row-head">
+          <span class="upload-row-name"></span>
+          <span class="upload-row-pct">0%</span>
+        </div>
+        <div class="upload-row-track"><div class="upload-row-fill"></div></div>`;
+      row.querySelector('.upload-row-name').textContent = name;
+      container.appendChild(row);
+      return row;
+    }
+
+    function uploadOne(file, type, row) {
       return new Promise(resolve => {
+        const pctEl = row.querySelector('.upload-row-pct');
+        const fillEl = row.querySelector('.upload-row-fill');
+
         if (file.size > MAX_UPLOAD_BYTES) {
           showToast(file.name + ' exceeds the ' + MAX_UPLOAD_LABEL + ' limit');
+          row.remove();
           resolve();
           return;
         }
 
-        const progressEl = document.getElementById(type === 'image' ? 'img-progress' : 'file-progress');
-        const nameEl = progressEl.querySelector('.upload-progress-name');
-        const pctEl = progressEl.querySelector('.upload-progress-pct');
-        const fillEl = progressEl.querySelector('.upload-progress-fill');
-
-        nameEl.textContent = file.name;
-        pctEl.textContent = '0%';
-        fillEl.style.width = '0%';
-        progressEl.classList.add('show');
+        row.classList.remove('pending');
 
         const fd = new FormData();
         fd.append('upload', file);
@@ -1156,7 +1420,7 @@ if ($authed) {
           fillEl.style.width = '100%';
           pctEl.textContent = '100%';
           setTimeout(async () => {
-            progressEl.classList.remove('show');
+            row.remove();
             try {
               const json = JSON.parse(xhr.responseText);
               if (json.ok) {
@@ -1169,17 +1433,17 @@ if ($authed) {
               showToast('Upload failed — server returned an unexpected response');
             }
             resolve();
-          }, 350);
+          }, 250);
         });
 
         xhr.addEventListener('error', () => {
-          progressEl.classList.remove('show');
+          row.remove();
           showToast('Upload failed — server dropped the connection');
           resolve();
         });
 
         xhr.addEventListener('abort', () => {
-          progressEl.classList.remove('show');
+          row.remove();
           showToast('Upload cancelled');
           resolve();
         });
@@ -1188,26 +1452,71 @@ if ($authed) {
       });
     }
 
+    // Queue a batch: show every file up front (pending), then upload one at a time.
+    async function uploadBatch(files, type) {
+      const list = [...files];
+      if (!list.length) return;
+      const rows = list.map(f => makeUploadRow(type, f.name));
+      for (let i = 0; i < list.length; i++) {
+        await uploadOne(list[i], type, rows[i]);
+      }
+    }
+
     function bindUploadZone(zoneId, inputId, type) {
       const zone = document.getElementById(zoneId);
       const input = document.getElementById(inputId);
       if (!zone || !input) return;
 
-      async function runUploads(files) {
-        for (const f of files) await uploadFile(f, type);
-      }
-
       input.addEventListener('change', () => {
         const files = [...input.files];
         input.value = '';
-        runUploads(files);
+        uploadBatch(files, type);
       });
-      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-      zone.addEventListener('drop', e => {
+      // Dropping is handled page-wide (see initPageDrop) so files can be dropped anywhere.
+    }
+
+    // ── Page-wide drag & drop ────────────────────────────────────────
+    function uploadTypeForActiveTab() {
+      return document.getElementById('tab-images')?.classList.contains('active') ? 'image' : 'file';
+    }
+
+    function runDroppedUploads(files, type) {
+      return uploadBatch(files, type);
+    }
+
+    function initPageDrop() {
+      const overlay = document.getElementById('page-drop-overlay');
+      if (!overlay) return;
+      let depth = 0;
+      const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+
+      window.addEventListener('dragenter', e => {
+        if (!hasFiles(e)) return;
         e.preventDefault();
-        zone.classList.remove('drag-over');
-        runUploads([...e.dataTransfer.files]);
+        depth++;
+        overlay.classList.add('show');
+      });
+      window.addEventListener('dragover', e => {
+        if (!hasFiles(e)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      });
+      window.addEventListener('dragleave', e => {
+        if (!hasFiles(e)) return;
+        depth = Math.max(0, depth - 1);
+        if (depth === 0) overlay.classList.remove('show');
+      });
+      window.addEventListener('drop', e => {
+        if (!hasFiles(e)) return;
+        e.preventDefault();
+        depth = 0;
+        overlay.classList.remove('show');
+        const files = [...e.dataTransfer.files];
+        if (!files.length) return;
+        const type = uploadTypeForActiveTab();
+        // Make sure the destination tab is visible so its progress + list show.
+        if (type === 'file' && !document.getElementById('tab-files').classList.contains('active')) switchTab('files');
+        runDroppedUploads(files, type);
       });
     }
 
@@ -1370,10 +1679,19 @@ if ($authed) {
     function renderImages(files) {
       const el = document.getElementById('img-list');
       const list = files.filter(f => f.type === 'image');
-      if (!list.length) { el.className = 'item-list'; el.innerHTML = '<div class="empty-state">No hosted images</div>'; return; }
+      // Preserve which image is open in the lightbox across re-renders (polling/delete).
+      const openTok = lightboxOpen() && _gallery[_lightboxIdx] ? _gallery[_lightboxIdx].token : null;
+      if (!list.length) {
+        el.className = 'item-list';
+        el.innerHTML = '<div class="empty-state">No hosted images</div>';
+        _gallery = [];
+        if (openTok) closeLightbox();
+        return;
+      }
       el.className = 'item-grid';
       el.innerHTML = '';
-      list.slice().reverse().forEach(f => {
+      _gallery = list.slice().reverse();
+      _gallery.forEach((f, i) => {
         const imgUrl = BASE + '/admin/?img=' + f.token;
         const dlUrl = BASE + '/admin/?token=' + f.token;
         const card = document.createElement('div');
@@ -1396,9 +1714,100 @@ if ($authed) {
           <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
         </button>
       </div>`;
+        card.querySelector('.item-card-img').addEventListener('click', () => openLightbox(i));
         el.appendChild(card);
       });
+      // Re-sync an open lightbox to the same image (or nearest) after a re-render.
+      if (openTok) {
+        const ni = _gallery.findIndex(f => f.token === openTok);
+        if (ni === -1) lightboxSet(Math.min(_lightboxIdx, _gallery.length - 1));
+        else { _lightboxIdx = ni; buildLightboxStrip(); showLightboxImage(); updateStripActive(); }
+      }
     }
+
+    // ── Image lightbox ───────────────────────────────────────────────
+    let _gallery = [];
+    let _lightboxIdx = -1;
+    const lightboxOpen = () => document.getElementById('img-lightbox').classList.contains('open');
+
+    function openLightbox(index) {
+      if (!_gallery.length) return;
+      _lightboxIdx = Math.max(0, Math.min(index, _gallery.length - 1));
+      buildLightboxStrip();
+      showLightboxImage();
+      updateStripActive();
+      const lb = document.getElementById('img-lightbox');
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('img-lightbox');
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function lightboxGo(delta) {
+      if (_gallery.length < 2) return;
+      _lightboxIdx = (_lightboxIdx + delta + _gallery.length) % _gallery.length;
+      showLightboxImage();
+      updateStripActive();
+    }
+
+    function lightboxSet(index) {
+      if (!_gallery.length) { closeLightbox(); return; }
+      _lightboxIdx = Math.max(0, Math.min(index, _gallery.length - 1));
+      showLightboxImage();
+      updateStripActive();
+    }
+
+    function showLightboxImage() {
+      const f = _gallery[_lightboxIdx];
+      if (!f) return;
+      const imgUrl = BASE + '/admin/?img=' + f.token;
+      const dlUrl = BASE + '/admin/?token=' + f.token;
+      const img = document.getElementById('lightbox-img');
+      img.src = imgUrl;
+      img.alt = f.name;
+      document.getElementById('lightbox-name').textContent = f.name;
+      const dl = document.getElementById('lightbox-dl');
+      dl.href = dlUrl;
+      dl.setAttribute('download', f.name);
+      document.getElementById('lightbox-copy').onclick = () => copyAndToast(imgUrl);
+      const single = _gallery.length < 2;
+      document.querySelectorAll('.lightbox-nav').forEach(n => n.style.display = single ? 'none' : '');
+    }
+
+    function buildLightboxStrip() {
+      const strip = document.getElementById('lightbox-strip');
+      strip.style.display = _gallery.length < 2 ? 'none' : 'flex';
+      strip.innerHTML = '';
+      _gallery.forEach((f, i) => {
+        const t = document.createElement('img');
+        t.className = 'lightbox-thumb' + (i === _lightboxIdx ? ' active' : '');
+        t.src = BASE + '/admin/?img=' + f.token;
+        t.alt = f.name;
+        t.loading = 'lazy';
+        t.addEventListener('click', () => lightboxSet(i));
+        strip.appendChild(t);
+      });
+    }
+
+    function updateStripActive() {
+      const thumbs = document.querySelectorAll('#lightbox-strip .lightbox-thumb');
+      thumbs.forEach((t, i) => t.classList.toggle('active', i === _lightboxIdx));
+      const active = thumbs[_lightboxIdx];
+      if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', e => {
+      if (!lightboxOpen()) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') lightboxGo(-1);
+      else if (e.key === 'ArrowRight') lightboxGo(1);
+    });
 
     function renderSnips(snips) {
       const el = document.getElementById('snip-list');
@@ -1513,6 +1922,7 @@ if ($authed) {
       // ── Init ─────────────────────────────────────────────────────────
       bindUploadZone('file-zone', 'file-input', 'file');
       bindUploadZone('img-zone', 'img-input', 'image');
+      initPageDrop();
       document.getElementById('snip-text').addEventListener('input', scheduleSnipAutoSave);
       loadData();
       _sessionInterval = setInterval(pingSession, 60000);
