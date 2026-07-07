@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /password/
+
+Sitemap: https://oneredesigns.com/sitemap.xml

@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Type Scale — ONE design';
+$pageDescription = 'Build responsive typography scales for desktop and mobile, load Google Fonts, and export clean CSS variables or utility classes.';
 $activePage = 'type-guide';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -8,7 +9,10 @@ require '../includes/header.php';
 <main class="panel">
 
   <div class="topstrip">
-    <span class="topstrip-title">Typography <em>guide</em></span>
+    <div class="topstrip-head">
+      <h1 class="topstrip-title">Typography <em>guide</em></h1>
+      <p class="topstrip-intro">Build a responsive type scale for desktop and mobile, choose heading and body fonts, and tune tracking and line height at each level. Export CSS variables or utility classes for consistent typography.</p>
+    </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
@@ -109,6 +113,11 @@ require '../includes/header.php';
 
       <div class="type-preview-wrap" id="type-preview-wrap">
         <div class="type-preview" id="type-preview"></div>
+        <section class="tool-seo-section" aria-labelledby="type-seo-title" style="margin:0 28px 28px;">
+          <h2 id="type-seo-title">Build A Responsive Typography Scale</h2>
+          <p>This typography scale tool helps you create a more consistent system for headings, body copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+          <p>It is especially useful when you need a type scale generator for product UI, landing pages, or design-system documentation. With Google Fonts support and exportable CSS variables or classes, it shortens the path from type exploration to a reusable typography system.</p>
+        </section>
       </div>
 
     </div>

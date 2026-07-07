@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Saved — ONE design';
+$pageDescription = 'Access saved palettes and type guides, reopen them in tools, and export your stored design tokens.';
 $activePage = 'saved-palettes';
 require '../includes/header.php';
 ?>
@@ -8,7 +9,7 @@ require '../includes/header.php';
 
   <div class="topbar">
     <div class="topbar-greeting">
-      <h2>Saved <em>work</em></h2>
+      <h1>Saved <em>work</em></h1>
       <p>Your color palettes, gradients, and type guides.</p>
     </div>
   </div>
@@ -33,8 +34,8 @@ require '../includes/header.php';
   <div class="palettes-empty" id="gradients-empty" style="display:none">
     <div class="palettes-empty-icon">
       <svg viewBox="0 0 24 24">
-        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-        <line x1="4" y1="22" x2="4" y2="15"/>
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+        <line x1="4" y1="22" x2="4" y2="15" />
       </svg>
     </div>
     <h3>No saved gradients</h3>
@@ -74,9 +75,9 @@ require '../includes/header.php';
   <div id="export-footer" style="display:none; margin-top:48px; padding-top:24px; border-top:1px solid var(--border)">
     <button class="btn btn-primary" onclick="openExportModal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
       </svg>
       Export all styles
     </button>
@@ -92,8 +93,8 @@ require '../includes/header.php';
       <div class="export-modal-actions">
         <button class="btn btn-primary" id="export-copy-btn" onclick="copyExportCSS()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
           </svg>
           Copy
         </button>
@@ -123,10 +124,10 @@ require '../includes/header.php';
   }
 
   // ── PALETTES ──────────────────────────────────────────────────
-  const PAL_KEY  = 'oklch-palettes';
+  const PAL_KEY = 'oklch-palettes';
   const TYPE_KEY = 'oklch-type-saves';
   const GRAD_KEY = 'oklch-gradients';
-  const BTN_KEY  = 'oklch-buttons';
+  const BTN_KEY = 'oklch-buttons';
 
   function loadPalettes() { return JSON.parse(localStorage.getItem(PAL_KEY) || '[]'); }
   function savePalettes(p) { localStorage.setItem(PAL_KEY, JSON.stringify(p)); }
@@ -277,8 +278,8 @@ require '../includes/header.php';
   }
 
   // ── GRADIENTS ─────────────────────────────────────────────────
-  function loadGradients()   { return JSON.parse(localStorage.getItem(GRAD_KEY) || '[]'); }
-  function saveGradients(g)  { localStorage.setItem(GRAD_KEY, JSON.stringify(g)); }
+  function loadGradients() { return JSON.parse(localStorage.getItem(GRAD_KEY) || '[]'); }
+  function saveGradients(g) { localStorage.setItem(GRAD_KEY, JSON.stringify(g)); }
 
   function buildGradientCard(g) {
     const card = document.createElement('div');
@@ -336,15 +337,15 @@ require '../includes/header.php';
   const SYSTEM_STACK = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
   const loadedBtnFonts = new Set();
 
-  function loadButtons()  { try { return JSON.parse(localStorage.getItem(BTN_KEY) || '[]'); } catch (_) { return []; } }
+  function loadButtons() { try { return JSON.parse(localStorage.getItem(BTN_KEY) || '[]'); } catch (_) { return []; } }
   function saveButtons(b) { localStorage.setItem(BTN_KEY, JSON.stringify(b)); }
 
   function slugify(str, fallback) {
     return (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fallback;
   }
 
-  function btnFontStack(st)  { return st.fontStack || SYSTEM_STACK; }
-  function isGoogleFont(st)  { return st.fontFamily && st.fontFamily !== 'System UI'; }
+  function btnFontStack(st) { return st.fontStack || SYSTEM_STACK; }
+  function isGoogleFont(st) { return st.fontFamily && st.fontFamily !== 'System UI'; }
   function btnFontImport(st) { return `https://fonts.googleapis.com/css2?family=${encodeURIComponent(st.fontFamily)}:wght@300;400;500;600;700&display=swap`; }
 
   function ensureBtnFont(st) {
@@ -358,12 +359,12 @@ require '../includes/header.php';
 
   function buttonPreviewStyle(st, variant) {
     const p = variant === 'primary' ? 'p' : variant === 'secondary' ? 's' : 't';
-    const bg     = st[p + 'BgOn']     ? st[p + 'Bg']     : 'transparent';
+    const bg = st[p + 'BgOn'] ? st[p + 'Bg'] : 'transparent';
     const border = st[p + 'BorderOn'] ? st[p + 'Border'] : 'transparent';
     return `font-family:${btnFontStack(st)};font-size:${st.fontSize}px;font-weight:${st.fontWeight};`
-         + `padding:${st.padV}px ${st.padH}px;border-radius:${st.radius}px;`
-         + `border:1.5px solid ${border};background:${bg};color:${st[p + 'Text']};`
-         + `opacity:${(st[p + 'Opacity'] ?? 100) / 100};`;
+      + `padding:${st.padV}px ${st.padH}px;border-radius:${st.radius}px;`
+      + `border:1.5px solid ${border};background:${bg};color:${st[p + 'Text']};`
+      + `opacity:${(st[p + 'Opacity'] ?? 100) / 100};`;
   }
 
   function genButtonCSS(b, slugOverride, skipImport) {
@@ -435,8 +436,8 @@ require '../includes/header.php';
     const preview = document.createElement('div'); preview.className = 'btn-save-preview';
     preview.innerHTML =
       `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'primary')}">Primary</button>`
-    + `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'secondary')}">Secondary</button>`
-    + (b.s.tText != null ? `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'tertiary')}">Tertiary</button>` : '');
+      + `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'secondary')}">Secondary</button>`
+      + (b.s.tText != null ? `<button class="btn-save-demo" style="${buttonPreviewStyle(b.s, 'tertiary')}">Tertiary</button>` : '');
     card.appendChild(preview);
 
     const footer = document.createElement('div'); footer.className = 'palette-card-footer';
@@ -484,7 +485,7 @@ require '../includes/header.php';
 
   function renderGradients() {
     const grads = loadGradients();
-    const grid  = document.getElementById('gradients-grid');
+    const grid = document.getElementById('gradients-grid');
     const empty = document.getElementById('gradients-empty');
     if (!grads.length) { grid.style.display = 'none'; empty.style.display = 'flex'; return; }
     grid.style.display = ''; empty.style.display = 'none'; grid.innerHTML = '';
@@ -492,8 +493,8 @@ require '../includes/header.php';
   }
 
   function renderButtons() {
-    const btns  = loadButtons();
-    const grid  = document.getElementById('buttons-grid');
+    const btns = loadButtons();
+    const grid = document.getElementById('buttons-grid');
     const empty = document.getElementById('buttons-empty');
     if (!btns.length) { grid.style.display = 'none'; empty.style.display = 'flex'; return; }
     grid.style.display = ''; empty.style.display = 'none'; grid.innerHTML = '';
@@ -517,8 +518,8 @@ require '../includes/header.php';
 
   function genAllExportCSS() {
     const palettes = loadPalettes();
-    const types    = loadTypeSaves();
-    const lines    = [];
+    const types = loadTypeSaves();
+    const lines = [];
 
     if (palettes.length) {
       lines.push('/* ── Color Palettes ─────────────────────────── */');

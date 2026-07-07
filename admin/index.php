@@ -2,6 +2,8 @@
 session_start();
 require_once __DIR__ . '/../includes/version.php';
 
+header('X-Robots-Tag: noindex, nofollow', true);
+
 require_once __DIR__ . '/../includes/admin-auth.php';
 define('MAX_UPLOAD_MB', 512);
 

@@ -1,12 +1,13 @@
 <?php
-$pageTitle  = 'Export history — ONE design';
+$pageTitle = 'Export history — ONE design';
+$pageDescription = 'Review, copy, and clear your recent design exports across palette, color, gradient, and typography tools.';
 $activePage = 'export-history';
 require '../includes/header.php';
 ?>
 
 <main class="scrollable">
   <div class="topstrip">
-    <div class="topstrip-title">Export history</div>
+    <h1 class="topstrip-title">Export history</h1>
     <div class="topstrip-actions">
       <button class="btn btn-ghost" onclick="clearHistory()" id="clear-btn" style="display:none">Clear all</button>
     </div>
@@ -15,7 +16,9 @@ require '../includes/header.php';
   <div class="eh-wrap" id="eh-wrap">
     <div class="eh-empty" id="eh-empty" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
       </svg>
@@ -27,51 +30,51 @@ require '../includes/header.php';
 
 <script src="/assets/color-math.js?v=<?= APP_VERSION ?>"></script>
 <script>
-const TOOL_LABELS = { palette: 'Palette', gradient: 'Gradient', color: 'Color', type: 'Type guide' };
+  const TOOL_LABELS = { palette: 'Palette', gradient: 'Gradient', color: 'Color', type: 'Type guide' };
 
-function timeAgo(ts) {
-  const diff = Date.now() - ts;
-  const mins = Math.floor(diff / 60000);
-  const hrs  = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-  if (mins < 1)  return 'just now';
-  if (mins < 60) return mins + 'm ago';
-  if (hrs  < 24) return hrs  + 'h ago';
-  if (days < 7)  return days + 'd ago';
-  return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function truncate(str, max) {
-  if (!str) return '';
-  const lines = str.split('\n').slice(0, 4).join('\n');
-  return lines.length > max ? lines.slice(0, max) + '…' : lines;
-}
-
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(EXPORT_HISTORY_KEY) || '[]'); } catch(_) { return []; }
-}
-
-function render() {
-  const history = loadHistory();
-  const list  = document.getElementById('eh-list');
-  const empty = document.getElementById('eh-empty');
-  const clearBtn = document.getElementById('clear-btn');
-
-  if (!history.length) {
-    empty.style.display = '';
-    clearBtn.style.display = 'none';
-    list.innerHTML = '';
-    return;
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    const hrs = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    if (hrs < 24) return hrs + 'h ago';
+    if (days < 7) return days + 'd ago';
+    return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  empty.style.display = 'none';
-  clearBtn.style.display = '';
+  function truncate(str, max) {
+    if (!str) return '';
+    const lines = str.split('\n').slice(0, 4).join('\n');
+    return lines.length > max ? lines.slice(0, max) + '…' : lines;
+  }
 
-  list.innerHTML = history.map((entry, i) => {
-    const toolLabel   = TOOL_LABELS[entry.tool] || entry.tool;
-    const preview     = truncate(entry.content || '', 300);
-    const time        = timeAgo(entry.ts);
-    return `
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(EXPORT_HISTORY_KEY) || '[]'); } catch (_) { return []; }
+  }
+
+  function render() {
+    const history = loadHistory();
+    const list = document.getElementById('eh-list');
+    const empty = document.getElementById('eh-empty');
+    const clearBtn = document.getElementById('clear-btn');
+
+    if (!history.length) {
+      empty.style.display = '';
+      clearBtn.style.display = 'none';
+      list.innerHTML = '';
+      return;
+    }
+
+    empty.style.display = 'none';
+    clearBtn.style.display = '';
+
+    list.innerHTML = history.map((entry, i) => {
+      const toolLabel = TOOL_LABELS[entry.tool] || entry.tool;
+      const preview = truncate(entry.content || '', 300);
+      const time = timeAgo(entry.ts);
+      return `
       <div class="eh-entry" data-id="${entry.id}">
         <div class="eh-entry-meta">
           <span class="eh-badge eh-badge-${entry.tool}">${toolLabel}</span>
@@ -88,34 +91,34 @@ function render() {
           <button class="btn btn-sm btn-ghost" onclick="deleteEntry('${entry.id}')">Delete</button>
         </div>
       </div>`;
-  }).join('');
-}
+    }).join('');
+  }
 
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+  function escHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
-function recopy(i) {
-  const history = loadHistory();
-  if (!history[i]) return;
-  navigator.clipboard.writeText(history[i].content || '').then(() => showToast('Copied!'));
-}
+  function recopy(i) {
+    const history = loadHistory();
+    if (!history[i]) return;
+    navigator.clipboard.writeText(history[i].content || '').then(() => showToast('Copied!'));
+  }
 
-function deleteEntry(id) {
-  try {
-    const h = loadHistory().filter(e => e.id !== id);
-    localStorage.setItem(EXPORT_HISTORY_KEY, JSON.stringify(h));
+  function deleteEntry(id) {
+    try {
+      const h = loadHistory().filter(e => e.id !== id);
+      localStorage.setItem(EXPORT_HISTORY_KEY, JSON.stringify(h));
+      render();
+    } catch (_) { }
+  }
+
+  function clearHistory() {
+    if (!confirm('Clear all export history?')) return;
+    localStorage.removeItem(EXPORT_HISTORY_KEY);
     render();
-  } catch(_){}
-}
+  }
 
-function clearHistory() {
-  if (!confirm('Clear all export history?')) return;
-  localStorage.removeItem(EXPORT_HISTORY_KEY);
   render();
-}
-
-render();
 </script>
 
 <?php require '../includes/footer.php'; ?>

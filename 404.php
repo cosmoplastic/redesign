@@ -1,5 +1,6 @@
 <?php
-$pageTitle  = '404 — ONE design';
+$pageTitle = '404 — ONE design';
+$pageRobots = 'noindex, follow';
 $activePage = '';
 require 'includes/header.php';
 ?>
@@ -8,7 +9,7 @@ require 'includes/header.php';
   <div class="not-found">
     <div class="not-found-inner">
       <p class="not-found-code">404</p>
-      <h2>Page not found</h2>
+      <h1>Page not found</h1>
       <p class="not-found-desc">That URL doesn't exist. Maybe it moved, or maybe
         you typed something wrong — either way, there's nothing here.</p>
       <a href="/" class="btn not-found-btn">

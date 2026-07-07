@@ -2,6 +2,8 @@
 session_start();
 require_once __DIR__ . '/../includes/admin-auth.php';
 
+header('X-Robots-Tag: noindex, nofollow', true);
+
 // Expire a stale session so we always show a fresh gate.
 if (!empty($_SESSION['admin']) && isset($_SESSION['admin_time'])) {
   if (time() - $_SESSION['admin_time'] > SESSION_TTL) {

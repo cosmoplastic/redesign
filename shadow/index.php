@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Shadow & Elevation — ONE design';
+$pageDescription = 'Design semantic shadow scales for light and dark surfaces, tint shadows from your palette, and export CSS tokens or Figma-ready values.';
 $activePage = 'shadow';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -14,9 +15,16 @@ require '../includes/header.php';
     padding: 18px 20px;
     border-bottom: 1px solid var(--border);
   }
-  .shadow-page .grad-panel .picker-card:last-child { border-bottom: none; }
+
+  .shadow-page .grad-panel .picker-card:last-child {
+    border-bottom: none;
+  }
+
   /* Narrow-panel segmented controls fill the width instead of overflowing */
-  .shadow-page .grad-panel .tabs { width: 100%; }
+  .shadow-page .grad-panel .tabs {
+    width: 100%;
+  }
+
   .shadow-page .grad-panel .tab-btn {
     flex: 1;
     min-width: 0;
@@ -28,6 +36,7 @@ require '../includes/header.php';
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   /* Right side: preview + tokens scroll area */
   .shadow-page .shadow-scroll {
     flex: 1;
@@ -39,7 +48,10 @@ require '../includes/header.php';
 <main class="panel shadow-page">
 
   <div class="topstrip">
-    <span class="topstrip-title">Shadow <em>& elevation</em></span>
+    <div class="topstrip-head">
+      <h1 class="topstrip-title">Shadow <em>& elevation</em></h1>
+      <p class="topstrip-intro">Build semantic shadow and elevation tokens for light and dark surfaces. Tint shadows from your palette, compare depth levels, and export clean CSS values or Figma-ready tokens.</p>
+    </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
@@ -144,32 +156,38 @@ require '../includes/header.php';
     <!-- ── RIGHT COLUMN: preview + tokens ─────────────── -->
     <div class="grad-main">
       <div class="shadow-scroll">
-      <div class="scales-header">
-        <span class="scales-header-label">Preview &amp; tokens</span>
-        <div class="shadow-surface-toggle tabs">
-          <button class="tab-btn active" id="surface-both" onclick="setSurface('both')">Both</button>
-          <button class="tab-btn" id="surface-light" onclick="setSurface('light')">Light</button>
-          <button class="tab-btn" id="surface-dark" onclick="setSurface('dark')">Dark</button>
+        <div class="scales-header">
+          <span class="scales-header-label">Preview &amp; tokens</span>
+          <div class="shadow-surface-toggle tabs">
+            <button class="tab-btn active" id="surface-both" onclick="setSurface('both')">Both</button>
+            <button class="tab-btn" id="surface-light" onclick="setSurface('light')">Light</button>
+            <button class="tab-btn" id="surface-dark" onclick="setSurface('dark')">Dark</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Dual surface preview -->
-      <div class="shadow-surfaces" id="shadow-surfaces">
-        <div class="shadow-surface shadow-surface--light" id="surface-light-panel">
-          <span class="shadow-surface-label">Light surface</span>
-          <div class="shadow-preview-cards" id="light-cards"></div>
+        <!-- Dual surface preview -->
+        <div class="shadow-surfaces" id="shadow-surfaces">
+          <div class="shadow-surface shadow-surface--light" id="surface-light-panel">
+            <span class="shadow-surface-label">Light surface</span>
+            <div class="shadow-preview-cards" id="light-cards"></div>
+          </div>
+          <div class="shadow-surface shadow-surface--dark" id="surface-dark-panel">
+            <span class="shadow-surface-label">Dark surface</span>
+            <div class="shadow-preview-cards" id="dark-cards"></div>
+          </div>
         </div>
-        <div class="shadow-surface shadow-surface--dark" id="surface-dark-panel">
-          <span class="shadow-surface-label">Dark surface</span>
-          <div class="shadow-preview-cards" id="dark-cards"></div>
-        </div>
-      </div>
 
-      <!-- Token rows -->
-      <div class="scales-header" style="margin-top:24px">
-        <span class="scales-header-label">CSS tokens</span>
-      </div>
-      <div class="shadow-tokens" id="token-rows"></div>
+        <!-- Token rows -->
+        <div class="scales-header" style="margin-top:24px">
+          <span class="scales-header-label">CSS tokens</span>
+        </div>
+        <div class="shadow-tokens" id="token-rows"></div>
+
+        <section class="tool-seo-section" aria-labelledby="shadow-seo-title">
+          <h2 id="shadow-seo-title">Create A More Useful Elevation System</h2>
+          <p>This shadow and elevation tool helps you move beyond random box-shadow values by building a semantic depth scale. You can compare shadows on light and dark surfaces, tint them from your palette, and create a set that feels more intentional across cards, overlays, dropdowns, and modal layers.</p>
+          <p>It is a practical fit for teams building design systems or product UI where consistency matters. If you need an elevation token generator for CSS or Figma, this page gives you a structured way to define depth and export it into a reusable system.</p>
+        </section>
       </div><!-- /.shadow-scroll -->
     </div><!-- /.grad-main -->
 

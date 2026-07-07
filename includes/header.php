@@ -3,8 +3,106 @@ require_once __DIR__ . '/version.php';
 // Variables expected from caller:
 // $pageTitle       (string) — page <title>
 // $pageDescription (string, optional) — meta description / og:description
+// $pageRobots      (string, optional) — robots meta content
 // $activePage      (string) — 'index' | 'palette' | 'picker' | 'gradient' | 'case-converter' | 'type-guide' | 'saved-palettes' | 'export-history'
 // $shellClass      (string, optional) — extra class appended to .shell
+
+$canonicalHost = 'https://oneredesigns.com';
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+if ($requestPath !== '/' && substr($requestPath, -1) !== '/') {
+    $requestPath .= '/';
+}
+$canonicalUrl = $canonicalHost . $requestPath;
+
+$pageLabelMap = [
+    'index' => 'All tools',
+    'palette' => 'Palette generator',
+    'picker' => 'Color picker',
+    'gradient' => 'Gradient studio',
+    'type-guide' => 'Type guide',
+    'shadow' => 'Shadow & Elevation',
+    'button-maker' => 'Button maker',
+    'border-glow' => 'Border glow',
+    'case-converter' => 'Case converter',
+    'saved-palettes' => 'Saved work',
+    'export-history' => 'Export history',
+];
+
+$appSchemaMap = [
+    'palette' => 'DesignApplication',
+    'picker' => 'DesignApplication',
+    'gradient' => 'DesignApplication',
+    'type-guide' => 'DesignApplication',
+    'shadow' => 'DesignApplication',
+    'button-maker' => 'DesignApplication',
+    'border-glow' => 'DesignApplication',
+    'case-converter' => 'DeveloperApplication',
+];
+
+$structuredData = [];
+
+if (($activePage ?? '') === 'index') {
+    $structuredData[] = [
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => 'ONE design',
+        'url' => $canonicalHost . '/',
+        'description' => $pageDescription ?? '',
+    ];
+
+    $structuredData[] = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => 'ONE design',
+        'url' => $canonicalHost . '/',
+        'logo' => $canonicalHost . '/assets/favicon/favicon.svg',
+    ];
+} elseif (!empty($activePage) && isset($pageLabelMap[$activePage]) && empty($pageRobots)) {
+    $breadcrumbItems = [
+        [
+            '@type' => 'ListItem',
+            'position' => 1,
+            'name' => 'All tools',
+            'item' => $canonicalHost . '/',
+        ],
+        [
+            '@type' => 'ListItem',
+            'position' => 2,
+            'name' => $pageLabelMap[$activePage],
+            'item' => $canonicalUrl,
+        ],
+    ];
+
+    $structuredData[] = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => $breadcrumbItems,
+    ];
+
+    if (isset($appSchemaMap[$activePage])) {
+        $structuredData[] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebApplication',
+            'name' => $pageLabelMap[$activePage],
+            'url' => $canonicalUrl,
+            'description' => $pageDescription ?? '',
+            'applicationCategory' => $appSchemaMap[$activePage],
+            'operatingSystem' => 'Web',
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => '0',
+                'priceCurrency' => 'USD',
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => 'ONE design',
+                'url' => $canonicalHost . '/',
+            ],
+        ];
+    }
+}
+
+$socialImageAlt = 'Social preview for ' . $pageTitle;
 
 
 ?>
@@ -15,20 +113,33 @@ require_once __DIR__ . '/version.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
+    <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>">
+    <?php if (!empty($pageRobots)): ?>
+        <meta name="robots" content="<?= htmlspecialchars($pageRobots) ?>">
+    <?php endif; ?>
     <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>">
+    <meta property="og:site_name" content="ONE design">
+    <meta name="twitter:title" content="<?= htmlspecialchars($pageTitle) ?>">
     <?php if (!empty($pageDescription)): ?>
         <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>">
         <meta property="og:description" content="<?= htmlspecialchars($pageDescription) ?>">
         <meta name="twitter:description" content="<?= htmlspecialchars($pageDescription) ?>">
     <?php endif; ?>
     <meta property="og:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
+    <meta property="og:image:alt" content="<?= htmlspecialchars($socialImageAlt) ?>">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
+    <meta name="twitter:image:alt" content="<?= htmlspecialchars($socialImageAlt) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
+    <?php if (!empty($structuredData)): ?>
+        <script type="application/ld+json"><?= json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
+    <?php endif; ?>
     <script>
         (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();
     </script>

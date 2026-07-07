@@ -9,7 +9,7 @@ require 'includes/header.php';
 
     <div class="topbar">
         <div class="topbar-greeting">
-            <h2>Tools for designers who <br><em>care about the details</em></h2>
+            <h1>Tools for designers who <br><em>care about the details</em></h1>
             <p>A growing collection of tools for designers — made by <a
                     href="https://rydesignstudios.com/?utm_source=onedesign" target="_blank" rel="noopener"
                     style="color: inherit;">a designer</a>.</p>
@@ -25,7 +25,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Palette generator</span>
+                    <h2 class="card-title">Palette generator</h2>
                 </div>
                 <p class="card-desc">Generate full 50–900 shade scales from any
                     color using perceptually uniform OKLCH math. Export as CSS
@@ -45,7 +45,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Gradient studio</span>
+                    <h2 class="card-title">Gradient studio</h2>
                 </div>
                 <p class="card-desc">Build gradients that actually look good.
                     Interpolate through OKLCH to avoid the grey, muddy band that
@@ -65,7 +65,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">OKLCH Color picker</span>
+                    <h2 class="card-title">OKLCH Color picker</h2>
                 </div>
                 <p class="card-desc">Pick colors natively in the OKLCH space. Drag
                     the gamut canvas, spin the hue wheel, and export in any format —
@@ -92,7 +92,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Type guide</span>
+                    <h2 class="card-title">Type guide</h2>
                 </div>
                 <p class="card-desc">Set typography standards for desktop and mobile.
                     Choose a modular scale ratio, load Google Fonts, and export
@@ -121,7 +121,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Button maker</span>
+                    <h2 class="card-title">Button maker</h2>
                 </div>
                 <p class="card-desc">Design primary and secondary buttons in three sizes. Dial in border radius,
                     padding, font size, and weight — then export production-ready CSS.</p>
@@ -144,7 +144,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Shadow &amp; elevation</span>
+                    <h2 class="card-title">Shadow &amp; elevation</h2>
                 </div>
                 <p class="card-desc">Build a semantic shadow scale tinted from your palette. Preview on light and dark
                     surfaces and export as CSS tokens or Figma JSON.</p>
@@ -165,7 +165,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Border glow</span>
+                    <h2 class="card-title">Border glow</h2>
                 </div>
                 <p class="card-desc">Wrap a card, button, or search field in an animated conic-gradient border beam.
                     Tune palette, geometry, and motion, then export pure CSS.</p>
@@ -202,7 +202,7 @@ require 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="card-header">
-                    <span class="card-title">Case converter</span>
+                    <h2 class="card-title">Case converter</h2>
                 </div>
                 <p class="card-desc">Transform text between 13 different cases and
                     formats — sentence, title, camel, snake, kebab, slug, and more.

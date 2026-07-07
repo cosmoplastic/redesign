@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Gradient Studio — ONE design';
+$pageDescription = 'Create smooth CSS gradients with OKLCH interpolation. Build linear and radial gradients, fine-tune stops, and copy production-ready CSS.';
 $activePage = 'gradient';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -8,7 +9,10 @@ require '../includes/header.php';
 <main class="panel">
 
   <div class="topstrip">
-    <span class="topstrip-title">Gradient <em>studio</em></span>
+    <div class="topstrip-head">
+      <h1 class="topstrip-title">Gradient <em>studio</em></h1>
+      <p class="topstrip-intro">Create smoother CSS gradients with OKLCH interpolation so transitions stay vivid instead of going muddy. Fine-tune stops, angle, and mode, then copy production-ready linear or radial gradient code.</p>
+    </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
@@ -19,7 +23,7 @@ require '../includes/header.php';
       </button>
       <button class="btn btn-primary" onclick="saveGradient()">
         <svg viewBox="0 0 24 24">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
         </svg>
         Save
       </button>
@@ -96,6 +100,14 @@ require '../includes/header.php';
           <span class="scales-header-label">Saved gradients</span>
         </div>
         <div class="grad-save-list" id="grad-save-list"></div>
+      </div>
+
+      <div class="tool-seo-scroll">
+        <section class="tool-seo-section" aria-labelledby="gradient-seo-title">
+          <h2 id="gradient-seo-title">Create Smoother CSS Gradients</h2>
+          <p>This gradient generator focuses on one of the biggest problems in CSS gradients: color transitions that turn grey or muddy between stops. By working through OKLCH interpolation, it helps you create linear and radial gradients that hold onto color clarity across the entire blend.</p>
+          <p>Use it when you need a CSS gradient maker for hero backgrounds, interface accents, illustrations, or product UI. You can fine-tune direction and stops visually, then copy clean gradient code for modern browsers or broader compatibility, which makes it useful for both experimentation and real production work.</p>
+        </section>
       </div>
 
     </div>
@@ -479,7 +491,7 @@ require '../includes/header.php';
   function copyGradient() {
     const raw = currentTab === 'modern' ? modernCSS() : compatCSS();
     copyText(raw, 'Copied!');
-    const label = [...stops].sort((a,b)=>a.pos-b.pos).map(s=>s.hex).join(' → ');
+    const label = [...stops].sort((a, b) => a.pos - b.pos).map(s => s.hex).join(' → ');
     recordExport('gradient', currentTab === 'modern' ? 'Modern CSS' : 'Compatible CSS', label, raw);
   }
 

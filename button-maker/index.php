@@ -1,5 +1,6 @@
 <?php
 $pageTitle = 'Button Maker — ONE design';
+$pageDescription = 'Create primary and secondary button styles, adjust radius, spacing, size, and typography, then export reusable CSS.';
 $activePage = 'button-maker';
 $shellClass = 'full-height';
 require '../includes/header.php';
@@ -8,18 +9,21 @@ require '../includes/header.php';
 <main class="panel">
 
   <div class="topstrip">
-    <span class="topstrip-title">Button <em>maker</em></span>
+    <div class="topstrip-head">
+      <h1 class="topstrip-title">Button <em>maker</em></h1>
+      <p class="topstrip-intro">Design primary and secondary button styles with adjustable radius, spacing, type, and color. Preview states side by side and export reusable CSS for product UIs and design systems.</p>
+    </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-          <rect x="9" y="9" width="13" height="13" rx="2"/>
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
         </svg>
         Export CSS
       </button>
       <button class="btn btn-primary" onclick="saveButton()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
         </svg>
         Save
       </button>
@@ -104,8 +108,13 @@ require '../includes/header.php';
             <span class="bm-label">Background</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="pBg" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="pBg" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-p-bg"></div>
@@ -123,8 +132,13 @@ require '../includes/header.php';
             <span class="bm-label">Stroke</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="pBorder" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="pBorder" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-p-border"></div>
@@ -139,8 +153,13 @@ require '../includes/header.php';
             <span class="bm-label">Text</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="pText" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="pText" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-p-text"></div>
@@ -170,8 +189,13 @@ require '../includes/header.php';
             <span class="bm-label">Background</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="sBg" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="sBg" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-s-bg"></div>
@@ -189,8 +213,13 @@ require '../includes/header.php';
             <span class="bm-label">Stroke</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="sBorder" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="sBorder" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-s-border"></div>
@@ -205,8 +234,13 @@ require '../includes/header.php';
             <span class="bm-label">Text</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="sText" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="sText" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-s-text"></div>
@@ -236,8 +270,13 @@ require '../includes/header.php';
             <span class="bm-label">Background</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="tBg" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="tBg" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-t-bg"></div>
@@ -255,8 +294,13 @@ require '../includes/header.php';
             <span class="bm-label">Stroke</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="tBorder" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="tBorder" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-t-border"></div>
@@ -271,8 +315,13 @@ require '../includes/header.php';
             <span class="bm-label">Text</span>
           </div>
           <div class="bm-color-control">
-            <button class="bm-palette-btn" data-target="tText" title="Pull from saved palette" aria-label="Pull from saved palette">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="5" height="14" rx="1.2"/><rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6"/><rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35"/></svg>
+            <button class="bm-palette-btn" data-target="tText" title="Pull from saved palette"
+              aria-label="Pull from saved palette">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="5" width="5" height="14" rx="1.2" />
+                <rect x="9.5" y="5" width="5" height="14" rx="1.2" opacity=".6" />
+                <rect x="16" y="5" width="5" height="14" rx="1.2" opacity=".35" />
+              </svg>
             </button>
             <label class="bm-swatch-wrap">
               <div class="bm-swatch" id="sw-t-text"></div>
@@ -324,6 +373,12 @@ require '../includes/header.php';
           <div class="bm-btn-cell"><button class="bm-btn" id="btn-t-sm">Button</button></div>
         </div>
 
+        <section class="tool-seo-section" aria-labelledby="button-seo-title">
+          <h2 id="button-seo-title">Design Reusable Button Styles Faster</h2>
+          <p>This button generator is built for shaping consistent primary, secondary, and tertiary button patterns without writing each variation from scratch. You can control radius, spacing, typography, fill, stroke, and opacity while previewing how the set behaves across multiple sizes.</p>
+          <p>It works well for design systems, landing pages, app interfaces, and quick UI exploration. If you need a CSS button maker that helps translate visual decisions into reusable production code, this page gives you a more direct workflow from styling decisions to export.</p>
+        </section>
+
       </div>
     </div>
 
@@ -353,8 +408,8 @@ require '../includes/header.php';
       <div class="export-modal-actions">
         <button class="btn" id="export-copy-btn" onclick="copyCSS()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
           </svg>
           Copy
         </button>
@@ -374,29 +429,29 @@ require '../includes/header.php';
   const DRAFT_KEY = 'oklch-btn-draft';
 
   let s = {
-    radius:     8,
-    fontSize:   14,
-    padV:       10,
-    padH:       20,
+    radius: 8,
+    fontSize: 14,
+    padV: 10,
+    padH: 20,
     fontWeight: 500,
     fontFamily: 'System UI',
-    pBg:       '#2563eb', pBgOn:     true,
-    pBorder:   '#2563eb', pBorderOn: false,
-    pText:     '#ffffff',
-    pOpacity:  100,
-    sBg:       '#dbeafe', sBgOn:     false,
-    sBorder:   '#2563eb', sBorderOn: true,
-    sText:     '#2563eb',
-    sOpacity:  100,
-    tBg:       '#2563eb', tBgOn:     false,
-    tBorder:   '#2563eb', tBorderOn: false,
-    tText:     '#2563eb',
-    tOpacity:  100,
+    pBg: '#2563eb', pBgOn: true,
+    pBorder: '#2563eb', pBorderOn: false,
+    pText: '#ffffff',
+    pOpacity: 100,
+    sBg: '#dbeafe', sBgOn: false,
+    sBorder: '#2563eb', sBorderOn: true,
+    sText: '#2563eb',
+    sOpacity: 100,
+    tBg: '#2563eb', tBgOn: false,
+    tBorder: '#2563eb', tBorderOn: false,
+    tText: '#2563eb',
+    tOpacity: 100,
   };
 
   const SIZES = {
-    lg: { fScale: 1.2,  pScale: 1.3  },
-    md: { fScale: 1.0,  pScale: 1.0  },
+    lg: { fScale: 1.2, pScale: 1.3 },
+    md: { fScale: 1.0, pScale: 1.0 },
     sm: { fScale: 0.82, pScale: 0.72 },
   };
 
@@ -407,18 +462,18 @@ require '../includes/header.php';
     const pv = Math.round(s.padV * pScale);
     const ph = Math.round(s.padH * pScale);
 
-    el.style.fontFamily   = fontStackFor(s.fontFamily);
-    el.style.fontSize     = (s.fontSize * fScale).toFixed(1) + 'px';
-    el.style.fontWeight   = s.fontWeight;
-    el.style.padding      = pv + 'px ' + ph + 'px';
+    el.style.fontFamily = fontStackFor(s.fontFamily);
+    el.style.fontSize = (s.fontSize * fScale).toFixed(1) + 'px';
+    el.style.fontWeight = s.fontWeight;
+    el.style.padding = pv + 'px ' + ph + 'px';
     el.style.borderRadius = s.radius + 'px';
-    el.style.border       = '1.5px solid transparent';
+    el.style.border = '1.5px solid transparent';
 
     const p = variant === 'primary' ? 'p' : variant === 'secondary' ? 's' : 't';
-    el.style.background  = s[p + 'BgOn']     ? s[p + 'Bg']     : 'transparent';
-    el.style.color       = s[p + 'Text'];
+    el.style.background = s[p + 'BgOn'] ? s[p + 'Bg'] : 'transparent';
+    el.style.color = s[p + 'Text'];
     el.style.borderColor = s[p + 'BorderOn'] ? s[p + 'Border'] : 'transparent';
-    el.style.opacity     = s[p + 'Opacity'] / 100;
+    el.style.opacity = s[p + 'Opacity'] / 100;
   }
 
   function render() {
@@ -436,25 +491,25 @@ require '../includes/header.php';
     document.getElementById('fs-select').value = s.fontSize;
 
     // Value labels
-    document.getElementById('val-radius').textContent    = s.radius + 'px';
-    document.getElementById('val-pv').textContent        = s.padV + 'px';
-    document.getElementById('val-ph').textContent        = s.padH + 'px';
+    document.getElementById('val-radius').textContent = s.radius + 'px';
+    document.getElementById('val-pv').textContent = s.padV + 'px';
+    document.getElementById('val-ph').textContent = s.padH + 'px';
     document.getElementById('val-p-opacity').textContent = s.pOpacity + '%';
     document.getElementById('val-s-opacity').textContent = s.sOpacity + '%';
     document.getElementById('val-t-opacity').textContent = s.tOpacity + '%';
 
     // Color swatches + native input sync
     [['p-bg', 'pBg'], ['p-border', 'pBorder'], ['p-text', 'pText'],
-     ['s-bg', 'sBg'], ['s-border', 'sBorder'], ['s-text', 'sText'],
-     ['t-bg', 'tBg'], ['t-border', 'tBorder'], ['t-text', 'tText']].forEach(([id, key]) => {
+    ['s-bg', 'sBg'], ['s-border', 'sBorder'], ['s-text', 'sText'],
+    ['t-bg', 'tBg'], ['t-border', 'tBorder'], ['t-text', 'tText']].forEach(([id, key]) => {
       document.getElementById('sw-' + id).style.background = s[key];
       document.getElementById('in-' + id).value = s[key];
     });
 
     // Sync slider positions
-    document.getElementById('sl-radius').value    = s.radius;
-    document.getElementById('sl-pv').value        = s.padV;
-    document.getElementById('sl-ph').value        = s.padH;
+    document.getElementById('sl-radius').value = s.radius;
+    document.getElementById('sl-pv').value = s.padV;
+    document.getElementById('sl-ph').value = s.padH;
     document.getElementById('sl-p-opacity').value = s.pOpacity;
     document.getElementById('sl-s-opacity').value = s.sOpacity;
     document.getElementById('sl-t-opacity').value = s.tOpacity;
@@ -471,12 +526,12 @@ require '../includes/header.php';
 
   // ── MUTATORS ───────────────────────────────────────────
   function setFontWeight(w) { s.fontWeight = w; render(); }
-  function setFontSize(v)   { s.fontSize = v;   render(); }
+  function setFontSize(v) { s.fontSize = v; render(); }
 
   // ── SLIDER WIRING ──────────────────────────────────────
-  document.getElementById('sl-radius').addEventListener('input',    e => { s.radius   = +e.target.value; render(); });
-  document.getElementById('sl-pv').addEventListener('input',        e => { s.padV     = +e.target.value; render(); });
-  document.getElementById('sl-ph').addEventListener('input',        e => { s.padH     = +e.target.value; render(); });
+  document.getElementById('sl-radius').addEventListener('input', e => { s.radius = +e.target.value; render(); });
+  document.getElementById('sl-pv').addEventListener('input', e => { s.padV = +e.target.value; render(); });
+  document.getElementById('sl-ph').addEventListener('input', e => { s.padH = +e.target.value; render(); });
   document.getElementById('sl-p-opacity').addEventListener('input', e => { s.pOpacity = +e.target.value; render(); });
   document.getElementById('sl-s-opacity').addEventListener('input', e => { s.sOpacity = +e.target.value; render(); });
   document.getElementById('sl-t-opacity').addEventListener('input', e => { s.tOpacity = +e.target.value; render(); });
@@ -490,15 +545,15 @@ require '../includes/header.php';
   function wireColor(inputId, key) {
     document.getElementById(inputId).addEventListener('input', e => { s[key] = e.target.value; render(); });
   }
-  wireColor('in-p-bg',     'pBg');
+  wireColor('in-p-bg', 'pBg');
   wireColor('in-p-border', 'pBorder');
-  wireColor('in-p-text',   'pText');
-  wireColor('in-s-bg',     'sBg');
+  wireColor('in-p-text', 'pText');
+  wireColor('in-s-bg', 'sBg');
   wireColor('in-s-border', 'sBorder');
-  wireColor('in-s-text',   'sText');
-  wireColor('in-t-bg',     'tBg');
+  wireColor('in-s-text', 'sText');
+  wireColor('in-t-bg', 'tBg');
   wireColor('in-t-border', 'tBorder');
-  wireColor('in-t-text',   'tText');
+  wireColor('in-t-text', 'tText');
 
   // ── PULL FROM SAVED PALETTE ────────────────────────────
   const PAL_KEY = 'oklch-palettes';
@@ -546,7 +601,7 @@ require '../includes/header.php';
     let top = r.top - 4;
     if (top + ph > window.innerHeight - 8) top = Math.max(8, window.innerHeight - ph - 8);
     pop.style.left = left + 'px';
-    pop.style.top  = top + 'px';
+    pop.style.top = top + 'px';
     pop.classList.add('open');
   }
   function closePop() { pop.classList.remove('open'); popTargetKey = null; }
@@ -846,7 +901,7 @@ require '../includes/header.php';
     try {
       const saved = loadButtons().find(b => b.id === _loadId);
       if (saved && saved.s) { Object.assign(s, saved.s); delete s.secStyle; delete s.fontStack; _loadedFromSave = true; }
-    } catch (_) {}
+    } catch (_) { }
   }
 
   if (!_loadedFromSave) try {
@@ -859,7 +914,7 @@ require '../includes/header.php';
       if (d.pBorderOn == null) s.pBorderOn = false;            // primary had no visible stroke
       // Migrate the old secondary preset (outlined/filled/ghost) → fill/stroke toggles
       if (d.secStyle != null) {
-        s.sBgOn     = d.secStyle === 'filled';
+        s.sBgOn = d.secStyle === 'filled';
         s.sBorderOn = d.secStyle === 'outlined';
       } else {
         if (d.sBgOn == null) s.sBgOn = false;
@@ -867,7 +922,7 @@ require '../includes/header.php';
       }
       delete s.secStyle;
     }
-  } catch(_) {}
+  } catch (_) { }
 
   // Load the active typeface (if it's a Google font)
   ensureFontLoaded(s.fontFamily);
