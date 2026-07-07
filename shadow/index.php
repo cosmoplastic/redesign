@@ -50,8 +50,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Shadow <em>& elevation</em></h1>
-      <p class="topstrip-intro">Build semantic shadow and elevation tokens for light and dark surfaces. Tint shadows
-        from your palette, compare depth levels, and export clean CSS values or Figma-ready tokens.</p>
+      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
+        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
+        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
@@ -184,15 +185,6 @@ require '../includes/header.php';
         </div>
         <div class="shadow-tokens" id="token-rows"></div>
 
-        <section class="tool-seo-section" aria-labelledby="shadow-seo-title">
-          <h2 id="shadow-seo-title">Create A More Useful Elevation System</h2>
-          <p>This shadow and elevation tool helps you move beyond random box-shadow values by building a semantic depth
-            scale. You can compare shadows on light and dark surfaces, tint them from your palette, and create a set
-            that feels more intentional across cards, overlays, dropdowns, and modal layers.</p>
-          <p>It is a practical fit for teams building design systems or product UI where consistency matters. If you
-            need an elevation token generator for CSS or Figma, this page gives you a structured way to define depth and
-            export it into a reusable system.</p>
-        </section>
       </div><!-- /.shadow-scroll -->
     </div><!-- /.grad-main -->
 

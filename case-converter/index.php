@@ -9,8 +9,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Case <em>converter</em></h1>
-      <p class="topstrip-intro">Convert text between sentence case, title case, camelCase, PascalCase, snake_case,
-        kebab-case, and more. Clean up whitespace and punctuation, then copy the transformed result instantly.</p>
+      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
+        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
+        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="reset-btn">
@@ -64,15 +65,6 @@ require '../includes/header.php';
       <div class="tx-grid cols-auto" id="cleanup-grid"></div>
     </div>
 
-    <section class="tool-seo-section" aria-labelledby="case-seo-title">
-      <h2 id="case-seo-title">Convert Text Between Common Naming And Writing Styles</h2>
-      <p>This case converter helps with both writing cleanup and developer naming formats. You can switch text between
-        sentence case, title case, lowercase, uppercase, camelCase, PascalCase, snake_case, and kebab-case without
-        manually editing strings one character at a time.</p>
-      <p>It is useful for content editing, interface labels, URLs, code variables, and design-system documentation. If
-        you regularly need a text case converter for product work, development handoff, or editorial cleanup, this page
-        keeps those transformations in one place and makes the results easy to copy immediately.</p>
-    </section>
 
   </div>
 </main>

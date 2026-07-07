@@ -561,42 +561,6 @@ main.panel {
   line-height: 1.65;
 }
 
-.tool-seo-section {
-  margin-top: 32px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  width: min(760px, 100%);
-}
-
-.tool-seo-section h2 {
-  margin-bottom: 10px;
-}
-
-.tool-seo-section p {
-  margin: 0;
-}
-
-.tool-seo-section p + p {
-  margin-top: 10px;
-}
-
-.tool-seo-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 0 28px 28px;
-}
-
-.topstrip-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* ══════════════════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════════════════ */
-
 .btn {
   display: inline-flex;
   align-items: center;
