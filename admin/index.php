@@ -672,6 +672,7 @@ header('Cache-Control: no-store, must-revalidate');
       background: rgba(0, 0, 0, 0.3);
       cursor: zoom-in;
     }
+
     .item-row-thumb img {
       width: 100%;
       height: 100%;
@@ -1339,7 +1340,10 @@ header('Cache-Control: no-store, must-revalidate');
       border-radius: var(--r);
       padding: 10px 14px;
     }
-    .hz-warn code { color: #fdba74; }
+
+    .hz-warn code {
+      color: #fdba74;
+    }
 
     .hz-panes {
       display: grid;
@@ -1347,6 +1351,7 @@ header('Cache-Control: no-store, must-revalidate');
       gap: 14px;
       align-items: stretch;
     }
+
     .hz-pane {
       display: flex;
       flex-direction: column;
@@ -1356,6 +1361,7 @@ header('Cache-Control: no-store, must-revalidate');
       overflow: hidden;
       min-height: 440px;
     }
+
     .hz-pane-head {
       display: flex;
       align-items: center;
@@ -1365,6 +1371,7 @@ header('Cache-Control: no-store, must-revalidate');
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
+
     .hz-pane-label {
       font-family: var(--mono);
       font-size: 10px;
@@ -1372,6 +1379,7 @@ header('Cache-Control: no-store, must-revalidate');
       text-transform: uppercase;
       color: var(--color-primary-400);
     }
+
     .hz-textarea {
       flex: 1;
       width: 100%;
@@ -1387,7 +1395,11 @@ header('Cache-Control: no-store, must-revalidate');
       color: var(--color-primary-100);
       text-transform: none;
     }
-    .hz-textarea::placeholder { color: var(--color-primary-400); }
+
+    .hz-textarea::placeholder {
+      color: var(--color-primary-400);
+    }
+
     .hz-foot {
       display: flex;
       align-items: center;
@@ -1397,12 +1409,14 @@ header('Cache-Control: no-store, must-revalidate');
       border-top: 1px solid var(--border);
       flex-shrink: 0;
     }
+
     .hz-count {
       font-family: var(--mono);
       font-size: 11px;
       color: var(--color-primary-400);
       font-variant-numeric: tabular-nums;
     }
+
     .hz-output {
       flex: 1;
       overflow-y: auto;
@@ -1416,10 +1430,21 @@ header('Cache-Control: no-store, must-revalidate');
       word-wrap: break-word;
       text-transform: none;
     }
-    .hz-output-error { color: #f87171; }
-    .hz-placeholder { color: var(--color-primary-400); }
 
-    .hz-head-actions { display: flex; align-items: center; gap: 6px; }
+    .hz-output-error {
+      color: #f87171;
+    }
+
+    .hz-placeholder {
+      color: var(--color-primary-400);
+    }
+
+    .hz-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .hz-copy {
       display: inline-flex;
       align-items: center;
@@ -1434,10 +1459,29 @@ header('Cache-Control: no-store, must-revalidate');
       cursor: pointer;
       transition: border-color .15s, color .15s, opacity .15s;
     }
-    .hz-copy svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
-    .hz-copy:hover { border-color: var(--border3); color: var(--color-primary-100); }
-    .hz-copy:disabled { opacity: 0.4; cursor: default; }
-    .hz-copy.is-active { border-color: var(--green); color: var(--green); }
+
+    .hz-copy svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .hz-copy:hover {
+      border-color: var(--border3);
+      color: var(--color-primary-100);
+    }
+
+    .hz-copy:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .hz-copy.is-active {
+      border-color: var(--green);
+      color: var(--green);
+    }
 
     .hz-del {
       background: rgba(248, 113, 113, 0.15);
@@ -1448,6 +1492,7 @@ header('Cache-Control: no-store, must-revalidate');
       box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
     }
+
     .hz-ins {
       background: rgba(110, 231, 160, 0.16);
       color: #86efac;
@@ -1456,6 +1501,7 @@ header('Cache-Control: no-store, must-revalidate');
       box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
     }
+
     .hz-spin {
       display: inline-block;
       width: 12px;
@@ -1467,7 +1513,12 @@ header('Cache-Control: no-store, must-revalidate');
       margin-right: 2px;
       vertical-align: -1px;
     }
-    @keyframes hzspin { to { transform: rotate(360deg); } }
+
+    @keyframes hzspin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Rotating conic "beam" border on the Humanize button */
     @property --hz-beam-angle {
@@ -1475,9 +1526,11 @@ header('Cache-Control: no-store, must-revalidate');
       initial-value: 0deg;
       inherits: false;
     }
+
     #hz-run {
       position: relative;
     }
+
     #hz-run::before {
       content: '';
       position: absolute;
@@ -1494,129 +1547,149 @@ header('Cache-Control: no-store, must-revalidate');
       pointer-events: none;
       z-index: 2;
     }
+
     @keyframes hzbeamspin {
-      to { --hz-beam-angle: 360deg; }
+      to {
+        --hz-beam-angle: 360deg;
+      }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      #hz-run::before { animation: none; }
+      #hz-run::before {
+        animation: none;
+      }
     }
 
     @media (max-width: 640px) {
-      .hz-panes { grid-template-columns: 1fr; }
-      .hz-pane { min-height: 300px; }
+      .hz-panes {
+        grid-template-columns: 1fr;
+      }
+
+      .hz-pane {
+        min-height: 300px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-    <div class="session-overlay hidden" id="session-overlay">
-      <div class="lock-card">
-        <div class="lock-title">Session <em>expired</em></div>
-        <div class="lock-field">
-          <label for="reauth-pw">Re-enter passcode</label>
-          <input class="lock-input" type="password" id="reauth-pw" autocomplete="off">
-          <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
-          <button class="lock-submit" id="reauth-submit">Unlock</button>
-        </div>
+  <div class="session-overlay hidden" id="session-overlay">
+    <div class="lock-card">
+      <div class="lock-title">Session <em>expired</em></div>
+      <div class="lock-field">
+        <label for="reauth-pw">Re-enter passcode</label>
+        <input class="lock-input" type="password" id="reauth-pw" autocomplete="off">
+        <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
+        <button class="lock-submit" id="reauth-submit">Unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <div class="admin-title">Admin <em>tools</em></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <a href="/" class="logout-btn" style="text-decoration:none;">
+          <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Home</a>
+        <form method="POST" style="margin:0;">
+          <button class="logout-btn" name="logout" value="1">
+            <span class="btn-icon" style="--icon:url(/assets/icons/lock.svg)"></span>Lock</button>
+        </form>
       </div>
     </div>
 
-    <div class="admin-wrap">
-      <div class="admin-header">
-        <div class="admin-title">Admin <em>tools</em></div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <a href="/" class="logout-btn" style="text-decoration:none;">
-            <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Home</a>
-          <form method="POST" style="margin:0;">
-            <button class="logout-btn" name="logout" value="1">
-              <span class="btn-icon" style="--icon:url(/assets/icons/lock.svg)"></span>Lock</button>
-          </form>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('files')">Share files</button>
+      <button class="admin-tab" onclick="switchTab('snippets')">Text snippets</button>
+      <button class="admin-tab" onclick="switchTab('humanizer')">Humanizer</button>
+    </div>
+
+    <!-- ── FILE SHARE ── -->
+    <div class="admin-section active" id="tab-files">
+      <div class="upload-zone" id="file-zone">
+        <input type="file" id="file-input" multiple>
+        <div class="upload-zone-text">
+          <strong>Click or drag</strong> to upload a file or image
         </div>
       </div>
-
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('files')">Share files</button>
-        <button class="admin-tab" onclick="switchTab('snippets')">Text snippets</button>
-        <button class="admin-tab" onclick="switchTab('humanizer')">Humanizer</button>
+      <div class="expire-row">
+        <span class="expire-label">Expires after</span>
+        <button class="expire-btn" data-hours="1" onclick="setExpiry('file',1,this)">1h</button>
+        <button class="expire-btn" data-hours="24" onclick="setExpiry('file',24,this)">24h</button>
+        <button class="expire-btn" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
+        <button class="expire-btn active" data-hours="168" onclick="setExpiry('file',168,this)">1 week</button>
       </div>
+      <div class="upload-queue" id="file-queue"></div>
+      <div class="item-list" id="file-list"></div>
+    </div>
 
-      <!-- ── FILE SHARE ── -->
-      <div class="admin-section active" id="tab-files">
-        <div class="upload-zone" id="file-zone">
-          <input type="file" id="file-input" multiple>
-          <div class="upload-zone-text">
-            <strong>Click or drag</strong> to upload a file or image
+    <!-- ── SNIPPETS ── -->
+    <div class="admin-section" id="tab-snippets">
+      <div class="snip-form" id="snip-form">
+        <textarea class="snip-textarea" id="snip-text" placeholder="Paste anything — a URL, code, note…"></textarea>
+        <div class="snip-form-row">
+          <span class="snip-status" id="snip-status"></span>
+          <div style="flex:1"></div>
+          <button class="btn btn-primary snip-save-btn" onclick="clearSnipForm()">New snippet</button>
+        </div>
+      </div>
+      <div class="item-list" id="snip-list"></div>
+    </div>
+
+    <!-- ── HUMANIZER ── -->
+    <div class="admin-section" id="tab-humanizer">
+      <?php if (!$hzKeyConfigured): ?>
+        <div class="hz-warn">Server not configured &mdash; add your Anthropic API key to
+          <code>includes/humanizer-secret.php</code> (or set the <code>ANTHROPIC_API_KEY</code> env var).
+        </div>
+      <?php endif; ?>
+      <div class="hz-panes">
+        <div class="hz-pane">
+          <div class="hz-pane-head">
+            <span class="hz-pane-label">Your text</span>
+          </div>
+          <textarea id="hz-input" class="hz-textarea" placeholder="Paste your text here&hellip;"
+            spellcheck="false"></textarea>
+          <div class="hz-output" id="hz-input-diff" style="display:none"></div>
+          <div class="hz-foot">
+            <span class="hz-count" id="hz-count">0 chars</span>
+            <button class="btn btn-primary" id="hz-run">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
+                <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+              </svg>
+              Humanize
+            </button>
           </div>
         </div>
-        <div class="expire-row">
-          <span class="expire-label">Expires after</span>
-          <button class="expire-btn" data-hours="1" onclick="setExpiry('file',1,this)">1h</button>
-          <button class="expire-btn" data-hours="24" onclick="setExpiry('file',24,this)">24h</button>
-          <button class="expire-btn" data-hours="72" onclick="setExpiry('file',72,this)">3 days</button>
-          <button class="expire-btn active" data-hours="168" onclick="setExpiry('file',168,this)">1 week</button>
-        </div>
-        <div class="upload-queue" id="file-queue"></div>
-        <div class="item-list" id="file-list"></div>
-      </div>
 
-      <!-- ── SNIPPETS ── -->
-      <div class="admin-section" id="tab-snippets">
-        <div class="snip-form" id="snip-form">
-          <textarea class="snip-textarea" id="snip-text" placeholder="Paste anything — a URL, code, note…"></textarea>
-          <div class="snip-form-row">
-            <span class="snip-status" id="snip-status"></span>
-            <div style="flex:1"></div>
-            <button class="btn btn-primary snip-save-btn" onclick="clearSnipForm()">New snippet</button>
-          </div>
-        </div>
-        <div class="item-list" id="snip-list"></div>
-      </div>
-
-      <!-- ── HUMANIZER ── -->
-      <div class="admin-section" id="tab-humanizer">
-        <?php if (!$hzKeyConfigured): ?>
-          <div class="hz-warn">Server not configured &mdash; add your Anthropic API key to
-            <code>includes/humanizer-secret.php</code> (or set the <code>ANTHROPIC_API_KEY</code> env var).</div>
-        <?php endif; ?>
-        <div class="hz-panes">
-          <div class="hz-pane">
-            <div class="hz-pane-head">
-              <span class="hz-pane-label">Your text</span>
-            </div>
-            <textarea id="hz-input" class="hz-textarea" placeholder="Paste your text here&hellip;" spellcheck="false"></textarea>
-            <div class="hz-output" id="hz-input-diff" style="display:none"></div>
-            <div class="hz-foot">
-              <span class="hz-count" id="hz-count">0 chars</span>
-              <button class="btn btn-primary" id="hz-run">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                  <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
-                  <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+        <div class="hz-pane">
+          <div class="hz-pane-head">
+            <span class="hz-pane-label">Humanized</span>
+            <div class="hz-head-actions">
+              <button class="hz-copy" id="hz-compare" disabled title="Highlight what changed">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <line x1="12" y1="4" x2="12" y2="20" />
                 </svg>
-                Humanize
+                Compare
+              </button>
+              <button class="hz-copy" id="hz-copy" disabled>
+                <svg viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                Copy
               </button>
             </div>
           </div>
-
-          <div class="hz-pane">
-            <div class="hz-pane-head">
-              <span class="hz-pane-label">Humanized</span>
-              <div class="hz-head-actions">
-                <button class="hz-copy" id="hz-compare" disabled title="Highlight what changed">
-                  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
-                  Compare
-                </button>
-                <button class="hz-copy" id="hz-copy" disabled>
-                  <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
-                  Copy
-                </button>
-              </div>
-            </div>
-            <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear here.</span></div>
-          </div>
+          <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear
+              here.</span></div>
         </div>
       </div>
     </div>
+  </div>
 
   <div class="page-drop-overlay" id="page-drop-overlay">
     <div class="page-drop-box">
@@ -1638,11 +1711,18 @@ header('Cache-Control: no-store, must-revalidate');
         <span class="lightbox-name" id="lightbox-name"></span>
         <div class="lightbox-actions">
           <a class="lightbox-btn" id="lightbox-dl" download>
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
             Download
           </a>
           <button class="lightbox-btn lightbox-icon-btn" id="lightbox-copy" title="Copy link">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
           </button>
           <button class="lightbox-btn lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
         </div>
@@ -2211,160 +2291,160 @@ header('Cache-Control: no-store, must-revalidate');
       _sessionInterval = setInterval(pingSession, 60000);
       _dataPollInterval = setInterval(() => loadData().catch(() => { }), 30000);
 
-    // ── Humanizer tab ────────────────────────────────────────────────
-    (function () {
-      const input = document.getElementById('hz-input');
-      const inputDiff = document.getElementById('hz-input-diff');
-      const output = document.getElementById('hz-output');
-      const runBtn = document.getElementById('hz-run');
-      const copyBtn = document.getElementById('hz-copy');
-      const compareBtn = document.getElementById('hz-compare');
-      const countEl = document.getElementById('hz-count');
-      if (!input) return;
-      let busy = false;
-      let lastRun = null;   // { input, output } from the most recent humanize
-      let comparing = false;
+      // ── Humanizer tab ────────────────────────────────────────────────
+      (function () {
+        const input = document.getElementById('hz-input');
+        const inputDiff = document.getElementById('hz-input-diff');
+        const output = document.getElementById('hz-output');
+        const runBtn = document.getElementById('hz-run');
+        const copyBtn = document.getElementById('hz-copy');
+        const compareBtn = document.getElementById('hz-compare');
+        const countEl = document.getElementById('hz-count');
+        if (!input) return;
+        let busy = false;
+        let lastRun = null;   // { input, output } from the most recent humanize
+        let comparing = false;
 
-      function updateCount() {
-        const n = input.value.length;
-        countEl.textContent = n.toLocaleString() + (n === 1 ? ' char' : ' chars');
-      }
-      input.addEventListener('input', updateCount);
-      updateCount();
+        function updateCount() {
+          const n = input.value.length;
+          countEl.textContent = n.toLocaleString() + (n === 1 ? ' char' : ' chars');
+        }
+        input.addEventListener('input', updateCount);
+        updateCount();
 
-      async function humanize() {
-        if (busy) return;
-        const text = input.value;
-        if (!text.trim()) { showToast('Enter some text first'); return; }
-        busy = true;
-        runBtn.disabled = true;
-        const orig = runBtn.innerHTML;
-        runBtn.innerHTML = '<span class="hz-spin"></span> Humanizing&hellip;';
-        copyBtn.disabled = true;
-        compareBtn.disabled = true;
-        if (comparing) exitCompare();
-        output.classList.remove('hz-output-error');
-        output.innerHTML = '<span class="hz-placeholder">Working&hellip;</span>';
-        try {
-          const fd = new FormData();
-          fd.append('action', 'humanize');
-          fd.append('text', text);
-          const res = await fetch('/admin/', { method: 'POST', body: fd });
-          const raw = await res.text();
-          let json;
-          try { json = JSON.parse(raw); }
-          catch (_) { throw new Error(raw.slice(0, 400).trim() || 'Empty response from server.'); }
-          if (json.ok) {
-            lastRun = { input: text, output: json.text };
-            output.textContent = json.text;
-            copyBtn.disabled = false;
-            compareBtn.disabled = false;
-          } else {
-            output.textContent = json.error || 'Something went wrong.';
+        async function humanize() {
+          if (busy) return;
+          const text = input.value;
+          if (!text.trim()) { showToast('Enter some text first'); return; }
+          busy = true;
+          runBtn.disabled = true;
+          const orig = runBtn.innerHTML;
+          runBtn.innerHTML = '<span class="hz-spin"></span> Humanizing&hellip;';
+          copyBtn.disabled = true;
+          compareBtn.disabled = true;
+          if (comparing) exitCompare();
+          output.classList.remove('hz-output-error');
+          output.innerHTML = '<span class="hz-placeholder">Working&hellip;</span>';
+          try {
+            const fd = new FormData();
+            fd.append('action', 'humanize');
+            fd.append('text', text);
+            const res = await fetch('/admin/', { method: 'POST', body: fd });
+            const raw = await res.text();
+            let json;
+            try { json = JSON.parse(raw); }
+            catch (_) { throw new Error(raw.slice(0, 400).trim() || 'Empty response from server.'); }
+            if (json.ok) {
+              lastRun = { input: text, output: json.text };
+              output.textContent = json.text;
+              copyBtn.disabled = false;
+              compareBtn.disabled = false;
+            } else {
+              output.textContent = json.error || 'Something went wrong.';
+              output.classList.add('hz-output-error');
+            }
+          } catch (e) {
+            output.textContent = (e && e.message) ? e.message : 'Request failed. Please try again.';
             output.classList.add('hz-output-error');
-          }
-        } catch (e) {
-          output.textContent = (e && e.message) ? e.message : 'Request failed. Please try again.';
-          output.classList.add('hz-output-error');
-        } finally {
-          busy = false;
-          runBtn.disabled = false;
-          runBtn.innerHTML = orig;
-        }
-      }
-
-      runBtn.addEventListener('click', humanize);
-      input.addEventListener('keydown', e => {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); humanize(); }
-      });
-      copyBtn.addEventListener('click', () => {
-        const txt = (lastRun && lastRun.output) || output.textContent;
-        navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
-      });
-
-      // ── Compare (word-level diff, Myers) ──
-      function escHtml(s) {
-        return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-      }
-      function tokenizeWords(s) { return s.match(/\S+\s*|\s+/g) || []; }
-      function diffTokens(a, b) {
-        const N = a.length, M = b.length, MAX = N + M, OFF = MAX;
-        const v = new Int32Array(2 * MAX + 1);
-        const trace = [];
-        let D = 0, done = false;
-        for (; D <= MAX && !done; D++) {
-          trace.push(v.slice());
-          for (let k = -D; k <= D; k += 2) {
-            let x;
-            if (k === -D || (k !== D && v[k - 1 + OFF] < v[k + 1 + OFF])) x = v[k + 1 + OFF];
-            else x = v[k - 1 + OFF] + 1;
-            let y = x - k;
-            while (x < N && y < M && a[x] === b[y]) { x++; y++; }
-            v[k + OFF] = x;
-            if (x >= N && y >= M) { done = true; break; }
+          } finally {
+            busy = false;
+            runBtn.disabled = false;
+            runBtn.innerHTML = orig;
           }
         }
-        D--;
-        const ops = [];
-        let x = N, y = M;
-        for (let d = D; d > 0; d--) {
-          const vv = trace[d];
-          const k = x - y;
-          let prevK;
-          if (k === -d || (k !== d && vv[k - 1 + OFF] < vv[k + 1 + OFF])) prevK = k + 1;
-          else prevK = k - 1;
-          const prevX = vv[prevK + OFF], prevY = prevX - prevK;
-          while (x > prevX && y > prevY) { ops.push(['eq', a[x - 1]]); x--; y--; }
-          if (x === prevX) { ops.push(['ins', b[y - 1]]); y--; }
-          else { ops.push(['del', a[x - 1]]); x--; }
+
+        runBtn.addEventListener('click', humanize);
+        input.addEventListener('keydown', e => {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); humanize(); }
+        });
+        copyBtn.addEventListener('click', () => {
+          const txt = (lastRun && lastRun.output) || output.textContent;
+          navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+        });
+
+        // ── Compare (word-level diff, Myers) ──
+        function escHtml(s) {
+          return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
         }
-        while (x > 0 && y > 0) { ops.push(['eq', a[x - 1]]); x--; y--; }
-        while (x > 0) { ops.push(['del', a[--x]]); }
-        while (y > 0) { ops.push(['ins', b[--y]]); }
-        ops.reverse();
-        return ops;
-      }
-      function buildDiffHTML(ops, side) {
-        let html = '', run = '', runType = null;
-        const flush = () => {
-          if (!run) return;
-          if (runType === 'eq') html += escHtml(run);
-          else if (runType === 'del') html += '<del class="hz-del">' + escHtml(run) + '</del>';
-          else if (runType === 'ins') html += '<ins class="hz-ins">' + escHtml(run) + '</ins>';
-          run = '';
-        };
-        for (const [t, val] of ops) {
-          if ((side === 'del' && t === 'ins') || (side === 'ins' && t === 'del')) continue;
-          if (t !== runType) { flush(); runType = t; }
-          run += val;
+        function tokenizeWords(s) { return s.match(/\S+\s*|\s+/g) || []; }
+        function diffTokens(a, b) {
+          const N = a.length, M = b.length, MAX = N + M, OFF = MAX;
+          const v = new Int32Array(2 * MAX + 1);
+          const trace = [];
+          let D = 0, done = false;
+          for (; D <= MAX && !done; D++) {
+            trace.push(v.slice());
+            for (let k = -D; k <= D; k += 2) {
+              let x;
+              if (k === -D || (k !== D && v[k - 1 + OFF] < v[k + 1 + OFF])) x = v[k + 1 + OFF];
+              else x = v[k - 1 + OFF] + 1;
+              let y = x - k;
+              while (x < N && y < M && a[x] === b[y]) { x++; y++; }
+              v[k + OFF] = x;
+              if (x >= N && y >= M) { done = true; break; }
+            }
+          }
+          D--;
+          const ops = [];
+          let x = N, y = M;
+          for (let d = D; d > 0; d--) {
+            const vv = trace[d];
+            const k = x - y;
+            let prevK;
+            if (k === -d || (k !== d && vv[k - 1 + OFF] < vv[k + 1 + OFF])) prevK = k + 1;
+            else prevK = k - 1;
+            const prevX = vv[prevK + OFF], prevY = prevX - prevK;
+            while (x > prevX && y > prevY) { ops.push(['eq', a[x - 1]]); x--; y--; }
+            if (x === prevX) { ops.push(['ins', b[y - 1]]); y--; }
+            else { ops.push(['del', a[x - 1]]); x--; }
+          }
+          while (x > 0 && y > 0) { ops.push(['eq', a[x - 1]]); x--; y--; }
+          while (x > 0) { ops.push(['del', a[--x]]); }
+          while (y > 0) { ops.push(['ins', b[--y]]); }
+          ops.reverse();
+          return ops;
         }
-        flush();
-        return html || '<span class="hz-placeholder">(no text)</span>';
-      }
-      function enterCompare() {
-        if (!lastRun) return;
-        const a = tokenizeWords(lastRun.input);
-        const b = tokenizeWords(lastRun.output);
-        if (a.length + b.length > 16000) { showToast('Text is too long to compare'); return; }
-        const ops = diffTokens(a, b);
-        inputDiff.innerHTML = buildDiffHTML(ops, 'del');
-        output.innerHTML = buildDiffHTML(ops, 'ins');
-        input.style.display = 'none';
-        inputDiff.style.display = '';
-        comparing = true;
-        compareBtn.classList.add('is-active');
-      }
-      function exitCompare() {
-        inputDiff.style.display = 'none';
-        input.style.display = '';
-        if (lastRun) output.textContent = lastRun.output;
-        comparing = false;
-        compareBtn.classList.remove('is-active');
-      }
-      compareBtn.addEventListener('click', () => {
-        if (comparing) exitCompare(); else enterCompare();
-      });
-    })();
+        function buildDiffHTML(ops, side) {
+          let html = '', run = '', runType = null;
+          const flush = () => {
+            if (!run) return;
+            if (runType === 'eq') html += escHtml(run);
+            else if (runType === 'del') html += '<del class="hz-del">' + escHtml(run) + '</del>';
+            else if (runType === 'ins') html += '<ins class="hz-ins">' + escHtml(run) + '</ins>';
+            run = '';
+          };
+          for (const [t, val] of ops) {
+            if ((side === 'del' && t === 'ins') || (side === 'ins' && t === 'del')) continue;
+            if (t !== runType) { flush(); runType = t; }
+            run += val;
+          }
+          flush();
+          return html || '<span class="hz-placeholder">(no text)</span>';
+        }
+        function enterCompare() {
+          if (!lastRun) return;
+          const a = tokenizeWords(lastRun.input);
+          const b = tokenizeWords(lastRun.output);
+          if (a.length + b.length > 16000) { showToast('Text is too long to compare'); return; }
+          const ops = diffTokens(a, b);
+          inputDiff.innerHTML = buildDiffHTML(ops, 'del');
+          output.innerHTML = buildDiffHTML(ops, 'ins');
+          input.style.display = 'none';
+          inputDiff.style.display = '';
+          comparing = true;
+          compareBtn.classList.add('is-active');
+        }
+        function exitCompare() {
+          inputDiff.style.display = 'none';
+          input.style.display = '';
+          if (lastRun) output.textContent = lastRun.output;
+          comparing = false;
+          compareBtn.classList.remove('is-active');
+        }
+        compareBtn.addEventListener('click', () => {
+          if (comparing) exitCompare(); else enterCompare();
+        });
+      })();
     <?php endif; ?>
   </script>
 

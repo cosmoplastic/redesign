@@ -11,7 +11,8 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Button <em>maker</em></h1>
-      <p class="topstrip-intro">Design primary and secondary button styles with adjustable radius, spacing, type, and color. Preview states side by side and export reusable CSS for product UIs and design systems.</p>
+      <p class="topstrip-intro">Design primary and secondary button styles with adjustable radius, spacing, type, and
+        color. Preview states side by side and export reusable CSS for product UIs and design systems.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
@@ -375,8 +376,12 @@ require '../includes/header.php';
 
         <section class="tool-seo-section" aria-labelledby="button-seo-title">
           <h2 id="button-seo-title">Design Reusable Button Styles Faster</h2>
-          <p>This button generator is built for shaping consistent primary, secondary, and tertiary button patterns without writing each variation from scratch. You can control radius, spacing, typography, fill, stroke, and opacity while previewing how the set behaves across multiple sizes.</p>
-          <p>It works well for design systems, landing pages, app interfaces, and quick UI exploration. If you need a CSS button maker that helps translate visual decisions into reusable production code, this page gives you a more direct workflow from styling decisions to export.</p>
+          <p>This button generator is built for shaping consistent primary, secondary, and tertiary button patterns
+            without writing each variation from scratch. You can control radius, spacing, typography, fill, stroke, and
+            opacity while previewing how the set behaves across multiple sizes.</p>
+          <p>It works well for design systems, landing pages, app interfaces, and quick UI exploration. If you need a
+            CSS button maker that helps translate visual decisions into reusable production code, this page gives you a
+            more direct workflow from styling decisions to export.</p>
         </section>
 
       </div>

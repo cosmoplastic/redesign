@@ -299,7 +299,8 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Border <em>Glow</em></h1>
-      <p class="topstrip-intro">Create animated CSS border glow effects for cards, buttons, and inputs. Adjust palette, geometry, brightness, saturation, and motion, then export the finished effect as pure CSS.</p>
+      <p class="topstrip-intro">Create animated CSS border glow effects for cards, buttons, and inputs. Adjust palette,
+        geometry, brightness, saturation, and motion, then export the finished effect as pure CSS.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="bg-export-btn" type="button">
@@ -421,8 +422,12 @@ require '../includes/header.php';
         <div id="preview-slot"></div>
         <section class="tool-seo-section" aria-labelledby="glow-seo-title">
           <h2 id="glow-seo-title">Generate Animated CSS Border Glow Effects</h2>
-          <p>This border glow generator helps you build animated highlight treatments for cards, buttons, and input fields without depending on a framework. You can control palette, border width, radius, brightness, saturation, and motion, then preview how the effect feels on different UI elements.</p>
-          <p>It is useful when you need a CSS border glow effect for hero cards, premium interface components, or attention-grabbing callouts. If you want a cleaner way to create and export a conic-gradient border beam effect, this page turns that setup into a controllable visual workflow.</p>
+          <p>This border glow generator helps you build animated highlight treatments for cards, buttons, and input
+            fields without depending on a framework. You can control palette, border width, radius, brightness,
+            saturation, and motion, then preview how the effect feels on different UI elements.</p>
+          <p>It is useful when you need a CSS border glow effect for hero cards, premium interface components, or
+            attention-grabbing callouts. If you want a cleaner way to create and export a conic-gradient border beam
+            effect, this page turns that setup into a controllable visual workflow.</p>
         </section>
       </div>
     </div>

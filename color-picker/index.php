@@ -10,7 +10,8 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Color <em>picker</em></h1>
-      <p class="topstrip-intro">Pick and refine color in OKLCH with a hue wheel, gamut-aware canvas, harmony tools, and WCAG contrast checks. Convert between hex, RGB, HSL, and OKLCH without leaving the browser.</p>
+      <p class="topstrip-intro">Pick and refine color in OKLCH with a hue wheel, gamut-aware canvas, harmony tools, and
+        WCAG contrast checks. Convert between hex, RGB, HSL, and OKLCH without leaving the browser.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
@@ -134,8 +135,12 @@ require '../includes/header.php';
 
         <section class="tool-seo-section" aria-labelledby="picker-seo-title">
           <h2 id="picker-seo-title">Pick Colors In OKLCH With More Control</h2>
-          <p>This OKLCH color picker gives you a more precise way to choose color than standard RGB or HSL tools. You can explore hue, chroma, and lightness directly, stay closer to perceptual balance, and check WCAG contrast before committing to a final value.</p>
-          <p>It works well for brand colors, interface accents, accessible text combinations, and harmony exploration. If you need a web color picker that can move between OKLCH, hex, RGB, and HSL while keeping the result production-ready, this page is built to support that full workflow from exploration to export.</p>
+          <p>This OKLCH color picker gives you a more precise way to choose color than standard RGB or HSL tools. You
+            can explore hue, chroma, and lightness directly, stay closer to perceptual balance, and check WCAG contrast
+            before committing to a final value.</p>
+          <p>It works well for brand colors, interface accents, accessible text combinations, and harmony exploration.
+            If you need a web color picker that can move between OKLCH, hex, RGB, and HSL while keeping the result
+            production-ready, this page is built to support that full workflow from exploration to export.</p>
         </section>
 
       </div>

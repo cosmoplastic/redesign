@@ -37,7 +37,8 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Palette <em>generator</em></h1>
-      <p class="topstrip-intro">Generate OKLCH palettes and full shade scales from a single seed color. Build accessible 50-900 ramps, compare variations, and export CSS variables or Figma-ready JSON for design systems.</p>
+      <p class="topstrip-intro">Generate OKLCH palettes and full shade scales from a single seed color. Build accessible
+        50-900 ramps, compare variations, and export CSS variables or Figma-ready JSON for design systems.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
@@ -87,8 +88,13 @@ require '../includes/header.php';
 
         <section class="tool-seo-section" aria-labelledby="palette-seo-title">
           <h2 id="palette-seo-title">Build Better OKLCH Color Scales</h2>
-          <p>This OKLCH palette generator is designed for designers and developers who need more than a random swatch set. Instead of relying on HSL shifts that often create muddy midtones, it helps you generate cleaner 50-900 color scales that feel more balanced across UI surfaces, typography, borders, and states.</p>
-          <p>Use it to create design-token-ready palettes, compare multiple brand directions, and export CSS variables or Figma JSON for a real workflow. If you need an accessible color scale generator for design systems, product UI, or marketing themes, this page gives you a faster way to build and refine palettes that stay visually consistent.</p>
+          <p>This OKLCH palette generator is designed for designers and developers who need more than a random swatch
+            set. Instead of relying on HSL shifts that often create muddy midtones, it helps you generate cleaner 50-900
+            color scales that feel more balanced across UI surfaces, typography, borders, and states.</p>
+          <p>Use it to create design-token-ready palettes, compare multiple brand directions, and export CSS variables
+            or Figma JSON for a real workflow. If you need an accessible color scale generator for design systems,
+            product UI, or marketing themes, this page gives you a faster way to build and refine palettes that stay
+            visually consistent.</p>
         </section>
       </div>
     </div>
