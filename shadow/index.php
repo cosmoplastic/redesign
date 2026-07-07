@@ -5,7 +5,39 @@ $shellClass = 'full-height';
 require '../includes/header.php';
 ?>
 
-<main class="panel">
+<style>
+  /* Left controls: full-height column flush to the sidebar (matches other tools) */
+  .shadow-page .grad-panel { width: 316px; }
+  .shadow-page .grad-panel .picker-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .shadow-page .grad-panel .picker-card:last-child { border-bottom: none; }
+  /* Narrow-panel segmented controls fill the width instead of overflowing */
+  .shadow-page .grad-panel .tabs { width: 100%; }
+  .shadow-page .grad-panel .tab-btn {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 5px 4px;
+    font-size: 10.5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Right side: preview + tokens scroll area */
+  .shadow-page .shadow-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px 40px;
+  }
+</style>
+
+<main class="panel shadow-page">
 
   <div class="topstrip">
     <span class="topstrip-title">Shadow <em>& elevation</em></span>
@@ -26,11 +58,10 @@ require '../includes/header.php';
     </div>
   </div>
 
-  <div class="panel-scroll">
-  <div class="palette-sections">
+  <div class="workspace">
 
-    <!-- ── LEFT COLUMN: controls ──────────────────────── -->
-    <div class="pickers-grid" id="controls-grid">
+    <!-- ── LEFT COLUMN: controls (flush to sidebar) ───── -->
+    <div class="grad-panel" id="controls-grid">
 
       <!-- Palette handoff card -->
       <div class="picker-card" id="handoff-card">
@@ -112,7 +143,8 @@ require '../includes/header.php';
     </div><!-- /#controls-grid -->
 
     <!-- ── RIGHT COLUMN: preview + tokens ─────────────── -->
-    <div>
+    <div class="grad-main">
+      <div class="shadow-scroll">
       <div class="scales-header">
         <span class="scales-header-label">Preview &amp; tokens</span>
         <div class="shadow-surface-toggle tabs">
@@ -139,10 +171,10 @@ require '../includes/header.php';
         <span class="scales-header-label">CSS tokens</span>
       </div>
       <div class="shadow-tokens" id="token-rows"></div>
-    </div>
+      </div><!-- /.shadow-scroll -->
+    </div><!-- /.grad-main -->
 
-  </div><!-- /.palette-sections -->
-  </div><!-- /.panel-scroll -->
+  </div><!-- /.workspace -->
 
 </main>
 </div>

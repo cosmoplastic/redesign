@@ -126,6 +126,14 @@ require_once __DIR__ . '/version.php';
                     </svg>
                     Button maker
                 </a>
+                <a href="/border-glow/" class="sidebar-link<?= $activePage === 'border-glow' ? ' active' : '' ?>">
+                    <!-- Border glow icon: rounded card with a spark -->
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="5" />
+                        <path d="M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5L8.5 12l2.5-1z" />
+                    </svg>
+                    Border glow
+                </a>
 
             </div>
             <div class="sidebar-section">

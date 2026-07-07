@@ -5,6 +5,15 @@ require_once __DIR__ . '/../includes/version.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
 define('MAX_UPLOAD_MB', 512);
 
+// ── Humanizer (Anthropic) config — key lives in the gitignored secret file ──
+$hzSecret = __DIR__ . '/../includes/humanizer-secret.php';
+if (file_exists($hzSecret))
+  require_once $hzSecret;
+require_once __DIR__ . '/../includes/humanizer.php';
+$HZ_MODEL = 'claude-opus-4-8';
+$hzKey = getenv('ANTHROPIC_API_KEY') ?: (defined('ANTHROPIC_API_KEY') ? ANTHROPIC_API_KEY : '');
+$hzKeyConfigured = $hzKey && $hzKey !== 'sk-ant-REPLACE_ME';
+
 $dataDir = __DIR__ . '/data';
 $uploadDir = __DIR__ . '/uploads';
 
@@ -16,10 +25,55 @@ if (!is_dir($uploadDir))
 $snipsFile = $dataDir . '/snippets.json';
 $filesFile = $dataDir . '/files.json';
 
+// Generate a small JPEG thumbnail for an image upload (best-effort; needs GD).
+function make_thumb(string $srcPath, string $mime, string $destPath, int $maxDim = 400): bool
+{
+  if (!function_exists('imagecreatetruecolor'))
+    return false;
+  switch ($mime) {
+    case 'image/jpeg':
+    case 'image/jpg':
+      $img = @imagecreatefromjpeg($srcPath);
+      break;
+    case 'image/png':
+      $img = @imagecreatefrompng($srcPath);
+      break;
+    case 'image/gif':
+      $img = @imagecreatefromgif($srcPath);
+      break;
+    case 'image/webp':
+      $img = function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($srcPath) : false;
+      break;
+    default:
+      return false;
+  }
+  if (!$img)
+    return false;
+  $w = imagesx($img);
+  $h = imagesy($img);
+  if ($w < 1 || $h < 1) {
+    imagedestroy($img);
+    return false;
+  }
+  $scale = min(1, $maxDim / max($w, $h));
+  $tw = max(1, (int) round($w * $scale));
+  $th = max(1, (int) round($h * $scale));
+  $thumb = imagecreatetruecolor($tw, $th);
+  // Flatten onto a dark background so transparent images blend with the UI.
+  $bg = imagecolorallocate($thumb, 20, 20, 22);
+  imagefilledrectangle($thumb, 0, 0, $tw, $th, $bg);
+  imagecopyresampled($thumb, $img, 0, 0, 0, 0, $tw, $th, $w, $h);
+  $ok = imagejpeg($thumb, $destPath, 82);
+  imagedestroy($img);
+  imagedestroy($thumb);
+  return (bool) $ok;
+}
+
 // ── Public file/image serving (no auth required) ─────────────────
-if (isset($_GET['token']) || isset($_GET['img'])) {
-  $token = $_GET['token'] ?? $_GET['img'];
-  $inline = isset($_GET['img']);
+if (isset($_GET['token']) || isset($_GET['img']) || isset($_GET['thumb'])) {
+  $token = $_GET['token'] ?? $_GET['img'] ?? $_GET['thumb'];
+  $wantThumb = isset($_GET['thumb']);
+  $inline = isset($_GET['img']) || $wantThumb;
   $files = json_decode(file_exists($filesFile) ? file_get_contents($filesFile) : '[]', true) ?: [];
   foreach ($files as $f) {
     if ($f['token'] === $token) {
@@ -27,6 +81,18 @@ if (isset($_GET['token']) || isset($_GET['img'])) {
         http_response_code(410);
         echo 'This link has expired.';
         exit;
+      }
+      // Serve the generated thumbnail when asked (falls back to the full image below).
+      if ($wantThumb) {
+        $thumbPath = $uploadDir . '/' . $token . '_thumb.jpg';
+        if (file_exists($thumbPath)) {
+          header('Content-Type: image/jpeg');
+          header('Content-Disposition: inline');
+          header('Content-Length: ' . filesize($thumbPath));
+          header('Cache-Control: private, max-age=3600');
+          readfile($thumbPath);
+          exit;
+        }
       }
       $path = $uploadDir . '/' . $token . '_' . $f['name'];
       if (!file_exists($path)) {
@@ -37,7 +103,7 @@ if (isset($_GET['token']) || isset($_GET['img'])) {
       header('Content-Type: ' . ($f['mime'] ?: 'application/octet-stream'));
       header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filename="' . addslashes($f['name']) . '"');
       header('Content-Length: ' . filesize($path));
-      header('Cache-Control: no-store');
+      header('Cache-Control: ' . ($wantThumb ? 'private, max-age=3600' : 'no-store'));
       readfile($path);
       exit;
     }
@@ -118,12 +184,16 @@ if ($authed) {
     $mime = $_FILES['upload']['type'] ?: 'application/octet-stream';
     $dest = $uploadDir . '/' . $token . '_' . $orig;
     move_uploaded_file($_FILES['upload']['tmp_name'], $dest);
+    $isImage = strpos($mime, 'image/') === 0;
+    $hasThumb = $isImage ? make_thumb($dest, $mime, $uploadDir . '/' . $token . '_thumb.jpg') : false;
     $files = json_decode(file_exists($filesFile) ? file_get_contents($filesFile) : '[]', true) ?: [];
     $entry = [
       'token' => $token,
       'name' => $orig,
       'mime' => $mime,
       'type' => $type,
+      'img' => $isImage,
+      'thumb' => $hasThumb,
       'size' => filesize($dest),
       'expires' => time() + $hours * 3600,
       'uploaded' => time(),
@@ -144,6 +214,30 @@ if ($authed) {
       echo json_encode(['authed' => true]);
       exit;
     }
+
+    if ($action === 'humanize') {
+      header('Cache-Control: no-store');
+      $text = (string) ($_POST['text'] ?? '');
+      if (trim($text) === '') {
+        echo json_encode(['ok' => false, 'error' => 'Enter some text first.']);
+        exit;
+      }
+      if (mb_strlen($text) > 24000) {
+        echo json_encode(['ok' => false, 'error' => 'Text is too long (24,000 character limit). Split it into chunks.']);
+        exit;
+      }
+      if (!$hzKeyConfigured) {
+        echo json_encode(['ok' => false, 'error' => 'Server not configured: add your Anthropic API key to includes/humanizer-secret.php.']);
+        exit;
+      }
+      if (!function_exists('curl_init')) {
+        echo json_encode(['ok' => false, 'error' => 'Server is missing the PHP curl extension.']);
+        exit;
+      }
+      echo json_encode(humanizer_run($hzKey, $HZ_MODEL, $text), JSON_UNESCAPED_UNICODE);
+      exit;
+    }
+
     $snips = json_decode(file_exists($snipsFile) ? file_get_contents($snipsFile) : '[]', true) ?: [];
     $files = json_decode(file_exists($filesFile) ? file_get_contents($filesFile) : '[]', true) ?: [];
 
@@ -180,6 +274,7 @@ if ($authed) {
       foreach ($files as $f) {
         if ($f['token'] === $token) {
           @unlink($uploadDir . '/' . $token . '_' . $f['name']);
+          @unlink($uploadDir . '/' . $token . '_thumb.jpg');
           break;
         }
       }
@@ -194,8 +289,10 @@ if ($authed) {
       $clean = array_values(array_filter($files, fn($f) => $f['expires'] > $now));
       if (count($clean) !== count($files)) {
         foreach ($files as $f) {
-          if ($f['expires'] <= $now)
+          if ($f['expires'] <= $now) {
             @unlink($uploadDir . '/' . $f['token'] . '_' . $f['name']);
+            @unlink($uploadDir . '/' . $f['token'] . '_thumb.jpg');
+          }
         }
         file_put_contents($filesFile, json_encode($clean, JSON_PRETTY_PRINT));
       }
@@ -235,9 +332,9 @@ header('Cache-Control: no-store, must-revalidate');
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100vh;
-      padding: 24px;
+      padding: 56px 24px 64px;
     }
 
     /* Lock screen */
@@ -327,7 +424,7 @@ header('Cache-Control: no-store, must-revalidate');
     /* Admin panel */
     .admin-wrap {
       width: 100%;
-      max-width: 760px;
+      max-width: 1080px;
     }
 
     .admin-header {
@@ -565,6 +662,19 @@ header('Cache-Control: no-store, must-revalidate');
       stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    /* Image files show a clickable thumbnail in the row's icon slot */
+    .item-row-thumb {
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.3);
+      cursor: zoom-in;
+    }
+    .item-row-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .item-thumb {
@@ -1215,6 +1325,184 @@ header('Cache-Control: no-store, must-revalidate');
       border-radius: 2px;
       transition: width 0.1s linear;
     }
+
+    /* ── Humanizer tab ── */
+    .hz-warn {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: #fbbf77;
+      background: rgba(251, 146, 60, 0.08);
+      border: 1px solid rgba(251, 146, 60, 0.25);
+      border-radius: var(--r);
+      padding: 10px 14px;
+    }
+    .hz-warn code { color: #fdba74; }
+
+    .hz-panes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .hz-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      min-height: 440px;
+    }
+    .hz-pane-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .hz-pane-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary-400);
+    }
+    .hz-textarea {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      color: var(--color-primary-100);
+      text-transform: none;
+    }
+    .hz-textarea::placeholder { color: var(--color-primary-400); }
+    .hz-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 14px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .hz-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--color-primary-400);
+      font-variant-numeric: tabular-nums;
+    }
+    .hz-output {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      color: var(--color-primary-100);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-transform: none;
+    }
+    .hz-output-error { color: #f87171; }
+    .hz-placeholder { color: var(--color-primary-400); }
+
+    .hz-head-actions { display: flex; align-items: center; gap: 6px; }
+    .hz-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--color-primary-300);
+      cursor: pointer;
+      transition: border-color .15s, color .15s, opacity .15s;
+    }
+    .hz-copy svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .hz-copy:hover { border-color: var(--border3); color: var(--color-primary-100); }
+    .hz-copy:disabled { opacity: 0.4; cursor: default; }
+    .hz-copy.is-active { border-color: var(--green); color: var(--green); }
+
+    .hz-del {
+      background: rgba(248, 113, 113, 0.15);
+      color: #fca5a5;
+      text-decoration: line-through;
+      text-decoration-color: rgba(248, 113, 113, 0.55);
+      border-radius: 2px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .hz-ins {
+      background: rgba(110, 231, 160, 0.16);
+      color: #86efac;
+      text-decoration: none;
+      border-radius: 2px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .hz-spin {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: hzspin 0.7s linear infinite;
+      margin-right: 2px;
+      vertical-align: -1px;
+    }
+    @keyframes hzspin { to { transform: rotate(360deg); } }
+
+    /* Rotating conic "beam" border on the Humanize button */
+    @property --hz-beam-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    #hz-run {
+      position: relative;
+    }
+    #hz-run::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: conic-gradient(from var(--hz-beam-angle),
+          transparent 70%, #7c3aed 84%, #06b6d4 96%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      animation: hzbeamspin 4s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+    @keyframes hzbeamspin {
+      to { --hz-beam-angle: 360deg; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #hz-run::before { animation: none; }
+    }
+
+    @media (max-width: 640px) {
+      .hz-panes { grid-template-columns: 1fr; }
+      .hz-pane { min-height: 300px; }
+    }
   </style>
 </head>
 
@@ -1248,7 +1536,7 @@ header('Cache-Control: no-store, must-revalidate');
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('files')">Share files</button>
         <button class="admin-tab" onclick="switchTab('snippets')">Text snippets</button>
-        <button class="admin-tab" onclick="switchTab('images')">Image host</button>
+        <button class="admin-tab" onclick="switchTab('humanizer')">Humanizer</button>
       </div>
 
       <!-- ── FILE SHARE ── -->
@@ -1256,7 +1544,7 @@ header('Cache-Control: no-store, must-revalidate');
         <div class="upload-zone" id="file-zone">
           <input type="file" id="file-input" multiple>
           <div class="upload-zone-text">
-            <strong>Click or drag</strong> to upload a file
+            <strong>Click or drag</strong> to upload a file or image
           </div>
         </div>
         <div class="expire-row">
@@ -1283,24 +1571,48 @@ header('Cache-Control: no-store, must-revalidate');
         <div class="item-list" id="snip-list"></div>
       </div>
 
-      <!-- ── IMAGE HOST ── -->
-      <div class="admin-section" id="tab-images">
-        <div class="upload-zone" id="img-zone">
-          <input type="file" id="img-input" multiple accept="image/*">
-          <div class="upload-zone-text">
-            <strong>Click or drag</strong> to upload an image
+      <!-- ── HUMANIZER ── -->
+      <div class="admin-section" id="tab-humanizer">
+        <?php if (!$hzKeyConfigured): ?>
+          <div class="hz-warn">Server not configured &mdash; add your Anthropic API key to
+            <code>includes/humanizer-secret.php</code> (or set the <code>ANTHROPIC_API_KEY</code> env var).</div>
+        <?php endif; ?>
+        <div class="hz-panes">
+          <div class="hz-pane">
+            <div class="hz-pane-head">
+              <span class="hz-pane-label">Your text</span>
+            </div>
+            <textarea id="hz-input" class="hz-textarea" placeholder="Paste your text here&hellip;" spellcheck="false"></textarea>
+            <div class="hz-output" id="hz-input-diff" style="display:none"></div>
+            <div class="hz-foot">
+              <span class="hz-count" id="hz-count">0 chars</span>
+              <button class="btn btn-primary" id="hz-run">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
+                  <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+                </svg>
+                Humanize
+              </button>
+            </div>
+          </div>
+
+          <div class="hz-pane">
+            <div class="hz-pane-head">
+              <span class="hz-pane-label">Humanized</span>
+              <div class="hz-head-actions">
+                <button class="hz-copy" id="hz-compare" disabled title="Highlight what changed">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
+                  Compare
+                </button>
+                <button class="hz-copy" id="hz-copy" disabled>
+                  <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
+                  Copy
+                </button>
+              </div>
+            </div>
+            <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear here.</span></div>
           </div>
         </div>
-        <div class="expire-row">
-          <span class="expire-label">Expires after</span>
-          <button class="expire-btn" data-hours="1" onclick="setExpiry('img',1,this)">1h</button>
-          <button class="expire-btn" data-hours="24" onclick="setExpiry('img',24,this)">24h</button>
-          <button class="expire-btn" data-hours="72" onclick="setExpiry('img',72,this)">3 days</button>
-          <button class="expire-btn active" data-hours="168" onclick="setExpiry('img',168,this)">1 week</button>
-          <button class="expire-btn" data-hours="720" onclick="setExpiry('img',720,this)">1 month</button>
-        </div>
-        <div class="upload-queue" id="img-queue"></div>
-        <div class="item-list" id="img-list"></div>
       </div>
     </div>
 
@@ -1349,13 +1661,11 @@ header('Cache-Control: no-store, must-revalidate');
     const MAX_UPLOAD_BYTES = <?= MAX_UPLOAD_MB * 1024 * 1024 ?>;
     const MAX_UPLOAD_LABEL = '<?= MAX_UPLOAD_MB ?> MB';
     let fileExpiry = 168;
-    let imgExpiry = 168;
     let editingSnipId = null;
 
     // ── Expiry ───────────────────────────────────────────────────────
     function setExpiry(type, hours, btn) {
-      if (type === 'file') fileExpiry = hours;
-      else imgExpiry = hours;
+      fileExpiry = hours;
       btn.closest('.expire-row').querySelectorAll('.expire-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
@@ -1363,17 +1673,17 @@ header('Cache-Control: no-store, must-revalidate');
     // ── Tab switching ────────────────────────────────────────────────
     function switchTab(tab) {
       document.querySelectorAll('.admin-tab').forEach((b, i) => {
-        b.classList.toggle('active', ['files', 'snippets', 'images'][i] === tab);
+        b.classList.toggle('active', ['files', 'snippets', 'humanizer'][i] === tab);
       });
       document.querySelectorAll('.admin-section').forEach((s, i) => {
-        s.classList.toggle('active', ['tab-files', 'tab-snippets', 'tab-images'][i] === 'tab-' + tab);
+        s.classList.toggle('active', ['tab-files', 'tab-snippets', 'tab-humanizer'][i] === 'tab-' + tab);
       });
     }
 
     // ── Upload ───────────────────────────────────────────────────────
     // Build a queue row for one file (starts pending at 0%).
     function makeUploadRow(type, name) {
-      const container = document.getElementById(type === 'image' ? 'img-queue' : 'file-queue');
+      const container = document.getElementById('file-queue');
       const row = document.createElement('div');
       row.className = 'upload-row pending';
       row.innerHTML = `
@@ -1404,7 +1714,7 @@ header('Cache-Control: no-store, must-revalidate');
         const fd = new FormData();
         fd.append('upload', file);
         fd.append('upload_type', type);
-        fd.append('expire_hours', type === 'image' ? imgExpiry : fileExpiry);
+        fd.append('expire_hours', fileExpiry);
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/admin/');
@@ -1475,11 +1785,7 @@ header('Cache-Control: no-store, must-revalidate');
       // Dropping is handled page-wide (see initPageDrop) so files can be dropped anywhere.
     }
 
-    // ── Page-wide drag & drop ────────────────────────────────────────
-    function uploadTypeForActiveTab() {
-      return document.getElementById('tab-images')?.classList.contains('active') ? 'image' : 'file';
-    }
-
+    // ── Page-wide drag & drop (everything uploads to Share files) ────
     function runDroppedUploads(files, type) {
       return uploadBatch(files, type);
     }
@@ -1513,10 +1819,9 @@ header('Cache-Control: no-store, must-revalidate');
         overlay.classList.remove('show');
         const files = [...e.dataTransfer.files];
         if (!files.length) return;
-        const type = uploadTypeForActiveTab();
-        // Make sure the destination tab is visible so its progress + list show.
-        if (type === 'file' && !document.getElementById('tab-files').classList.contains('active')) switchTab('files');
-        runDroppedUploads(files, type);
+        // Everything goes to Share files; make sure that tab is visible.
+        if (!document.getElementById('tab-files').classList.contains('active')) switchTab('files');
+        runDroppedUploads(files, 'file');
       });
     }
 
@@ -1643,84 +1948,62 @@ header('Cache-Control: no-store, must-revalidate');
       return d.toLocaleDateString(undefined, { year: '2-digit', month: 'numeric', day: 'numeric' });
     }
 
+    function isImageFile(f) { return f.img || (f.mime || '').indexOf('image/') === 0; }
+
     function renderFiles(files) {
       const el = document.getElementById('file-list');
-      const list = files.filter(f => f.type === 'file');
       el.className = 'item-list';
-      if (!list.length) { el.innerHTML = '<div class="empty-state">No active files</div>'; return; }
+      const openTok = lightboxOpen() && _gallery[_lightboxIdx] ? _gallery[_lightboxIdx].token : null;
+      if (!files.length) {
+        el.innerHTML = '<div class="empty-state">No active files</div>';
+        _gallery = [];
+        if (openTok) closeLightbox();
+        return;
+      }
       el.innerHTML = '';
-      list.slice().reverse().forEach(f => {
-        const url = BASE + '/admin/?token=' + f.token;
+      const ordered = files.slice().reverse();
+      _gallery = ordered.filter(isImageFile);   // images only, in display order → lightbox set
+      let imgIdx = 0;
+      ordered.forEach(f => {
+        const isImg = isImageFile(f);
+        const dlUrl = BASE + '/admin/?token=' + f.token;
+        const shareUrl = isImg ? (BASE + '/admin/?img=' + f.token) : dlUrl;
+        const thumbUrl = BASE + '/admin/?thumb=' + f.token;
         const row = document.createElement('div');
         row.className = 'item-row';
         row.innerHTML = `
-      <div class="item-row-icon">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div class="item-row-icon${isImg ? ' item-row-thumb' : ''}">
+        ${isImg
+            ? `<img src="${thumbUrl}" alt="${f.name}" loading="lazy">`
+            : `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`}
       </div>
       <div class="item-meta">
         <div class="item-name" title="${f.name}">${f.name}</div>
         <div class="item-sub"><span>${fmtSize(f.size)}</span><span>${timeLeft(f.expires)}</span></div>
       </div>
       <div class="item-actions">
-        <a class="icon-btn" title="Download" href="${url}" download="${f.name}">
+        <a class="icon-btn" title="Download" href="${dlUrl}" download="${f.name}">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </a>
-        <button class="icon-btn" title="Copy link" onclick="copyAndToast('${url}')">
+        <button class="icon-btn" title="${isImg ? 'Copy image link' : 'Copy link'}" onclick="copyAndToast('${shareUrl}')">
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
         <button class="icon-btn danger" title="Delete" onclick="delFile('${f.token}')">
           <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
         </button>
       </div>`;
+        if (isImg) {
+          const myIdx = imgIdx++;
+          const thumb = row.querySelector('.item-row-thumb');
+          thumb.title = 'Click to preview';
+          thumb.addEventListener('click', () => openLightbox(myIdx));
+        }
         el.appendChild(row);
       });
-    }
-
-    function renderImages(files) {
-      const el = document.getElementById('img-list');
-      const list = files.filter(f => f.type === 'image');
-      // Preserve which image is open in the lightbox across re-renders (polling/delete).
-      const openTok = lightboxOpen() && _gallery[_lightboxIdx] ? _gallery[_lightboxIdx].token : null;
-      if (!list.length) {
-        el.className = 'item-list';
-        el.innerHTML = '<div class="empty-state">No hosted images</div>';
-        _gallery = [];
-        if (openTok) closeLightbox();
-        return;
-      }
-      el.className = 'item-grid';
-      el.innerHTML = '';
-      _gallery = list.slice().reverse();
-      _gallery.forEach((f, i) => {
-        const imgUrl = BASE + '/admin/?img=' + f.token;
-        const dlUrl = BASE + '/admin/?token=' + f.token;
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-      <img class="item-card-img" src="${imgUrl}" alt="${f.name}" loading="lazy">
-      <div class="item-card-body">
-        <div class="item-card-name" title="${f.name}">${f.name}</div>
-        <div class="item-card-sub"><span>${fmtSize(f.size)}</span><span>${timeLeft(f.expires)}</span></div>
-      </div>
-      <div class="item-card-actions">
-        <a class="card-dl-btn" href="${dlUrl}" download="${f.name}">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download
-        </a>
-        <button class="icon-btn" title="Copy link" onclick="copyAndToast('${imgUrl}')">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        </button>
-        <button class="icon-btn danger" title="Delete" onclick="delFile('${f.token}')">
-          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-        </button>
-      </div>`;
-        card.querySelector('.item-card-img').addEventListener('click', () => openLightbox(i));
-        el.appendChild(card);
-      });
-      // Re-sync an open lightbox to the same image (or nearest) after a re-render.
+      // Keep an open lightbox pointed at the same image (or nearest) after a re-render.
       if (openTok) {
         const ni = _gallery.findIndex(f => f.token === openTok);
-        if (ni === -1) lightboxSet(Math.min(_lightboxIdx, _gallery.length - 1));
+        if (ni === -1) { if (_gallery.length) lightboxSet(Math.min(_lightboxIdx, _gallery.length - 1)); else closeLightbox(); }
         else { _lightboxIdx = ni; buildLightboxStrip(); showLightboxImage(); updateStripActive(); }
       }
     }
@@ -1787,7 +2070,7 @@ header('Cache-Control: no-store, must-revalidate');
       _gallery.forEach((f, i) => {
         const t = document.createElement('img');
         t.className = 'lightbox-thumb' + (i === _lightboxIdx ? ' active' : '');
-        t.src = BASE + '/admin/?img=' + f.token;
+        t.src = BASE + '/admin/?thumb=' + f.token;
         t.alt = f.name;
         t.loading = 'lazy';
         t.addEventListener('click', () => lightboxSet(i));
@@ -1860,7 +2143,6 @@ header('Cache-Control: no-store, must-revalidate');
       let json;
       try { json = JSON.parse(text); } catch (_) { return; }
       renderFiles(json.files || []);
-      renderImages(json.files || []);
       renderSnips(json.snips || []);
     }
 
@@ -1921,12 +2203,166 @@ header('Cache-Control: no-store, must-revalidate');
 
       // ── Init ─────────────────────────────────────────────────────────
       bindUploadZone('file-zone', 'file-input', 'file');
-      bindUploadZone('img-zone', 'img-input', 'image');
       initPageDrop();
       document.getElementById('snip-text').addEventListener('input', scheduleSnipAutoSave);
       loadData();
       _sessionInterval = setInterval(pingSession, 60000);
       _dataPollInterval = setInterval(() => loadData().catch(() => { }), 30000);
+
+    // ── Humanizer tab ────────────────────────────────────────────────
+    (function () {
+      const input = document.getElementById('hz-input');
+      const inputDiff = document.getElementById('hz-input-diff');
+      const output = document.getElementById('hz-output');
+      const runBtn = document.getElementById('hz-run');
+      const copyBtn = document.getElementById('hz-copy');
+      const compareBtn = document.getElementById('hz-compare');
+      const countEl = document.getElementById('hz-count');
+      if (!input) return;
+      let busy = false;
+      let lastRun = null;   // { input, output } from the most recent humanize
+      let comparing = false;
+
+      function updateCount() {
+        const n = input.value.length;
+        countEl.textContent = n.toLocaleString() + (n === 1 ? ' char' : ' chars');
+      }
+      input.addEventListener('input', updateCount);
+      updateCount();
+
+      async function humanize() {
+        if (busy) return;
+        const text = input.value;
+        if (!text.trim()) { showToast('Enter some text first'); return; }
+        busy = true;
+        runBtn.disabled = true;
+        const orig = runBtn.innerHTML;
+        runBtn.innerHTML = '<span class="hz-spin"></span> Humanizing&hellip;';
+        copyBtn.disabled = true;
+        compareBtn.disabled = true;
+        if (comparing) exitCompare();
+        output.classList.remove('hz-output-error');
+        output.innerHTML = '<span class="hz-placeholder">Working&hellip;</span>';
+        try {
+          const fd = new FormData();
+          fd.append('action', 'humanize');
+          fd.append('text', text);
+          const res = await fetch('/admin/', { method: 'POST', body: fd });
+          const raw = await res.text();
+          let json;
+          try { json = JSON.parse(raw); }
+          catch (_) { throw new Error(raw.slice(0, 400).trim() || 'Empty response from server.'); }
+          if (json.ok) {
+            lastRun = { input: text, output: json.text };
+            output.textContent = json.text;
+            copyBtn.disabled = false;
+            compareBtn.disabled = false;
+          } else {
+            output.textContent = json.error || 'Something went wrong.';
+            output.classList.add('hz-output-error');
+          }
+        } catch (e) {
+          output.textContent = (e && e.message) ? e.message : 'Request failed. Please try again.';
+          output.classList.add('hz-output-error');
+        } finally {
+          busy = false;
+          runBtn.disabled = false;
+          runBtn.innerHTML = orig;
+        }
+      }
+
+      runBtn.addEventListener('click', humanize);
+      input.addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); humanize(); }
+      });
+      copyBtn.addEventListener('click', () => {
+        const txt = (lastRun && lastRun.output) || output.textContent;
+        navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
+      });
+
+      // ── Compare (word-level diff, Myers) ──
+      function escHtml(s) {
+        return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      }
+      function tokenizeWords(s) { return s.match(/\S+\s*|\s+/g) || []; }
+      function diffTokens(a, b) {
+        const N = a.length, M = b.length, MAX = N + M, OFF = MAX;
+        const v = new Int32Array(2 * MAX + 1);
+        const trace = [];
+        let D = 0, done = false;
+        for (; D <= MAX && !done; D++) {
+          trace.push(v.slice());
+          for (let k = -D; k <= D; k += 2) {
+            let x;
+            if (k === -D || (k !== D && v[k - 1 + OFF] < v[k + 1 + OFF])) x = v[k + 1 + OFF];
+            else x = v[k - 1 + OFF] + 1;
+            let y = x - k;
+            while (x < N && y < M && a[x] === b[y]) { x++; y++; }
+            v[k + OFF] = x;
+            if (x >= N && y >= M) { done = true; break; }
+          }
+        }
+        D--;
+        const ops = [];
+        let x = N, y = M;
+        for (let d = D; d > 0; d--) {
+          const vv = trace[d];
+          const k = x - y;
+          let prevK;
+          if (k === -d || (k !== d && vv[k - 1 + OFF] < vv[k + 1 + OFF])) prevK = k + 1;
+          else prevK = k - 1;
+          const prevX = vv[prevK + OFF], prevY = prevX - prevK;
+          while (x > prevX && y > prevY) { ops.push(['eq', a[x - 1]]); x--; y--; }
+          if (x === prevX) { ops.push(['ins', b[y - 1]]); y--; }
+          else { ops.push(['del', a[x - 1]]); x--; }
+        }
+        while (x > 0 && y > 0) { ops.push(['eq', a[x - 1]]); x--; y--; }
+        while (x > 0) { ops.push(['del', a[--x]]); }
+        while (y > 0) { ops.push(['ins', b[--y]]); }
+        ops.reverse();
+        return ops;
+      }
+      function buildDiffHTML(ops, side) {
+        let html = '', run = '', runType = null;
+        const flush = () => {
+          if (!run) return;
+          if (runType === 'eq') html += escHtml(run);
+          else if (runType === 'del') html += '<del class="hz-del">' + escHtml(run) + '</del>';
+          else if (runType === 'ins') html += '<ins class="hz-ins">' + escHtml(run) + '</ins>';
+          run = '';
+        };
+        for (const [t, val] of ops) {
+          if ((side === 'del' && t === 'ins') || (side === 'ins' && t === 'del')) continue;
+          if (t !== runType) { flush(); runType = t; }
+          run += val;
+        }
+        flush();
+        return html || '<span class="hz-placeholder">(no text)</span>';
+      }
+      function enterCompare() {
+        if (!lastRun) return;
+        const a = tokenizeWords(lastRun.input);
+        const b = tokenizeWords(lastRun.output);
+        if (a.length + b.length > 16000) { showToast('Text is too long to compare'); return; }
+        const ops = diffTokens(a, b);
+        inputDiff.innerHTML = buildDiffHTML(ops, 'del');
+        output.innerHTML = buildDiffHTML(ops, 'ins');
+        input.style.display = 'none';
+        inputDiff.style.display = '';
+        comparing = true;
+        compareBtn.classList.add('is-active');
+      }
+      function exitCompare() {
+        inputDiff.style.display = 'none';
+        input.style.display = '';
+        if (lastRun) output.textContent = lastRun.output;
+        comparing = false;
+        compareBtn.classList.remove('is-active');
+      }
+      compareBtn.addEventListener('click', () => {
+        if (comparing) exitCompare(); else enterCompare();
+      });
+    })();
     <?php endif; ?>
   </script>
 

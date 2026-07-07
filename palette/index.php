@@ -5,7 +5,24 @@ $shellClass = 'full-height';
 require '../includes/header.php';
 ?>
 
-<main class="panel">
+<style>
+  /* Left pickers: full-height column flush to the sidebar (matches other tools) */
+  .palette-page .grad-panel { width: 316px; }
+  .palette-page .grad-panel .pickers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+  }
+  /* Right side: swatch scales scroll area */
+  .palette-page .palette-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px 40px;
+  }
+</style>
+
+<main class="panel palette-page">
 
   <div class="topstrip">
     <span class="topstrip-title">Palette <em>generator</em></span>
@@ -50,25 +67,30 @@ require '../includes/header.php';
     </div>
   </div>
 
-  <div class="panel-scroll">
-  <div class="palette-sections">
+  <div class="workspace">
 
-    <div class="pickers-grid" id="pickers-grid"></div>
-
-    <div>
-      <div class="scales-header">
-        <span class="scales-header-label">Swatches</span>
-        <div class="swatch-count-control">
-          <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
-          <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
-            onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
-          <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
-        </div>
-      </div>
-      <div class="scales-section" id="scales-section"></div>
+    <!-- ── LEFT: color pickers (flush to sidebar) ────── -->
+    <div class="grad-panel">
+      <div class="pickers-grid" id="pickers-grid"></div>
     </div>
-  </div><!-- /.palette-sections -->
-  </div><!-- /.panel-scroll -->
+
+    <!-- ── RIGHT: swatch scales ──────────────────────── -->
+    <div class="grad-main">
+      <div class="palette-scroll">
+        <div class="scales-header">
+          <span class="scales-header-label">Swatches</span>
+          <div class="swatch-count-control">
+            <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
+            <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
+              onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
+            <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
+          </div>
+        </div>
+        <div class="scales-section" id="scales-section"></div>
+      </div>
+    </div>
+
+  </div><!-- /.workspace -->
 
 </main>
 </div>
