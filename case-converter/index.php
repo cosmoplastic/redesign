@@ -76,28 +76,28 @@ require '../includes/header.php';
 
   const TRANSFORMS = {
     standard: [
-      { id: 'sentence', name: 'Sentence case', desc: 'First letter of each sentence', fn: t => t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase()) },
-      { id: 'title', name: 'Capitalized Case', desc: 'First letter of each word', fn: t => t.replace(/\b\w/g, c => c.toUpperCase()) },
-      { id: 'lower', name: 'lower case', desc: 'All letters lowercase', fn: t => t.toLowerCase() },
-      { id: 'upper', name: 'UPPER CASE', desc: 'All letters uppercase', fn: t => t.toUpperCase() },
+      { id: 'sentence', name: 'Sentence case', label: 'Sentence case', desc: 'First letter of each sentence', fn: t => t.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase()) },
+      { id: 'title', name: 'Capitalized Case', label: 'Capitalized Case', desc: 'First letter of each word', fn: t => t.replace(/\b\w/g, c => c.toUpperCase()) },
+      { id: 'lower', name: 'lower case', label: 'lower case', desc: 'All letters lowercase', fn: t => t.toLowerCase() },
+      { id: 'upper', name: 'UPPER CASE', label: 'UPPER CASE', desc: 'All letters uppercase', fn: t => t.toUpperCase() },
     ],
     developer: [
-      { id: 'camel', name: 'camelCase', desc: 'First word lower, rest capitalized', fn: toCamel },
-      { id: 'pascal', name: 'PascalCase', desc: 'All words capitalized, no spaces', fn: toPascal },
-      { id: 'snake', name: 'snake_case', desc: 'Words separated by underscores', fn: toSnake },
-      { id: 'kebab', name: 'kebab-case', desc: 'Words separated by hyphens', fn: toKebab },
-      { id: 'constant', name: 'CONSTANT_CASE', desc: 'Uppercase with underscores', fn: t => toSnake(t).toUpperCase() },
+      { id: 'camel', name: 'camelCase', label: 'CamelCase', desc: 'First word lower, rest capitalized', fn: toCamel },
+      { id: 'pascal', name: 'PascalCase', label: 'PascalCase', desc: 'All words capitalized, no spaces', fn: toPascal },
+      { id: 'snake', name: 'snake_case', label: 'snake_case', desc: 'Words separated by underscores', fn: toSnake },
+      { id: 'kebab', name: 'kebab-case', label: 'kebab-case', desc: 'Words separated by hyphens', fn: toKebab },
+      { id: 'constant', name: 'CONSTANT_CASE', label: 'CONSTANT_CASE', desc: 'Uppercase with underscores', fn: t => toSnake(t).toUpperCase() },
     ],
     cleanup: [
-      { id: 'nodouble', name: 'Remove double spaces', desc: 'Replace multiple spaces with one', fn: t => t.replace(/ {2,}/g, ' ') },
-      { id: 'trim', name: 'Trim whitespace', desc: 'Remove leading and trailing spaces', fn: t => t.split('\n').map(l => l.trim()).join('\n').trim() },
-      { id: 'nopunct', name: 'Remove punctuation', desc: 'Strip all punctuation marks', fn: t => t.replace(/[^\w\s]/g, '') },
-      { id: 'nonumbers', name: 'Remove numbers', desc: 'Strip all numeric characters', fn: t => t.replace(/[0-9]/g, '') },
-      { id: 'nolines', name: 'Remove line breaks', desc: 'Collapse to a single line', fn: t => t.replace(/[\r\n]+/g, ' ').replace(/ {2,}/g, ' ').trim() },
-      { id: 'reverse', name: 'Reverse text', desc: 'Characters in reverse order', fn: t => t.split('').reverse().join('') },
-      { id: 'slug', name: 'URL slug', desc: 'Lowercase, hyphens, no specials', fn: t => t.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '') },
-      { id: 'alternating', name: 'aLtErNaTiNg CaSe', desc: 'Alternating upper and lowercase', fn: t => { let i = 0; return t.replace(/[a-zA-Z]/g, c => (i++ % 2 === 0 ? c.toLowerCase() : c.toUpperCase())); } },
-      { id: 'inverted', name: 'iNVERTED cASE', desc: 'Swap upper and lowercase letters', fn: t => t.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('') },
+      { id: 'nodouble', name: 'Remove double spaces', label: 'Remove double spaces', desc: 'Replace multiple spaces with one', fn: t => t.replace(/ {2,}/g, ' ') },
+      { id: 'trim', name: 'Trim whitespace', label: 'Trim whitespace', desc: 'Remove leading and trailing spaces', fn: t => t.split('\n').map(l => l.trim()).join('\n').trim() },
+      { id: 'nopunct', name: 'Remove punctuation', label: 'Remove punctuation', desc: 'Strip all punctuation marks', fn: t => t.replace(/[^\w\s]/g, '') },
+      { id: 'nonumbers', name: 'Remove numbers', label: 'Remove numbers', desc: 'Strip all numeric characters', fn: t => t.replace(/[0-9]/g, '') },
+      { id: 'nolines', name: 'Remove line breaks', label: 'Remove line breaks', desc: 'Collapse to a single line', fn: t => t.replace(/[\r\n]+/g, ' ').replace(/ {2,}/g, ' ').trim() },
+      { id: 'reverse', name: 'Reverse text', label: 'Reverse text', desc: 'Characters in reverse order', fn: t => t.split('').reverse().join('') },
+      { id: 'slug', name: 'URL slug', label: 'url-slug', desc: 'Lowercase, hyphens, no specials', fn: t => t.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '') },
+      { id: 'alternating', name: 'aLtErNaTiNg CaSe', label: 'aLtErNaTiNg CaSe', desc: 'Alternating upper and lowercase', fn: t => { let i = 0; return t.replace(/[a-zA-Z]/g, c => (i++ % 2 === 0 ? c.toLowerCase() : c.toUpperCase())); } },
+      { id: 'inverted', name: 'iNVERTED cASE', label: 'iNVERTED cASE', desc: 'Swap upper and lowercase letters', fn: t => t.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('') },
     ],
   };
 
@@ -118,7 +118,7 @@ require '../includes/header.php';
   function makeCard(tx) {
     const card = document.createElement('div');
     card.className = 'tx-card'; card.dataset.id = tx.id;
-    const nm = document.createElement('div'); nm.className = 'tx-card-name'; nm.textContent = tx.name;
+    const nm = document.createElement('div'); nm.className = 'tx-card-name'; nm.textContent = tx.label || tx.name;
     const ds = document.createElement('div'); ds.className = 'tx-card-desc'; ds.textContent = tx.desc;
     card.append(nm, ds);
     card.addEventListener('click', () => applyTransform(tx));

@@ -86,7 +86,7 @@ require '../includes/header.php';
         <div class="font-picker-row">
           <span class="type-font-label">Body</span>
           <button class="font-picker-trigger" id="body-picker-trigger" onclick="openFontPicker('body')">
-            <span class="font-picker-trigger-name" id="body-picker-name">DM Mono</span>
+            <span class="font-picker-trigger-name" id="body-picker-name">DM Sans</span>
             <svg viewBox="0 0 24 24" class="font-picker-chevron">
               <polyline points="6 9 12 15 18 9" />
             </svg>
@@ -187,7 +187,7 @@ require '../includes/header.php';
     desktopRatio: 1.333,
     mobileRatio: 1.250,
     headingFont: 'Fraunces',
-    bodyFont: 'DM Mono',
+    bodyFont: 'DM Sans',
   };
 
   // ── COMPUTE ────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ require '../includes/header.php';
   function getFontFamily(fontKey) {
     return fontKey === 'heading'
       ? `'${settings.headingFont}', serif`
-      : `'${settings.bodyFont}', monospace`;
+      : `'${settings.bodyFont}', sans-serif`;
   }
 
   // ── RENDER PREVIEW ─────────────────────────────────────────────
@@ -306,7 +306,7 @@ require '../includes/header.php';
       `:root {`,
       `  /* Fonts */`,
       `  --font-heading: '${settings.headingFont}', serif;`,
-      `  --font-body: '${settings.bodyFont}', monospace;`,
+      `  --font-body: '${settings.bodyFont}', sans-serif;`,
       ``,
       `  /* Scale — Desktop · ${ratioName} (${dR}) · Base ${dB}px */`,
       ...varLines,
@@ -389,8 +389,8 @@ require '../includes/header.php';
   }
 
   // ── FONT PICKER ────────────────────────────────────────────────
-  const loadedFonts = new Set(['Fraunces', 'DM Mono']);
-  const loadedPreviewFonts = new Set(['Fraunces', 'DM Mono']);
+  const loadedFonts = new Set(['Fraunces', 'DM Sans']);
+  const loadedPreviewFonts = new Set(['Fraunces', 'DM Sans']);
   let activePicker = null;
   let fontPickerObserver = null;
 

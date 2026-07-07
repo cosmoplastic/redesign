@@ -55,7 +55,7 @@
   --green-border: rgba(110, 231, 160, 0.25);
 
   /* fonts */
-  --mono: "DM Mono", monospace;
+  --mono: "DM Sans", sans-serif;
   --serif: "Fraunces", serif;
 
   /* radii */
@@ -67,7 +67,7 @@
 
   /* ── TYPE SCALE ──
      All sizes in px; weights: 300 (light), 400 (regular), 500 (medium).
-     Serif (Fraunces) for display/headings, mono (DM Mono) for everything else.
+      Serif (Fraunces) for display/headings, sans (DM Sans) for everything else.
   */
 
   /* display */
@@ -760,6 +760,46 @@ textarea:focus {
 /* ══════════════════════════════════════════════════
    RANGE SLIDERS
 ══════════════════════════════════════════════════ */
+
+/* Canonical slider — every range input on the site carries .slider.
+   The color-picker's channel sliders add .oklch-slider on top for their
+   gradient tracks + always-white thumb (its selector is more specific,
+   so it wins where it needs to). */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border2);
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-text-100);
+  border: 2px solid var(--bg);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-text-100);
+  border: 2px solid var(--bg);
+  cursor: pointer;
+}
 
 input[type="range"].oklch-slider {
   -webkit-appearance: none;
@@ -1455,12 +1495,11 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 14px;
   align-items: stretch;
+  padding: 0px;
 }
 
 .picker-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl);
+  border-top: 1px solid var(--border);
   padding: 20px;
   transition: border-color 0.2s;
   position: relative;
@@ -1485,12 +1524,13 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   text-transform: uppercase;
   color: var(--color-text-300);
   width: 100%;
-  padding: 2px 0;
+  padding: 6px 6px;
   border-bottom: 1px solid transparent;
   transition:
     border-color 0.15s,
     color 0.15s;
   cursor: text;
+  border-radius: var(--r-sm) !important;
 }
 
 .name-input:hover {
@@ -1641,7 +1681,6 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 /* Split add-color / color-library card */
 .picker-actions-card {
   border: 1px dashed var(--border2);
-  border-radius: var(--r-xl);
   display: flex;
   overflow: hidden;
   transition: border-color 0.2s;
@@ -1701,7 +1740,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 .shadow-control-label {
   display: block;
   font-size: 11px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1765,7 +1804,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-slider-val {
   font-size: 11px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   color: var(--color-text-secondary);
   min-width: 34px;
   text-align: right;
@@ -1804,7 +1843,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-surface-label {
   font-size: 10px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -1848,7 +1887,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-card-label {
   font-size: 11px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   font-weight: 500;
   letter-spacing: 0.05em;
 }
@@ -1862,7 +1901,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-card-use {
   font-size: 10px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
 }
 
 .shadow-preview-card--light .shadow-card-use {
@@ -1874,7 +1913,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-card-blur {
   font-size: 10px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   opacity: 0.4;
 }
 
@@ -1914,7 +1953,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-token-name {
   font-size: 12px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   font-weight: 500;
   color: var(--color-text-primary);
   white-space: nowrap;
@@ -1922,7 +1961,7 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 
 .shadow-token-value {
   font-size: 10px;
-  font-family: var(--font-mono, "DM Mono", monospace);
+  font-family: var(--font-mono, "DM Sans", sans-serif);
   color: var(--color-text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2274,21 +2313,18 @@ input[type="range"].oklch-slider::-moz-range-thumb {
   overflow: hidden;
 }
 
+/* Structural role (width, border, scroll, column) comes from .grad-panel —
+   this modifier only adds the picker's internal padding + gap. */
 .picker-panel {
-  width: 340px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
   padding: 24px 20px;
   gap: 24px;
 }
 
 .canvas-stack {
   position: relative;
-  width: 280px;
-  height: 280px;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1 / 1;
   margin: 0 auto;
   flex-shrink: 0;
 }
@@ -2528,20 +2564,20 @@ input[type="range"].oklch-slider::-moz-range-thumb {
 @keyframes pickerCardGlow {
   0% {
     box-shadow: none;
-    border-color: var(--border);
+    border-color: rgba(255, 255, 255, 0.12);
   }
   22% {
     box-shadow:
       0 0 0 3px var(--glow-solid, rgba(255, 255, 255, 0.4)),
-      0 0 36px 10px var(--glow-dim, rgba(255, 255, 255, 0.1));
+      0 0 24px 8px var(--glow-dim, rgba(255, 255, 255, 0.1));
     border-color: var(--glow-solid, var(--border2));
   }
   100% {
     box-shadow: none;
-    border-color: var(--border);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 }
-.picker-card.new-from-picker {
+.picker-card.new-from-picker .color-swatch-btn {
   animation: pickerCardGlow 2s cubic-bezier(0.25, 0, 0.35, 1) forwards;
 }
 
@@ -2920,6 +2956,7 @@ textarea#main-input::placeholder {
   color: var(--color-text-50);
   letter-spacing: 0.01em;
   line-height: 1.3;
+  text-transform: none;
 }
 
 .tx-card-desc {
@@ -4934,14 +4971,6 @@ textarea#main-input::placeholder {
   color: var(--color-text-200);
 }
 
-.bm-slider {
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  cursor: pointer;
-  accent-color: var(--color-primary-500);
-}
-
 /* ── Color swatches ── */
 .bm-color-row {
   display: flex;
@@ -5329,4 +5358,9 @@ textarea#main-input::placeholder {
 /* ── fade-in-7 ── */
 .fade-in-7 {
   animation: fadeSlide 0.4s ease 0.35s both;
+}
+
+/* ── fade-in-8 ── */
+.fade-in-8 {
+  animation: fadeSlide 0.4s ease 0.4s both;
 }

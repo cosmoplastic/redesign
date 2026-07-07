@@ -21,7 +21,7 @@ require '../includes/header.php';
 
   <div class="workspace">
 
-    <div class="picker-panel">
+    <div class="grad-panel picker-panel">
       <div class="canvas-stack" id="canvas-stack">
         <canvas id="hue-canvas" width="280" height="280"></canvas>
         <canvas id="gamut-canvas" width="220" height="220"></canvas>
@@ -34,7 +34,7 @@ require '../includes/header.php';
           <span class="slider-label">L</span>
           <div class="slider-wrap">
             <div class="slider-track" id="l-track"></div>
-            <input type="range" class="oklch-slider" id="l-slider" min="0" max="100" step="0.5">
+            <input type="range" class="slider oklch-slider" id="l-slider" min="0" max="100" step="0.5">
           </div>
           <span class="slider-val" id="l-val">60.0</span>
         </div>
@@ -42,7 +42,7 @@ require '../includes/header.php';
           <span class="slider-label">C</span>
           <div class="slider-wrap">
             <div class="slider-track" id="c-track"></div>
-            <input type="range" class="oklch-slider" id="c-slider" min="0" max="40" step="0.1">
+            <input type="range" class="slider oklch-slider" id="c-slider" min="0" max="40" step="0.1">
           </div>
           <span class="slider-val" id="c-val">0.178</span>
         </div>
@@ -50,7 +50,7 @@ require '../includes/header.php';
           <span class="slider-label">H</span>
           <div class="slider-wrap">
             <div class="slider-track" id="h-track"></div>
-            <input type="range" class="oklch-slider" id="h-slider" min="0" max="360" step="0.5">
+            <input type="range" class="slider oklch-slider" id="h-slider" min="0" max="360" step="0.5">
           </div>
           <span class="slider-val" id="h-val">264°</span>
         </div>
@@ -58,7 +58,7 @@ require '../includes/header.php';
           <span class="slider-label">A</span>
           <div class="slider-wrap">
             <div class="slider-track" id="a-track"></div>
-            <input type="range" class="oklch-slider" id="a-slider" min="0" max="100" step="1" value="100">
+            <input type="range" class="slider oklch-slider" id="a-slider" min="0" max="100" step="1" value="100">
           </div>
           <span class="slider-val" id="a-val">100%</span>
         </div>
@@ -180,9 +180,13 @@ require '../includes/header.php';
   const hueCtx = hueCanvas.getContext('2d');
   const gamutCtx = gamutCanvas.getContext('2d');
   const HUE_OUTER = 140, HUE_INNER = 110, GAMUT_R = 110;
+  // The wheel is authored in a 280px coordinate space but displayed
+  // responsively, so visual positions are emitted as percentages of the
+  // stack (input already scales via getBoundingClientRect ratios).
+  const PCT = (v) => (v / 280 * 100) + '%';
 
-  // position gamut canvas centred inside hue canvas
-  gamutCanvas.style.cssText = 'position:absolute;top:30px;left:30px;border-radius:50%;cursor:crosshair;';
+  // position gamut canvas centred inside hue canvas (percentages of the stack)
+  gamutCanvas.style.cssText = 'position:absolute;top:10.7143%;left:10.7143%;width:78.5714%;height:78.5714%;border-radius:50%;cursor:crosshair;';
 
   function drawHueWheel() {
     hueCtx.clearRect(0, 0, 280, 280);
@@ -228,8 +232,8 @@ require '../includes/header.php';
     const r = (HUE_OUTER + HUE_INNER) / 2;
     const angle = (state.H - 90) * Math.PI / 180;
     const t = document.getElementById('hue-thumb');
-    t.style.left = (140 + r * Math.cos(angle)) + 'px';
-    t.style.top = (140 + r * Math.sin(angle)) + 'px';
+    t.style.left = PCT(140 + r * Math.cos(angle));
+    t.style.top = PCT(140 + r * Math.sin(angle));
     const [r2, g, b] = oklchToRgb(0.65, 0.18, state.H);
     t.style.background = `rgb(${r2},${g},${b})`;
   }
@@ -239,7 +243,7 @@ require '../includes/header.php';
     const px = clamp(state.C / maxC, 0, 1) * 220;
     const py = clamp(1 - state.L, 0, 1) * 220;
     const t = document.getElementById('gamut-thumb');
-    t.style.left = (30 + px) + 'px'; t.style.top = (30 + py) + 'px';
+    t.style.left = PCT(30 + px); t.style.top = PCT(30 + py);
     t.style.background = oklchToHex(state.L, state.C, state.H);
   }
 

@@ -27,7 +27,7 @@ require_once __DIR__ . '/version.php';
     <meta name="twitter:image" content="https://oneredesigns.com/assets/social-thumb.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
         rel="stylesheet">
     <script>
         (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();

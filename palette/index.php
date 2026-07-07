@@ -6,14 +6,23 @@ require '../includes/header.php';
 ?>
 
 <style>
-  /* Left pickers: full-height column flush to the sidebar (matches other tools) */
-  .palette-page .grad-panel { width: 316px; }
+  /* Left pickers inherit the shared .grad-panel width; only internal styling here. */
   .palette-page .grad-panel .pickers-grid {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 20px;
   }
+
+  /* Mode tabs fill the panel width */
+  .palette-page .grad-panel .tabs {
+    width: 100%;
+  }
+
+  .palette-page .grad-panel .tab-btn {
+    flex: 1;
+    text-align: center;
+  }
+
   /* Right side: swatch scales scroll area */
   .palette-page .palette-scroll {
     flex: 1;
@@ -27,30 +36,6 @@ require '../includes/header.php';
   <div class="topstrip">
     <span class="topstrip-title">Palette <em>generator</em></span>
     <div class="topstrip-actions">
-      <div class="tabs">
-        <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
-        <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
-      </div>
-      <div class="apply-btn-wrap">
-        <button class="btn" id="apply-btn" onclick="toggleTheme()">
-          <svg viewBox="0 0 24 24">
-            <rect x="2" y="3" width="20" height="14" rx="2" />
-            <path d="M8 21h8M12 17v4" />
-          </svg>
-          <span class="apply-label">Apply to site</span>
-        </button>
-        <div class="apply-tip" id="apply-tip" role="tooltip">
-          <button class="apply-tip-close" onclick="dismissApplyTip()" aria-label="Dismiss">
-            <svg viewBox="0 0 10 10">
-              <line x1="2" y1="2" x2="8" y2="8" />
-              <line x1="8" y1="2" x2="2" y2="8" />
-            </svg>
-          </button>
-          <p class="apply-tip-title">See it live</p>
-          <p class="apply-tip-body">Hit Apply to site and watch your palette take over every surface of the app —
-            instantly.</p>
-        </div>
-      </div>
       <button class="btn" onclick="openExportModal()">
         <svg viewBox="0 0 24 24">
           <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -69,8 +54,15 @@ require '../includes/header.php';
 
   <div class="workspace">
 
-    <!-- ── LEFT: color pickers (flush to sidebar) ────── -->
+    <!-- ── LEFT: mode + color pickers (flush to sidebar) ── -->
     <div class="grad-panel">
+      <div class="grad-section">
+        <label class="field-label">Mode</label>
+        <div class="tabs">
+          <button class="tab-btn active" id="mode-oklch" onclick="setMode('oklch')">OKLCH</button>
+          <button class="tab-btn" id="mode-tintshade" onclick="setMode('tint-shade')">Tint / Shade</button>
+        </div>
+      </div>
       <div class="pickers-grid" id="pickers-grid"></div>
     </div>
 
@@ -80,7 +72,8 @@ require '../includes/header.php';
         <div class="scales-header">
           <span class="scales-header-label">Swatches</span>
           <div class="swatch-count-control">
-            <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)" aria-label="Fewer swatches">−</button>
+            <button class="swatch-count-btn" onclick="setStopCount(stopCount - 1)"
+              aria-label="Fewer swatches">−</button>
             <input type="number" id="stop-count" min="4" max="14" value="10" aria-label="Number of swatches"
               onchange="setStopCount(this.value)" oninput="setStopCount(this.value)">
             <button class="swatch-count-btn" onclick="setStopCount(stopCount + 1)" aria-label="More swatches">+</button>
@@ -609,63 +602,7 @@ require '../includes/header.php';
     updateOutput();
   }
 
-  // ── APPLY-TIP ────────────────────────────────────────
-  const TIP_KEY = 'palette-apply-tip-dismissed';
-
-  function showApplyTip() {
-    if (localStorage.getItem(TIP_KEY) || localStorage.getItem('site-theme')) return;
-    setTimeout(() => {
-      const tip = document.getElementById('apply-tip');
-      if (tip) tip.classList.add('visible');
-    }, 1500);
-  }
-
-  function dismissApplyTip() {
-    localStorage.setItem(TIP_KEY, '1');
-    const tip = document.getElementById('apply-tip');
-    if (tip) tip.classList.remove('visible');
-  }
-
-  // ── THEME APPLICATION ────────────────────────────────
-  const THEME_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-
-  function applyTheme() {
-    const hexScale = genScaleWithStops(colors[0].hex, THEME_STOPS);
-    const vars = {};
-    hexScale.forEach((hex, i) => {
-      const [L, C, H] = rgbToOklch(...hexToRgb(hex));
-      vars['--color-primary-' + THEME_STOPS[i]] = 'oklch(' + (L * 100).toFixed(1) + '% ' + C.toFixed(3) + ' ' + H.toFixed(1) + ')';
-    });
-    Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
-    localStorage.setItem('site-theme', JSON.stringify(vars));
-    syncApplyBtn();
-    dismissApplyTip();
-    showToast('Theme applied');
-  }
-
-  function resetTheme() {
-    localStorage.removeItem('site-theme');
-    THEME_STOPS.forEach(s => document.documentElement.style.removeProperty('--color-primary-' + s));
-    syncApplyBtn();
-    showToast('Theme reset');
-  }
-
-  function toggleTheme() {
-    localStorage.getItem('site-theme') ? resetTheme() : applyTheme();
-  }
-
-  function syncApplyBtn() {
-    const active = !!localStorage.getItem('site-theme');
-    const btn = document.getElementById('apply-btn');
-    if (!btn) return;
-    btn.querySelector('.apply-label').textContent = active ? 'Remove styling' : 'Apply to site';
-    btn.classList.toggle('btn-applied', active);
-  }
-
-  syncApplyBtn();
-  showApplyTip();
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeExportModal(); closePresetsModal(); dismissApplyTip(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeExportModal(); closePresetsModal(); } });
 </script>
 
 <?php require '../includes/footer.php'; ?>

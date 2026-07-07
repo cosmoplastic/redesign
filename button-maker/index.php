@@ -72,7 +72,7 @@ require '../includes/header.php';
             <span class="bm-label">Border radius</span>
             <span class="bm-val" id="val-radius">8px</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-radius" min="0" max="32" step="1" value="8">
+          <input type="range" class="slider" id="sl-radius" min="0" max="32" step="1" value="8">
         </div>
 
         <div class="bm-slider-row">
@@ -80,7 +80,7 @@ require '../includes/header.php';
             <span class="bm-label">Padding — vertical</span>
             <span class="bm-val" id="val-pv">10px</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-pv" min="4" max="24" step="1" value="10">
+          <input type="range" class="slider" id="sl-pv" min="4" max="24" step="1" value="10">
         </div>
 
         <div class="bm-slider-row">
@@ -88,7 +88,7 @@ require '../includes/header.php';
             <span class="bm-label">Padding — horizontal</span>
             <span class="bm-val" id="val-ph">20px</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-ph" min="8" max="56" step="2" value="20">
+          <input type="range" class="slider" id="sl-ph" min="8" max="56" step="2" value="20">
         </div>
       </div>
 
@@ -154,7 +154,7 @@ require '../includes/header.php';
             <span class="bm-label">Opacity</span>
             <span class="bm-val" id="val-p-opacity">100%</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-p-opacity" min="10" max="100" step="1" value="100">
+          <input type="range" class="slider" id="sl-p-opacity" min="10" max="100" step="1" value="100">
         </div>
       </div>
 
@@ -220,7 +220,7 @@ require '../includes/header.php';
             <span class="bm-label">Opacity</span>
             <span class="bm-val" id="val-s-opacity">100%</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-s-opacity" min="10" max="100" step="1" value="100">
+          <input type="range" class="slider" id="sl-s-opacity" min="10" max="100" step="1" value="100">
         </div>
       </div>
 
@@ -286,7 +286,7 @@ require '../includes/header.php';
             <span class="bm-label">Opacity</span>
             <span class="bm-val" id="val-t-opacity">100%</span>
           </div>
-          <input type="range" class="bm-slider" id="sl-t-opacity" min="10" max="100" step="1" value="100">
+          <input type="range" class="slider" id="sl-t-opacity" min="10" max="100" step="1" value="100">
         </div>
       </div>
 

@@ -6,8 +6,7 @@ require '../includes/header.php';
 ?>
 
 <style>
-  /* Left controls: full-height column flush to the sidebar (matches other tools) */
-  .shadow-page .grad-panel { width: 316px; }
+  /* Left controls inherit the shared .grad-panel width; only internal styling here. */
   .shadow-page .grad-panel .picker-card {
     background: transparent;
     border: none;
@@ -114,13 +113,13 @@ require '../includes/header.php';
 
         <label class="shadow-control-label">Tint intensity</label>
         <div class="shadow-slider-row">
-          <input type="range" min="0" max="100" value="40" id="tint-slider" oninput="updateAll()">
+          <input type="range" class="slider" min="0" max="100" value="40" id="tint-slider" oninput="updateAll()">
           <span class="shadow-slider-val" id="tint-val">40%</span>
         </div>
 
         <label class="shadow-control-label">Base opacity</label>
         <div class="shadow-slider-row">
-          <input type="range" min="3" max="55" value="16" id="opacity-slider" oninput="updateAll()">
+          <input type="range" class="slider" min="3" max="55" value="16" id="opacity-slider" oninput="updateAll()">
           <span class="shadow-slider-val" id="opacity-val">16%</span>
         </div>
 
