@@ -4143,6 +4143,23 @@ textarea#main-input::placeholder {
   .palettes-grid {
     grid-template-columns: 1fr;
   }
+
+  /* ── Panel-scroll pages (shadow / palette): match other pages' side padding ── */
+  .panel-scroll {
+    padding: 20px 16px 56px;
+  }
+
+  /* In-card segmented controls fill the width instead of overflowing the card */
+  .picker-card .tabs {
+    width: 100%;
+  }
+  .picker-card .tab-btn {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 11px;
+  }
 }
 
 /* ══════════════════════════════════════════════════
