@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Button Maker — ONE design';
-$pageDescription = 'Create primary and secondary button styles, adjust radius, spacing, size, and typography, then export reusable CSS.';
+$pageTitle = 'Button Maker — Generate Reusable CSS Buttons | ONE design';
+$pageDescription = 'Design button styles for real interfaces: states, spacing, radius, and type. Preview instantly and export reusable CSS.';
 $activePage = 'button-maker';
 $shellClass = 'full-height';
 require '../includes/header.php';

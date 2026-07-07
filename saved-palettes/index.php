@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Saved — ONE design';
-$pageDescription = 'Access saved palettes and type guides, reopen them in tools, and export your stored design tokens.';
+$pageTitle = 'Saved Palettes & Type Guides — ONE design';
+$pageDescription = 'Reopen saved palettes and type guides, keep your design tokens organized, and export them when you are ready.';
 $activePage = 'saved-palettes';
 require '../includes/header.php';
 ?>

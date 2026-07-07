@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Case Converter — ONE design';
-$pageDescription = 'Convert text between sentence, title, lower, upper, camelCase, PascalCase, snake_case, kebab-case, and other clean-up formats in one click.';
+$pageTitle = 'Case Converter — camelCase, snake_case, kebab-case | ONE design';
+$pageDescription = 'Convert text between sentence case, Title Case, camelCase, PascalCase, snake_case, kebab-case, and more in one click.';
 $activePage = 'case-converter';
 require '../includes/header.php';
 ?>

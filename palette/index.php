@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Palette Generator — ONE design';
-$pageDescription = 'Generate OKLCH color scales from 50 to 900 with up to 4 palettes and 14 stops. Export CSS variables or Figma-ready JSON.';
+$pageTitle = 'Palette Generator (OKLCH) — Free Color Scales | ONE design';
+$pageDescription = 'Generate balanced OKLCH palettes from 50-900, compare up to 4 sets, and export CSS variables or Figma-ready JSON.';
 $activePage = 'palette';
 $shellClass = 'full-height';
 require '../includes/header.php';

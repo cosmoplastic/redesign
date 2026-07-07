@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '404 — ONE design';
+$pageTitle = 'Page Not Found — ONE design';
 $pageRobots = 'noindex, follow';
 $activePage = '';
 require 'includes/header.php';

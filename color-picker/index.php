@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Color Picker — ONE design';
-$pageDescription = 'Pick colors in OKLCH with a hue wheel, gamut canvas, WCAG contrast checks, harmonies, and exports for CSS, hex, rgb, hsl, and Figma.';
+$pageTitle = 'Color Picker (OKLCH) — WCAG Contrast & Export | ONE design';
+$pageDescription = 'Pick precise OKLCH colors with harmony helpers, live contrast checks, and one-click export to HEX, RGB, HSL, CSS, or Figma.';
 $activePage = 'picker';
 $shellClass = 'full-height';
 require '../includes/header.php';

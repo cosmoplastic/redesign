@@ -1502,62 +1502,137 @@ header('Cache-Control: no-store, must-revalidate');
       -webkit-box-decoration-break: clone;
     }
 
-    .hz-spin {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: hzspin 0.7s linear infinite;
-      margin-right: 2px;
-      vertical-align: -1px;
-    }
-
-    @keyframes hzspin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Rotating conic "beam" border on the Humanize button */
-    @property --hz-beam-angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-
+    /* ── Border-glow beam on the Humanize button ─────────────────────────
+       Ported from the Border Glow tool (sm/button preset, dark, radius 6).
+       Mono while idle; the .hz-running class swaps to the sunset palette
+       while the command runs. A tiny rAF loop drives --beam-angle so the
+       beam rotates in every browser (see the humanizer script). */
     #hz-run {
       position: relative;
+      border-radius: 6px;
+      background: #1d1d1f;
+      border: 1px solid transparent;
+      color: var(--color-text-100);
+      overflow: hidden;
+    }
+    #hz-run:hover { background: #242426; }
+    #hz-run:disabled { opacity: 1; }
+
+    #hz-run .hz-run-label {
+      position: relative;
+      z-index: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
     }
 
-    #hz-run::before {
-      content: '';
+    /* Stroke — stationary colour field revealed by a rotating conic window */
+    #hz-run::after {
+      content: "";
       position: absolute;
       inset: 0;
-      border-radius: inherit;
-      padding: 1.5px;
-      background: conic-gradient(from var(--hz-beam-angle),
-          transparent 70%, #7c3aed 84%, #06b6d4 96%, transparent 100%);
+      border-radius: 5px;
+      padding: 1px;
+      clip-path: inset(0 round 6px);
+      background:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 54%, rgba(255, 255, 255, 0.1) 57%, rgba(255, 255, 255, 0.3) 60%, rgba(255, 255, 255, 0.6) 63%, rgba(255, 255, 255, 0.75) 66%, rgba(255, 255, 255, 0.6) 69%, rgba(255, 255, 255, 0.3) 72%, rgba(255, 255, 255, 0.1) 75%, transparent 78%, transparent 100%),
+        radial-gradient(ellipse 9px 18px at 2% 68%, rgb(160, 160, 160), transparent),
+        radial-gradient(ellipse 4px 8px at 2% 68%, rgb(140, 140, 140), transparent),
+        radial-gradient(ellipse 59px 9px at 72% -3%, rgb(180, 180, 180), transparent),
+        radial-gradient(ellipse 42px 7px at 74% 100%, rgb(150, 150, 150), transparent),
+        radial-gradient(ellipse 10px 17px at 100% 27%, rgb(170, 170, 170), transparent),
+        radial-gradient(ellipse 10px 18px at 100% 27%, rgb(155, 155, 155), transparent),
+        radial-gradient(ellipse 5px 10px at 100% 27%, rgb(145, 145, 145), transparent),
+        radial-gradient(ellipse 11px 12px at 100% 27%, rgb(165, 165, 165), transparent);
+      -webkit-mask:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: source-in, xor;
+      mask:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask-composite: intersect, exclude;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.230;
+      filter: brightness(1.30) saturate(1.20);
+    }
+
+    /* Inner glow — soft colour bleed inside the element */
+    #hz-run::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      clip-path: inset(0 round 6px);
+      background:
+        radial-gradient(ellipse 9px 18px at 2% 68%, rgba(160, 160, 160, 0.25), transparent),
+        radial-gradient(ellipse 4px 8px at 2% 68%, rgba(140, 140, 140, 0.22), transparent),
+        radial-gradient(ellipse 59px 9px at 72% -3%, rgba(180, 180, 180, 0.17), transparent),
+        radial-gradient(ellipse 42px 7px at 74% 100%, rgba(150, 150, 150, 0.17), transparent),
+        radial-gradient(ellipse 10px 17px at 100% 27%, rgba(170, 170, 170, 0.15), transparent),
+        radial-gradient(ellipse 10px 18px at 100% 27%, rgba(155, 155, 155, 0.2), transparent),
+        radial-gradient(ellipse 5px 10px at 100% 27%, rgba(145, 145, 145, 0.15), transparent),
+        radial-gradient(ellipse 11px 12px at 100% 27%, rgba(165, 165, 165, 0.15), transparent);
+      box-shadow: inset 0 0 5px 1px rgba(255, 255, 255, 0.3);
+      -webkit-mask-image: conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 22%, rgba(255, 255, 255, 0.12) 28%, rgba(255, 255, 255, 0.4) 36%, white 46%, white 82%, rgba(255, 255, 255, 0.4) 88%, rgba(255, 255, 255, 0.12) 94%, transparent 97%, transparent 100%);
+      -webkit-mask-composite: source-over;
+      mask-image: conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 22%, rgba(255, 255, 255, 0.12) 28%, rgba(255, 255, 255, 0.4) 36%, white 46%, white 82%, rgba(255, 255, 255, 0.4) 88%, rgba(255, 255, 255, 0.12) 94%, transparent 97%, transparent 100%);
+      mask-composite: add;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.120;
+      filter: brightness(1.30) saturate(1.20);
+    }
+
+    /* Bloom — blurred highlight riding the beam head */
+    #hz-run .beam-bloom {
+      position: absolute;
+      inset: 0;
+      border-radius: 5px;
+      clip-path: inset(0 round 6px);
+      background: conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 58%, rgba(255, 255, 255, 0.03) 62%, rgba(255, 255, 255, 0.08) 65%, rgba(255, 255, 255, 0.2) 67%, rgba(255, 255, 255, 0.45) 69%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 70.5%, rgba(255, 255, 255, 0.45) 71.5%, rgba(255, 255, 255, 0.2) 73%, rgba(255, 255, 255, 0.08) 75%, rgba(255, 255, 255, 0.03) 78%, transparent 82%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: exclude;
-      animation: hzbeamspin 4s linear infinite;
+      padding: 1px;
+      filter: blur(8px) brightness(1.30) saturate(1.20);
       pointer-events: none;
-      z-index: 2;
+      z-index: 3;
+      opacity: 0.190;
     }
 
-    @keyframes hzbeamspin {
-      to {
-        --hz-beam-angle: 360deg;
-      }
+    /* ── Running: sunset variation ── */
+    #hz-run.hz-running::after {
+      background:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 54%, rgba(255, 255, 255, 0.1) 57%, rgba(255, 255, 255, 0.3) 60%, rgba(255, 255, 255, 0.6) 63%, rgba(255, 255, 255, 0.75) 66%, rgba(255, 255, 255, 0.6) 69%, rgba(255, 255, 255, 0.3) 72%, rgba(255, 255, 255, 0.1) 75%, transparent 78%, transparent 100%),
+        radial-gradient(ellipse 9px 18px at 2% 68%, rgb(255, 180, 50), transparent),
+        radial-gradient(ellipse 4px 8px at 2% 68%, rgb(255, 150, 40), transparent),
+        radial-gradient(ellipse 59px 9px at 72% -3%, rgb(255, 80, 60), transparent),
+        radial-gradient(ellipse 42px 7px at 74% 100%, rgb(255, 100, 80), transparent),
+        radial-gradient(ellipse 10px 17px at 100% 27%, rgb(255, 60, 80), transparent),
+        radial-gradient(ellipse 10px 18px at 100% 27%, rgb(255, 120, 60), transparent),
+        radial-gradient(ellipse 5px 10px at 100% 27%, rgb(255, 200, 50), transparent),
+        radial-gradient(ellipse 11px 12px at 100% 27%, rgb(255, 90, 70), transparent);
+      opacity: 0.460;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      #hz-run::before {
-        animation: none;
-      }
+    #hz-run.hz-running::before {
+      background:
+        radial-gradient(ellipse 9px 18px at 2% 68%, rgba(255, 180, 50, 0.5), transparent),
+        radial-gradient(ellipse 4px 8px at 2% 68%, rgba(255, 150, 40, 0.45), transparent),
+        radial-gradient(ellipse 59px 9px at 72% -3%, rgba(255, 80, 60, 0.35), transparent),
+        radial-gradient(ellipse 42px 7px at 74% 100%, rgba(255, 100, 80, 0.35), transparent),
+        radial-gradient(ellipse 10px 17px at 100% 27%, rgba(255, 60, 80, 0.3), transparent),
+        radial-gradient(ellipse 10px 18px at 100% 27%, rgba(255, 120, 60, 0.4), transparent),
+        radial-gradient(ellipse 5px 10px at 100% 27%, rgba(255, 200, 50, 0.3), transparent),
+        radial-gradient(ellipse 11px 12px at 100% 27%, rgba(255, 90, 70, 0.3), transparent);
+      opacity: 0.240;
+    }
+    #hz-run.hz-running .beam-bloom {
+      opacity: 0.380;
     }
 
     @media (max-width: 640px) {
@@ -1654,12 +1729,15 @@ header('Cache-Control: no-store, must-revalidate');
           <div class="hz-output" id="hz-input-diff" style="display:none"></div>
           <div class="hz-foot">
             <span class="hz-count" id="hz-count">0 chars</span>
-            <button class="btn btn-primary" id="hz-run">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
-                <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
-              </svg>
-              Humanize
+            <button class="btn" id="hz-run">
+              <span class="beam-bloom" aria-hidden="true"></span>
+              <span class="hz-run-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
+                  <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+                </svg>
+                Humanize
+              </span>
             </button>
           </div>
         </div>
@@ -1684,8 +1762,7 @@ header('Cache-Control: no-store, must-revalidate');
               </button>
             </div>
           </div>
-          <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear
-              here.</span></div>
+          <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear here.</span></div>
         </div>
       </div>
     </div>
@@ -2312,14 +2389,28 @@ header('Cache-Control: no-store, must-revalidate');
         input.addEventListener('input', updateCount);
         updateCount();
 
+        // Border-glow beam: a tiny rAF loop rotates --beam-angle on the
+        // button (CSS-composited layers can't self-rotate without @property).
+        // The mono→sunset swap is handled by the .hz-running class in CSS.
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          const beamDur = 4200;
+          const spin = (t) => {
+            runBtn.style.setProperty('--beam-angle', ((t / beamDur) % 1) * 360 + 'deg');
+            requestAnimationFrame(spin);
+          };
+          requestAnimationFrame(spin);
+        }
+
         async function humanize() {
           if (busy) return;
           const text = input.value;
           if (!text.trim()) { showToast('Enter some text first'); return; }
           busy = true;
           runBtn.disabled = true;
-          const orig = runBtn.innerHTML;
-          runBtn.innerHTML = '<span class="hz-spin"></span> Humanizing&hellip;';
+          runBtn.classList.add('hz-running');   // sunset border glow while running
+          const label = runBtn.querySelector('.hz-run-label');
+          const orig = label.innerHTML;
+          label.innerHTML = 'Humanizing&hellip;';
           copyBtn.disabled = true;
           compareBtn.disabled = true;
           if (comparing) exitCompare();
@@ -2349,7 +2440,8 @@ header('Cache-Control: no-store, must-revalidate');
           } finally {
             busy = false;
             runBtn.disabled = false;
-            runBtn.innerHTML = orig;
+            runBtn.classList.remove('hz-running');   // back to mono
+            label.innerHTML = orig;
           }
         }
 

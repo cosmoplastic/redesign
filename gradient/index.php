@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Gradient Studio — ONE design';
-$pageDescription = 'Create smooth CSS gradients with OKLCH interpolation. Build linear and radial gradients, fine-tune stops, and copy production-ready CSS.';
+$pageTitle = 'Gradient Generator (OKLCH) — CSS Gradient Studio | ONE design';
+$pageDescription = 'Create smoother CSS gradients with OKLCH interpolation, edit stops visually, and copy linear or radial code ready for production.';
 $activePage = 'gradient';
 $shellClass = 'full-height';
 require '../includes/header.php';

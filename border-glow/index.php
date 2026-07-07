@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Border Glow — ONE design';
-$pageDescription = 'A live configurator for animated glowing card borders — tune the palette, geometry, and motion, then copy the generated CSS.';
+$pageTitle = 'Border Glow Generator — Animated CSS Card Effects | ONE design';
+$pageDescription = 'Create glowing border effects with live controls for color, blur, spread, and motion, then copy clean CSS for your UI.';
 $activePage = 'border-glow';
 $shellClass = 'full-height';
 require '../includes/header.php';

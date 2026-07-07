@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Export history — ONE design';
-$pageDescription = 'Review, copy, and clear your recent design exports across palette, color, gradient, and typography tools.';
+$pageTitle = 'Export History — Recent CSS & Token Copies | ONE design';
+$pageDescription = 'See your recent exports across color, palette, gradient, and type tools so you can quickly copy, reuse, or clear results.';
 $activePage = 'export-history';
 require '../includes/header.php';
 ?>

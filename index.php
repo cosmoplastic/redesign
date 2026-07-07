@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'ONE design — Tools for Designers who Care About the Details';
-$pageDescription = 'A growing collection of free design tools — OKLCH palette generator, color picker, gradient builder, and more. Made by a designer, for designers.';
+$pageTitle = 'Free Design Tools for Color, Type & CSS — ONE design';
+$pageDescription = 'Use fast, free tools for palettes, gradients, typography, shadows, and UI snippets. Build, preview, and copy production-ready CSS in seconds.';
 $activePage = 'index';
 require 'includes/header.php';
 ?>

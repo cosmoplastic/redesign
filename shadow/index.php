@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Shadow & Elevation — ONE design';
-$pageDescription = 'Design semantic shadow scales for light and dark surfaces, tint shadows from your palette, and export CSS tokens or Figma-ready values.';
+$pageTitle = 'Shadow Generator — Elevation Tokens for UI | ONE design';
+$pageDescription = 'Build semantic shadow scales for light and dark themes, tint with your palette, and export production-ready CSS tokens.';
 $activePage = 'shadow';
 $shellClass = 'full-height';
 require '../includes/header.php';

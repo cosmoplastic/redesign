@@ -1,6 +1,6 @@
 <?php
-$pageTitle = 'Type Scale — ONE design';
-$pageDescription = 'Build responsive typography scales for desktop and mobile, load Google Fonts, and export clean CSS variables or utility classes.';
+$pageTitle = 'Type Scale Generator — Responsive CSS Typography | ONE design';
+$pageDescription = 'Build readable desktop and mobile type scales, test Google Fonts, and export clean CSS variables or utility classes.';
 $activePage = 'type-guide';
 $shellClass = 'full-height';
 require '../includes/header.php';
