@@ -123,7 +123,8 @@ require 'includes/header.php';
                 <div class="card-header">
                     <span class="card-title">Button maker</span>
                 </div>
-                <p class="card-desc">Design primary and secondary buttons in three sizes. Dial in border radius, padding, font size, and weight — then export production-ready CSS.</p>
+                <p class="card-desc">Design primary and secondary buttons in three sizes. Dial in border radius,
+                    padding, font size, and weight — then export production-ready CSS.</p>
                 <div class="card-footer">
                     <span class="card-meta">Primary · Secondary · 3 sizes · CSS export</span>
                     <div class="card-arrow"><svg viewBox="0 0 24 24">
