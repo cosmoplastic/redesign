@@ -373,14 +373,41 @@ aside {
 }
 
 .sidebar-logo a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 300;
   letter-spacing: -0.01em;
   line-height: 1.1;
   color: var(--color-text-100);
   text-decoration: none;
+}
+
+.sidebar-logo-icon {
   display: block;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background: center / contain no-repeat
+    url("/assets/logo/oneredesigns-default.svg");
+}
+
+.sidebar-logo-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: center / contain no-repeat
+    url("/assets/logo/oneredesigns-hover.svg");
+  opacity: 0;
+  transition: opacity 0.22s ease-in-out;
+}
+
+.sidebar-logo a:hover .sidebar-logo-icon::after,
+.sidebar-logo a:focus-visible .sidebar-logo-icon::after {
+  opacity: 1;
 }
 
 .sidebar-logo a em {
@@ -389,7 +416,7 @@ aside {
 
 .sidebar-logo .tagline {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -612,12 +639,12 @@ main.panel {
 
 .btn-ghost {
   background: transparent;
-  border-color: var(--border);
-  color: var(--color-text-500);
+  border: none;
+  color: var(--color-primary-300);
 }
 .btn-ghost:hover {
-  border-color: var(--border2);
-  color: var(--color-text-300);
+  border: none;
+  color: var(--color-primary-400);
 }
 
 .btn-applied {
@@ -4039,12 +4066,37 @@ textarea#main-input::placeholder {
     height: 16px;
   }
   .mob-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-family: var(--serif);
     font-size: 17px;
     font-weight: 300;
     color: var(--color-text-100);
     text-decoration: none;
     letter-spacing: -0.01em;
+  }
+  .mob-logo-icon {
+    display: block;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    background: center / contain no-repeat
+      url("/assets/logo/oneredesigns-default.svg");
+  }
+  .mob-logo-icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: center / contain no-repeat
+      url("/assets/logo/oneredesigns-hover.svg");
+    opacity: 0;
+    transition: opacity 0.22s ease-in-out;
+  }
+  .mob-logo:hover .mob-logo-icon::after,
+  .mob-logo:focus-visible .mob-logo-icon::after {
+    opacity: 1;
   }
   .mob-logo em {
     font-style: italic;

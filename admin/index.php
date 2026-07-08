@@ -324,11 +324,13 @@ header('Cache-Control: no-store, must-revalidate');
     href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="<?= asset_versioned_path('/assets/style.css') ?>">
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
-  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
-  <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="<?= asset_versioned_path('/assets/favicon/favicon.svg') ?>">
+  <link rel="icon" type="image/png" sizes="96x96"
+    href="<?= asset_versioned_path('/assets/favicon/favicon-96x96.png') ?>">
+  <link rel="shortcut icon" href="<?= asset_versioned_path('/assets/favicon/favicon.ico') ?>">
+  <link rel="apple-touch-icon" sizes="180x180"
+    href="<?= asset_versioned_path('/assets/favicon/apple-touch-icon.png') ?>">
+  <link rel="manifest" href="<?= asset_versioned_path('/assets/favicon/site.webmanifest') ?>">
   <style>
     body {
       display: flex;
@@ -1410,6 +1412,12 @@ header('Cache-Control: no-store, must-revalidate');
       flex-shrink: 0;
     }
 
+    .hz-foot-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .hz-count {
       font-family: var(--mono);
       font-size: 11px;
@@ -1737,16 +1745,19 @@ header('Cache-Control: no-store, must-revalidate');
           <div class="hz-output" id="hz-input-diff" style="display:none"></div>
           <div class="hz-foot">
             <span class="hz-count" id="hz-count">0 chars</span>
-            <button class="btn" id="hz-run">
-              <span class="beam-bloom" aria-hidden="true"></span>
-              <span class="hz-run-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                  <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
-                  <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
-                </svg>
-                Humanize
-              </span>
-            </button>
+            <div class="hz-foot-actions">
+              <button class="btn btn-ghost" id="hz-reset" type="button" hidden>Reset</button>
+              <button class="btn" id="hz-run" type="button">
+                <span class="beam-bloom" aria-hidden="true"></span>
+                <span class="hz-run-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
+                    <path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+                  </svg>
+                  Humanize
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -2383,6 +2394,7 @@ header('Cache-Control: no-store, must-revalidate');
         const inputDiff = document.getElementById('hz-input-diff');
         const output = document.getElementById('hz-output');
         const runBtn = document.getElementById('hz-run');
+        const resetBtn = document.getElementById('hz-reset');
         const copyBtn = document.getElementById('hz-copy');
         const compareBtn = document.getElementById('hz-compare');
         const countEl = document.getElementById('hz-count');
@@ -2408,6 +2420,27 @@ header('Cache-Control: no-store, must-revalidate');
             requestAnimationFrame(spin);
           };
           requestAnimationFrame(spin);
+        }
+
+        function resetHumanizer() {
+          if (busy) return;
+          input.value = '';
+          if (comparing) exitCompare();
+          inputDiff.style.display = 'none';
+          inputDiff.innerHTML = '';
+          output.classList.remove('hz-output-error');
+          output.innerHTML = '<span class="hz-placeholder">Your humanized text will appear here.</span>';
+          copyBtn.disabled = true;
+          compareBtn.disabled = true;
+          compareBtn.classList.remove('is-active');
+          lastRun = null;
+          comparing = false;
+          updateCount();
+          input.focus();
+        }
+
+        function revealReset() {
+          if (resetBtn && resetBtn.hidden) resetBtn.hidden = false;
         }
 
         async function humanize() {
@@ -2451,10 +2484,12 @@ header('Cache-Control: no-store, must-revalidate');
             runBtn.disabled = false;
             runBtn.classList.remove('hz-running');   // back to mono
             label.innerHTML = orig;
+            revealReset();
           }
         }
 
         runBtn.addEventListener('click', humanize);
+        resetBtn.addEventListener('click', resetHumanizer);
         input.addEventListener('keydown', e => {
           if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); humanize(); }
         });

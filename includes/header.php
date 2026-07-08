@@ -145,11 +145,13 @@ $socialImageAlt = 'Social preview for ' . $pageTitle;
         (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();
     </script>
     <link rel="stylesheet" href="<?= asset_versioned_path('/assets/style.css') ?>">
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
-    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-    <link rel="manifest" href="/assets/favicon/site.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="<?= asset_versioned_path('/assets/favicon/favicon.svg') ?>">
+    <link rel="icon" type="image/png" sizes="96x96"
+        href="<?= asset_versioned_path('/assets/favicon/favicon-96x96.png') ?>">
+    <link rel="shortcut icon" href="<?= asset_versioned_path('/assets/favicon/favicon.ico') ?>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="<?= asset_versioned_path('/assets/favicon/apple-touch-icon.png') ?>">
+    <link rel="manifest" href="<?= asset_versioned_path('/assets/favicon/site.webmanifest') ?>">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-082H85B6GJ"></script>
     <script>
@@ -173,14 +175,14 @@ $socialImageAlt = 'Social preview for ' . $pageTitle;
                     <line x1="3" y1="18" x2="21" y2="18" />
                 </svg>
             </button>
-            <a href="/" class="mob-logo">ONE <em>design</em></a>
+            <a href="/" class="mob-logo"><span class="mob-logo-icon" aria-hidden="true"></span>ONE <em>design</em></a>
         </div>
         <div class="mob-backdrop" onclick="document.querySelector('.shell').classList.remove('nav-open')"></div>
 
         <aside>
             <div class="sidebar-logo">
-                <a href="/">ONE <em>design</em></a>
-                <p class="tagline">For designers</p>
+                <a href="/"><span class="sidebar-logo-icon" aria-hidden="true"></span>ONE <em>design</em></a>
+                <p class="tagline">ONE SPOT. ONE DESIGN.</p>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Design</div>

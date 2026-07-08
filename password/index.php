@@ -47,8 +47,13 @@ header('Cache-Control: no-store, must-revalidate');
     href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="<?= asset_versioned_path('/assets/style.css') ?>">
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
-  <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="<?= asset_versioned_path('/assets/favicon/favicon.svg') ?>">
+  <link rel="icon" type="image/png" sizes="96x96"
+    href="<?= asset_versioned_path('/assets/favicon/favicon-96x96.png') ?>">
+  <link rel="shortcut icon" href="<?= asset_versioned_path('/assets/favicon/favicon.ico') ?>">
+  <link rel="apple-touch-icon" sizes="180x180"
+    href="<?= asset_versioned_path('/assets/favicon/apple-touch-icon.png') ?>">
+  <link rel="manifest" href="<?= asset_versioned_path('/assets/favicon/site.webmanifest') ?>">
   <style>
     body {
       display: flex;
