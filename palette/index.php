@@ -37,9 +37,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Palette <em>generator</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">This OKLCH palette generator is designed for designers and developers who need more than
+        a random swatch set. Instead of relying on HSL shifts that often create muddy midtones, it helps you generate
+        cleaner 50-900 color scales that feel more balanced across UI surfaces, typography, borders, and states.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

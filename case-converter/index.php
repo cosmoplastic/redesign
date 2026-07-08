@@ -9,9 +9,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Case <em>converter</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">This case converter helps with both writing cleanup and developer naming formats. You
+        can switch text between sentence case, title case, lowercase, uppercase, camelCase, PascalCase, snake_case,
+        and kebab-case without manually editing strings one character at a time.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="reset-btn">

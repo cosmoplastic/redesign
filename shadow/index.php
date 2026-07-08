@@ -50,9 +50,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Shadow <em>& elevation</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">This shadow and elevation tool helps you move beyond random box-shadow values by
+        building a semantic depth scale. You can compare shadows on light and dark surfaces, tint them from your
+        palette, and create a set that feels more intentional across cards, overlays, dropdowns, and modal layers.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

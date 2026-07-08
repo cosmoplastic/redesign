@@ -299,9 +299,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Border <em>Glow</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">This border glow generator helps you build animated highlight treatments for cards,
+        buttons, and input fields without depending on a framework. You can control palette, border width, radius,
+        brightness, saturation, and motion, then preview how the effect feels on different UI elements.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="bg-export-btn" type="button">

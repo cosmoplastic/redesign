@@ -10,9 +10,9 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Color <em>picker</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">This OKLCH color picker gives you a more precise way to choose color than standard RGB
+        or HSL tools. You can explore hue, chroma, and lightness directly, stay closer to perceptual balance, and
+        check WCAG contrast before committing to a final value.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">
