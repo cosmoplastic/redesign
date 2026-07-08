@@ -323,7 +323,7 @@ header('Cache-Control: no-store, must-revalidate');
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="<?= asset_versioned_path('/assets/style.css') ?>">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
   <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
@@ -1515,8 +1515,14 @@ header('Cache-Control: no-store, must-revalidate');
       color: var(--color-text-100);
       overflow: hidden;
     }
-    #hz-run:hover { background: #242426; }
-    #hz-run:disabled { opacity: 1; }
+
+    #hz-run:hover {
+      background: #242426;
+    }
+
+    #hz-run:disabled {
+      opacity: 1;
+    }
 
     #hz-run .hz-run-label {
       position: relative;
@@ -1619,6 +1625,7 @@ header('Cache-Control: no-store, must-revalidate');
         radial-gradient(ellipse 11px 12px at 100% 27%, rgb(255, 90, 70), transparent);
       opacity: 0.460;
     }
+
     #hz-run.hz-running::before {
       background:
         radial-gradient(ellipse 9px 18px at 2% 68%, rgba(255, 180, 50, 0.5), transparent),
@@ -1631,6 +1638,7 @@ header('Cache-Control: no-store, must-revalidate');
         radial-gradient(ellipse 11px 12px at 100% 27%, rgba(255, 90, 70, 0.3), transparent);
       opacity: 0.240;
     }
+
     #hz-run.hz-running .beam-bloom {
       opacity: 0.380;
     }
@@ -1762,7 +1770,8 @@ header('Cache-Control: no-store, must-revalidate');
               </button>
             </div>
           </div>
-          <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear here.</span></div>
+          <div class="hz-output" id="hz-output"><span class="hz-placeholder">Your humanized text will appear
+              here.</span></div>
         </div>
       </div>
     </div>
