@@ -4037,6 +4037,7 @@ textarea#main-input::placeholder {
   .mob-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     position: fixed;
     top: 0;
@@ -4049,6 +4050,7 @@ textarea#main-input::placeholder {
     z-index: 400;
   }
   .mob-menu-btn {
+    order: 2;
     width: 36px;
     height: 36px;
     display: flex;
@@ -4106,17 +4108,20 @@ textarea#main-input::placeholder {
   aside {
     display: flex !important;
     position: fixed;
-    left: -230px;
+    left: auto;
+    right: -230px;
     top: 0;
     bottom: 0;
     z-index: 500;
     width: 220px;
     height: 100dvh;
-    transition: left 0.25s ease;
+    border-right: none;
+    border-left: 1px solid var(--border);
+    transition: right 0.25s ease;
   }
   .shell.nav-open aside {
-    left: 0;
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.45);
+    right: 0;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45);
   }
 
   /* ── Backdrop ── */

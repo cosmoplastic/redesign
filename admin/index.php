@@ -1267,6 +1267,124 @@ header('Cache-Control: no-store, must-revalidate');
       display: none;
     }
 
+    /* ── Animated border-glow beam on the session-expired card
+       (mirrors the /password/ login card, mono preset) ─────────────── */
+    .beam-card--md {
+      position: relative;
+      border-radius: 16px;
+      background: #0e0e10;
+      overflow: hidden;
+    }
+
+    .beam-card--md::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 15px;
+      padding: 1px;
+      clip-path: inset(0 round 16px);
+      background:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 54%, rgba(255, 255, 255, 0.1) 57%, rgba(255, 255, 255, 0.3) 60%, rgba(255, 255, 255, 0.6) 63%, rgba(255, 255, 255, 0.75) 66%, rgba(255, 255, 255, 0.6) 69%, rgba(255, 255, 255, 0.3) 72%, rgba(255, 255, 255, 0.1) 75%, transparent 78%, transparent 100%),
+        radial-gradient(ellipse 70px 40px at 33% -7.4%, rgb(180, 180, 180), transparent),
+        radial-gradient(ellipse 60px 35px at 12% -5%, rgb(140, 140, 140), transparent),
+        radial-gradient(ellipse 40px 70px at 2.1% 68.3%, rgb(160, 160, 160), transparent),
+        radial-gradient(ellipse 20px 35px at 2.1% 68.3%, rgb(130, 130, 130), transparent),
+        radial-gradient(ellipse 180px 32px at 74.4% 100%, rgb(170, 170, 170), transparent),
+        radial-gradient(ellipse 85px 26px at 55% 100%, rgb(150, 150, 150), transparent),
+        radial-gradient(ellipse 74px 32px at 93.9% 0%, rgb(190, 190, 190), transparent),
+        radial-gradient(ellipse 26px 42px at 100% 27.1%, rgb(145, 145, 145), transparent),
+        radial-gradient(ellipse 52px 48px at 100% 27.1%, rgb(165, 165, 165), transparent);
+      -webkit-mask:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: source-in, xor;
+      mask:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask-composite: intersect, exclude;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.26;
+      animation: beam-hue-shift 12s ease-in-out infinite;
+    }
+
+    .beam-card--md::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      clip-path: inset(0 round 16px);
+      background:
+        radial-gradient(ellipse 63px 36px at 33% -7.4%, rgba(180, 180, 180, 0.225), transparent),
+        radial-gradient(ellipse 54px 32px at 12% -5%, rgba(140, 140, 140, 0.225), transparent),
+        radial-gradient(ellipse 36px 63px at 2.1% 68.3%, rgba(160, 160, 160, 0.225), transparent),
+        radial-gradient(ellipse 18px 32px at 2.1% 68.3%, rgba(130, 130, 130, 0.225), transparent),
+        radial-gradient(ellipse 162px 29px at 74.4% 100%, rgba(170, 170, 170, 0.225), transparent),
+        radial-gradient(ellipse 77px 23px at 55% 100%, rgba(150, 150, 150, 0.225), transparent),
+        radial-gradient(ellipse 67px 29px at 93.9% 0%, rgba(190, 190, 190, 0.225), transparent),
+        radial-gradient(ellipse 23px 38px at 100% 27.1%, rgba(145, 145, 145, 0.225), transparent),
+        radial-gradient(ellipse 47px 43px at 100% 27.1%, rgba(165, 165, 165, 0.225), transparent);
+      box-shadow: inset 0 0 9px 1px rgba(255, 255, 255, 0.27);
+      -webkit-mask-image:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
+        linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+      -webkit-mask-composite: source-in, source-over;
+      mask-image:
+        conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 30%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.35) 44%, white 52%, white 80%, rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%, transparent 95%, transparent 100%),
+        linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
+        linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+      mask-composite: intersect, add;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.42;
+      animation: beam-hue-shift 12s ease-in-out infinite;
+    }
+
+    .beam-card--md .beam-bloom {
+      position: absolute;
+      inset: 0;
+      border-radius: 15px;
+      clip-path: inset(0 round 16px);
+      background: conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 58%, rgba(255, 255, 255, 0.03) 62%, rgba(255, 255, 255, 0.08) 65%, rgba(255, 255, 255, 0.2) 67%, rgba(255, 255, 255, 0.45) 69%, rgba(255, 255, 255, 0.85) 70%, rgba(255, 255, 255, 0.85) 70.5%, rgba(255, 255, 255, 0.45) 71.5%, rgba(255, 255, 255, 0.2) 73%, rgba(255, 255, 255, 0.08) 75%, rgba(255, 255, 255, 0.03) 78%, transparent 82%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      padding: 1px;
+      filter: blur(8px) brightness(2.5) saturate(2.5);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0.24;
+    }
+
+    /* position:relative + z-index:0 lift the content above the beam layers;
+       flex + gap restores the card's internal spacing (the wrapper would
+       otherwise collapse .lock-card's gap). */
+    .beam-card--md .beam-content {
+      position: relative;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    @keyframes beam-hue-shift {
+      0% {
+        filter: hue-rotate(-30deg) brightness(2.5) saturate(2.5);
+      }
+
+      50% {
+        filter: hue-rotate(30deg) brightness(2.5) saturate(2.5);
+      }
+
+      100% {
+        filter: hue-rotate(-30deg) brightness(2.5) saturate(2.5);
+      }
+    }
+
     /* Upload queue — one row per selected file (active animates, pending sit at 0%) */
     .upload-queue {
       display: flex;
@@ -1445,6 +1563,26 @@ header('Cache-Control: no-store, must-revalidate');
 
     .hz-placeholder {
       color: var(--color-primary-400);
+      /* Collapse source whitespace so the placeholder stays on one line even
+         though .hz-output preserves newlines (white-space: pre-wrap). */
+      white-space: normal;
+    }
+
+    /* The humanized output becomes editable once generated, so the user can
+       tweak it (e.g. pull a phrase back from the original) before copying. */
+    .hz-output.hz-editable {
+      cursor: text;
+    }
+
+    .hz-output.hz-editable:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .hz-edit-hint {
+      margin-left: 6px;
+      color: var(--color-primary-300);
+      opacity: 0.8;
     }
 
     .hz-head-actions {
@@ -1666,16 +1804,36 @@ header('Cache-Control: no-store, must-revalidate');
 <body>
 
   <div class="session-overlay hidden" id="session-overlay">
-    <div class="lock-card">
-      <div class="lock-title">Session <em>expired</em></div>
-      <div class="lock-field">
-        <label for="reauth-pw">Re-enter passcode</label>
-        <input class="lock-input" type="password" id="reauth-pw" autocomplete="off">
-        <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
-        <button class="lock-submit" id="reauth-submit">Unlock</button>
+    <div class="lock-card beam-card--md">
+      <div class="beam-bloom"></div>
+      <div class="beam-content">
+        <div class="lock-title">Session <em>expired</em></div>
+        <div class="lock-field">
+          <label for="reauth-pw">Re-enter passcode</label>
+          <input class="lock-input" type="password" id="reauth-pw" autocomplete="off">
+          <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
+          <button class="lock-submit" id="reauth-submit">Unlock</button>
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Drives --beam-angle with rAF so the session-expired card's border beam
+    // animates in every browser (matches the /password/ login card).
+    (function () {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var cards = document.querySelectorAll('.beam-card--md');
+      if (!cards.length) return;
+      var dur = 4220;
+      function tick(t) {
+        var deg = ((t / dur) % 1) * 360 + 'deg';
+        for (var i = 0; i < cards.length; i++) cards[i].style.setProperty('--beam-angle', deg);
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+  </script>
 
   <div class="admin-wrap">
     <div class="admin-header">
@@ -1763,7 +1921,7 @@ header('Cache-Control: no-store, must-revalidate');
 
         <div class="hz-pane">
           <div class="hz-pane-head">
-            <span class="hz-pane-label">Humanized</span>
+            <span class="hz-pane-label">Humanized<span class="hz-edit-hint" id="hz-edit-hint" hidden> · editable</span></span>
             <div class="hz-head-actions">
               <button class="hz-copy" id="hz-compare" disabled title="Highlight what changed">
                 <svg viewBox="0 0 24 24">
@@ -2398,10 +2556,38 @@ header('Cache-Control: no-store, must-revalidate');
         const copyBtn = document.getElementById('hz-copy');
         const compareBtn = document.getElementById('hz-compare');
         const countEl = document.getElementById('hz-count');
+        const editHint = document.getElementById('hz-edit-hint');
         if (!input) return;
         let busy = false;
         let lastRun = null;   // { input, output } from the most recent humanize
         let comparing = false;
+
+        // ── Editable humanized output ────────────────────────────────────
+        // Once text is generated the output pane becomes editable so tweaks
+        // (e.g. pulling a phrase back from the original) can be made before
+        // copying. plaintext-only keeps pastes clean where supported.
+        const PLAINTEXT_OK = (() => {
+          const d = document.createElement('div');
+          try { d.contentEditable = 'plaintext-only'; return d.contentEditable === 'plaintext-only'; }
+          catch (_) { return false; }
+        })();
+        function setOutputEditable(on) {
+          if (on) output.setAttribute('contenteditable', PLAINTEXT_OK ? 'plaintext-only' : 'true');
+          else output.removeAttribute('contenteditable');
+          output.classList.toggle('hz-editable', on);
+          if (editHint) editHint.hidden = !on;
+        }
+        // Keep lastRun.output current so Copy and Compare both reflect edits.
+        output.addEventListener('input', () => {
+          if (output.isContentEditable && !comparing && lastRun) lastRun.output = output.innerText;
+        });
+        // Plain-text paste fallback for browsers without plaintext-only.
+        output.addEventListener('paste', (e) => {
+          if (PLAINTEXT_OK || !output.isContentEditable) return;
+          e.preventDefault();
+          const t = (e.clipboardData || window.clipboardData).getData('text/plain');
+          document.execCommand('insertText', false, t);
+        });
 
         function updateCount() {
           const n = input.value.length;
@@ -2430,6 +2616,7 @@ header('Cache-Control: no-store, must-revalidate');
           inputDiff.innerHTML = '';
           output.classList.remove('hz-output-error');
           output.innerHTML = '<span class="hz-placeholder">Your humanized text will appear here.</span>';
+          setOutputEditable(false);
           copyBtn.disabled = true;
           compareBtn.disabled = true;
           compareBtn.classList.remove('is-active');
@@ -2458,6 +2645,7 @@ header('Cache-Control: no-store, must-revalidate');
           if (comparing) exitCompare();
           output.classList.remove('hz-output-error');
           output.innerHTML = '<span class="hz-placeholder">Working&hellip;</span>';
+          setOutputEditable(false);
           try {
             const fd = new FormData();
             fd.append('action', 'humanize');
@@ -2472,6 +2660,7 @@ header('Cache-Control: no-store, must-revalidate');
               output.textContent = json.text;
               copyBtn.disabled = false;
               compareBtn.disabled = false;
+              setOutputEditable(true);
             } else {
               output.textContent = json.error || 'Something went wrong.';
               output.classList.add('hz-output-error');
@@ -2494,7 +2683,7 @@ header('Cache-Control: no-store, must-revalidate');
           if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); humanize(); }
         });
         copyBtn.addEventListener('click', () => {
-          const txt = (lastRun && lastRun.output) || output.textContent;
+          const txt = (lastRun && lastRun.output) || output.innerText;
           navigator.clipboard.writeText(txt).then(() => showToast('Copied!'));
         });
 
@@ -2565,6 +2754,7 @@ header('Cache-Control: no-store, must-revalidate');
           const ops = diffTokens(a, b);
           inputDiff.innerHTML = buildDiffHTML(ops, 'del');
           output.innerHTML = buildDiffHTML(ops, 'ins');
+          setOutputEditable(false);
           input.style.display = 'none';
           inputDiff.style.display = '';
           comparing = true;
@@ -2573,7 +2763,7 @@ header('Cache-Control: no-store, must-revalidate');
         function exitCompare() {
           inputDiff.style.display = 'none';
           input.style.display = '';
-          if (lastRun) output.textContent = lastRun.output;
+          if (lastRun) { output.textContent = lastRun.output; setOutputEditable(true); }
           comparing = false;
           compareBtn.classList.remove('is-active');
         }

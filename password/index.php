@@ -305,6 +305,9 @@ header('Cache-Control: no-store, must-revalidate');
     .beam-card--md .beam-content {
       position: relative;
       z-index: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
 
     @keyframes beam-hue-shift {
