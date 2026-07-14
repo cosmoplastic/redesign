@@ -145,6 +145,7 @@ $socialImageAlt = 'Social preview for ' . $pageTitle;
         (function () { try { var t = localStorage.getItem('site-theme'); if (t) { var v = JSON.parse(t), r = document.documentElement; for (var k in v) r.style.setProperty(k, v[k]); } } catch (e) { } })();
     </script>
     <link rel="stylesheet" href="<?= asset_versioned_path('/assets/style.css') ?>">
+    <script src="<?= asset_versioned_path('/assets/design-flow.js') ?>" defer></script>
     <link rel="icon" type="image/svg+xml" href="<?= asset_versioned_path('/assets/favicon/favicon.svg') ?>">
     <link rel="icon" type="image/png" sizes="96x96"
         href="<?= asset_versioned_path('/assets/favicon/favicon-96x96.png') ?>">

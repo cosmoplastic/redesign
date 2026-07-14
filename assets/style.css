@@ -5434,3 +5434,324 @@ textarea#main-input::placeholder {
 .fade-in-8 {
   animation: fadeSlide 0.4s ease 0.4s both;
 }
+
+/* ══════════════════════════════════════════════════
+   GUIDED FLOW — "Your design file"
+   Sidebar checklist + tool-page chrome bar. Injected
+   by assets/design-flow.js while a flow is active.
+══════════════════════════════════════════════════ */
+
+:root {
+  /* file/product identity accent (green = progress, gold = the file) */
+  --gold: oklch(78% 0.13 85);
+}
+
+.df-checklist {
+  padding: 0 12px;
+  margin-bottom: 22px;
+  text-transform: none;
+}
+
+.df-checklist-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.df-checklist-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.df-checklist-count {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--color-text-400);
+}
+
+.df-progress {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 0 8px 12px;
+  overflow: hidden;
+}
+
+.df-progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.df-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.df-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--color-text-300);
+  text-decoration: none;
+  text-transform: none;
+}
+
+.df-step:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.df-ring {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid var(--border3);
+  flex-shrink: 0;
+}
+
+.df-step--current {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-50);
+}
+
+.df-step--current .df-ring {
+  border: 1.5px solid var(--green);
+  box-shadow: 0 0 8px rgba(110, 231, 160, 0.4);
+}
+
+.df-now {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.df-step--done {
+  color: var(--color-text-500);
+}
+
+.df-step--done .df-label {
+  text-decoration: line-through;
+}
+
+.df-check {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.df-check svg {
+  width: 9px;
+  height: 9px;
+  stroke: var(--bg);
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.df-glyph {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.df-glyph .df-sw {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.df-glyph .df-grad {
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #2563eb, #e11d48);
+}
+
+.df-glyph .df-ag {
+  font-family: var(--serif);
+  font-size: 11px;
+  color: var(--color-text-400);
+}
+
+.df-actions {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border2);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.df-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--color-text-400);
+  text-decoration: none;
+  text-align: left;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.df-action svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.df-action:hover {
+  color: var(--color-text-200);
+}
+
+.df-action--clear {
+  color: var(--color-text-500);
+}
+
+.df-action--clear:hover {
+  color: var(--color-text-300);
+}
+
+.df-action--ready {
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  color: var(--green);
+}
+
+.df-action--ready:hover {
+  color: var(--green);
+  filter: brightness(1.12);
+}
+
+/* ── Flow chrome bar (top of tool pages during a flow) ── */
+.df-chrome {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  text-transform: none;
+}
+
+.df-chrome-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-100);
+}
+
+.df-chrome-step svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--green);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.df-chrome .df-progress {
+  flex: 1;
+  min-width: 80px;
+  margin: 0;
+}
+
+.df-chrome-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.df-btn-skip {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--color-text-300);
+  cursor: pointer;
+  transition: border-color 0.13s, color 0.13s;
+}
+
+.df-btn-skip:hover {
+  border-color: var(--border3);
+  color: var(--color-text-100);
+}
+
+.df-btn-continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: var(--color-text-100);
+  color: var(--color-primary-900);
+  cursor: pointer;
+  transition: filter 0.13s;
+}
+
+.df-btn-continue svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.df-btn-continue:hover {
+  filter: brightness(1.06);
+}
+
+@media (max-width: 640px) {
+  .df-chrome {
+    gap: 10px;
+    padding: 10px 16px;
+  }
+}
