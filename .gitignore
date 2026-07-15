@@ -15,3 +15,6 @@ admin/uploads/
 
 # Logs
 *.log
+
+# Claude Code local config (kept out of the repo per remote cleanup)
+.claude/
