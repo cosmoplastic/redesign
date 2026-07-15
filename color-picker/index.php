@@ -10,9 +10,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Color <em>picker</em></h1>
-      <p class="topstrip-intro">This OKLCH color picker gives you a more precise way to choose color than standard RGB
-        or HSL tools. You can explore hue, chroma, and lightness directly, stay closer to perceptual balance, and
-        check WCAG contrast before committing to a final value.</p>
+      <p class="topstrip-intro">Pick colors directly in OKLCH — hue, chroma, and lightness with WCAG contrast checks built in.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

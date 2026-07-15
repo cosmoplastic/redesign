@@ -11,9 +11,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Gradient <em>studio</em></h1>
-      <p class="topstrip-intro">This gradient generator focuses on one of the biggest problems in CSS gradients: color
-        transitions that turn grey or muddy between stops. By working through OKLCH interpolation, it helps you
-        create linear and radial gradients that hold onto color clarity across the entire blend.</p>
+      <p class="topstrip-intro">Build linear and radial gradients that stay vivid across the whole blend with OKLCH interpolation — no grey, muddy midpoints.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

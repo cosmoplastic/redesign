@@ -37,9 +37,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Palette <em>generator</em></h1>
-      <p class="topstrip-intro">This OKLCH palette generator is designed for designers and developers who need more than
-        a random swatch set. Instead of relying on HSL shifts that often create muddy midtones, it helps you generate
-        cleaner 50-900 color scales that feel more balanced across UI surfaces, typography, borders, and states.</p>
+      <p class="topstrip-intro">Generate clean, perceptually balanced 50-900 color scales from any seed color using OKLCH.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

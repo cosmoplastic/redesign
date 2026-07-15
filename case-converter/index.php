@@ -9,9 +9,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Case <em>converter</em></h1>
-      <p class="topstrip-intro">This case converter helps with both writing cleanup and developer naming formats. You
-        can switch text between sentence case, title case, lowercase, uppercase, camelCase, PascalCase, snake_case,
-        and kebab-case without manually editing strings one character at a time.</p>
+      <p class="topstrip-intro">Convert text between sentence case, title case, camelCase, PascalCase, snake_case, kebab-case, and more in one click.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="reset-btn">

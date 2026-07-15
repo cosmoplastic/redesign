@@ -50,9 +50,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Shadow <em>& elevation</em></h1>
-      <p class="topstrip-intro">This shadow and elevation tool helps you move beyond random box-shadow values by
-        building a semantic depth scale. You can compare shadows on light and dark surfaces, tint them from your
-        palette, and create a set that feels more intentional across cards, overlays, dropdowns, and modal layers.</p>
+      <p class="topstrip-intro">Build a semantic, palette-tinted shadow scale and compare it on light and dark surfaces.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

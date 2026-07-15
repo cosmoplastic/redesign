@@ -11,9 +11,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Button <em>maker</em></h1>
-      <p class="topstrip-intro">This button generator is built for shaping consistent primary, secondary, and tertiary
-        button patterns without writing each variation from scratch. You can control radius, spacing, typography,
-        fill, stroke, and opacity while previewing how the set behaves across multiple sizes.</p>
+      <p class="topstrip-intro">Shape consistent primary, secondary, and tertiary buttons — radius, spacing, typography, fill, and stroke — across three sizes.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

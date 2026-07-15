@@ -11,9 +11,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Typography <em>guide</em></h1>
-      <p class="topstrip-intro">This typography scale tool helps you create a more consistent system for headings, body
-        copy, labels, and supporting text across desktop and mobile. Instead of guessing sizes, you can work from a
-        modular ratio, adjust line height and tracking, and preview how the hierarchy actually reads.</p>
+      <p class="topstrip-intro">Build a modular type scale for desktop and mobile and preview how the hierarchy actually reads.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" onclick="openExportModal()">

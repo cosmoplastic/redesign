@@ -503,15 +503,16 @@ aside {
   color: var(--color-text-300);
   line-height: 1.7;
 }
+/* Deliberately near-invisible — an owner-only door, not a nav item. */
 .sidebar-footer-admin {
   display: block;
-  margin-bottom: 4px;
-  color: var(--color-text-100);
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.12);
   text-decoration: none;
   transition: color 0.15s;
 }
 .sidebar-footer-admin:hover {
-  color: var(--color-text-300);
+  color: var(--color-text-400);
 }
 .sidebar-footer-link {
   color: var(--color-text-300);
@@ -520,6 +521,28 @@ aside {
 }
 .sidebar-footer-link:hover {
   color: var(--color-text-300);
+}
+.sidebar-footer-coffee {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--color-text-300);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.sidebar-footer-coffee svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.sidebar-footer-coffee:hover {
+  color: var(--color-text-100);
 }
 
 /* ══════════════════════════════════════════════════
@@ -5446,10 +5469,73 @@ textarea#main-input::placeholder {
   --gold: oklch(78% 0.13 85);
 }
 
-.df-checklist {
-  padding: 0 12px;
-  margin-bottom: 22px;
+/* ── Stepper trigger + checklist dropdown (in the flow chrome bar) ── */
+.df-stepper-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.df-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-100);
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 8px 14px;
+  cursor: pointer;
   text-transform: none;
+  transition: border-color 0.13s;
+}
+
+.df-stepper:hover {
+  border-color: var(--border3);
+}
+
+.df-stepper > svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--green);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.df-stepper .df-chevron {
+  width: 11px;
+  height: 11px;
+  stroke: var(--color-text-400);
+  transition: transform 0.15s ease;
+}
+
+.df-stepper.open .df-chevron {
+  transform: rotate(180deg);
+}
+
+.df-dropdown {
+  position: absolute;
+  /* The chrome bar is docked at the bottom, so the panel opens upward. */
+  bottom: calc(100% + 10px);
+  left: 0;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-lg);
+  padding: 16px 12px 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  z-index: 650;
+  display: none;
+  text-transform: none;
+}
+
+.df-dropdown.open {
+  display: block;
 }
 
 .df-checklist-head {
@@ -5539,11 +5625,27 @@ textarea#main-input::placeholder {
 }
 
 .df-step--done {
-  color: var(--color-text-500);
+  color: var(--color-primary-400);
 }
 
 .df-step--done .df-label {
   text-decoration: line-through;
+}
+
+.df-step--skipped {
+  color: var(--color-text-500);
+}
+
+.df-step--skipped .df-ring {
+  border-style: dashed;
+}
+
+.df-skip-tag {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-500);
 }
 
 .df-check {
@@ -5565,32 +5667,6 @@ textarea#main-input::placeholder {
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.df-glyph {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.df-glyph .df-sw {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-}
-
-.df-glyph .df-grad {
-  width: 22px;
-  height: 8px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #2563eb, #e11d48);
-}
-
-.df-glyph .df-ag {
-  font-family: var(--serif);
-  font-size: 11px;
-  color: var(--color-text-400);
 }
 
 .df-actions {
@@ -5654,37 +5730,23 @@ textarea#main-input::placeholder {
   filter: brightness(1.12);
 }
 
-/* ── Flow chrome bar (top of tool pages during a flow) ── */
+/* ── Flow chrome bar (docked at the bottom of tool pages during a flow) ── */
 .df-chrome {
   display: flex;
   align-items: center;
   gap: 20px;
   padding: 12px 24px;
-  border-bottom: 1px solid var(--border2);
+  border-top: 1px solid var(--border2);
   background: var(--bg2);
   flex-shrink: 0;
   flex-wrap: wrap;
   text-transform: none;
-}
-
-.df-chrome-step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--color-text-100);
-}
-
-.df-chrome-step svg {
-  width: 13px;
-  height: 13px;
-  stroke: var(--green);
-  fill: none;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  /* Docks to the viewport bottom when main scrolls (mobile);
+     sits naturally at the column end otherwise. */
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  z-index: 300;
 }
 
 .df-chrome .df-progress {
@@ -5710,7 +5772,9 @@ textarea#main-input::placeholder {
   background: none;
   color: var(--color-text-300);
   cursor: pointer;
-  transition: border-color 0.13s, color 0.13s;
+  transition:
+    border-color 0.13s,
+    color 0.13s;
 }
 
 .df-btn-skip:hover {
@@ -5747,6 +5811,23 @@ textarea#main-input::placeholder {
 
 .df-btn-continue:hover {
   filter: brightness(1.06);
+}
+
+/* Below the shell's mobile breakpoint the window scrolls (main's
+   overflow never engages), so sticky can't pin the bar — fix it to the
+   viewport bottom instead and pad main so content scrolls clear of it. */
+@media (max-width: 760px) {
+  .df-chrome {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 350;
+  }
+
+  main:has(> .df-chrome) {
+    padding-bottom: 110px;
+  }
 }
 
 @media (max-width: 640px) {

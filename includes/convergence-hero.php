@@ -53,7 +53,7 @@
       <div class="ch-label" style="left:28.32%;top:424px;color:oklch(70% 0.16 140);transform:rotate(2deg);">border glow
       </div>
 
-      <div class="ch-headline ch-headline--desktop">Every tool in.<br><em>One file out.</em></div>
+      <h1 class="ch-headline ch-headline--desktop">Every tool in.<br><em>One file out.</em></h1>
 
       <div class="ch-chip ch-chip--desktop">
         <svg class="ch-file ch-file--desktop" viewBox="0 0 24 24" aria-hidden="true">
@@ -118,7 +118,7 @@
 
       <div class="ch-headwrap--mobile">
         <div class="ch-badge"><span class="ch-badge-dot"></span>New — guided flow</div>
-        <div class="ch-headline ch-headline--mobile">Every tool in.<br><em>One file out.</em></div>
+        <h1 class="ch-headline ch-headline--mobile">Every tool in.<br><em>One file out.</em></h1>
       </div>
 
       <div class="ch-chip-wrap--mobile">
@@ -250,6 +250,9 @@
     font-weight: 300;
     letter-spacing: -0.02em;
     color: var(--color-text-100);
+    /* h1 element — kill the UA heading margin; layout comes from the
+       absolute anchors (desktop) / headwrap (mobile). */
+    margin: 0;
   }
 
   .ch-headline em {

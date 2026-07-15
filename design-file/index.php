@@ -17,7 +17,7 @@ require '../includes/header.php';
     align-items: center;
     gap: 20px;
     padding: 12px 24px;
-    border-bottom: 1px solid var(--border2);
+    border-top: 1px solid var(--border2);
     background: var(--bg2);
     flex-shrink: 0;
   }
@@ -38,7 +38,7 @@ require '../includes/header.php';
   /* ── Thread arrival band ── */
   .df-arrival {
     position: relative;
-    height: 250px;
+    height: 300px;
     overflow: hidden;
     flex-shrink: 0;
   }
@@ -50,41 +50,21 @@ require '../includes/header.php';
     height: 100%;
   }
 
+  /* The file illustration sits over the convergence point — the threads
+     vanish behind it, pouring into the file. 84% matches the y≈210/250
+     convergence in the (stretching) thread viewBox. */
   .df-arrival-chip-wrap {
     position: absolute;
     left: 50%;
-    top: 210px;
+    top: 84%;
     transform: translate(-50%, -50%);
     z-index: 3;
   }
 
-  .df-arrival-chip {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--bg);
-    border: 1.5px solid var(--green);
-    border-radius: 100px;
-    padding: 14px 22px;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 8px rgba(110, 231, 160, 0.05), 0 0 28px rgba(110, 231, 160, 0.15);
-  }
-
-  .df-arrival-chip svg {
-    width: 14px;
-    height: 14px;
-    stroke: var(--green);
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-  }
-
-  .df-arrival-chip span {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    color: var(--color-text-100);
+  .df-arrival-file {
+    display: block;
+    height: 190px;
+    width: auto;
   }
 
   /* ── Completion copy block ── */
@@ -127,7 +107,7 @@ require '../includes/header.php';
 
   .df-done-title em {
     font-style: italic;
-    color: var(--gold);
+    color: var(--green);
   }
 
   .df-done-desc {
@@ -158,9 +138,9 @@ require '../includes/header.php';
     letter-spacing: 0.03em;
     padding: 14px 26px;
     border-radius: 100px;
-    border: none;
-    background: var(--color-text-100);
-    color: var(--color-primary-900);
+    border: 1px solid var(--color-text-100);
+    background: var(--bg);
+    color: var(--color-text-100);
     cursor: pointer;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     transition: transform 0.15s ease, filter 0.15s ease;
@@ -168,7 +148,7 @@ require '../includes/header.php';
 
   .df-dl:hover {
     transform: scale(1.02);
-    filter: brightness(1.05);
+    filter: brightness(1.15);
   }
 
   .df-dl svg {
@@ -247,29 +227,21 @@ require '../includes/header.php';
     })();
   </script>
 
-  <div class="df-finish-chrome">
-    <span>All 7 steps complete</span>
-    <div class="df-progress"><div class="df-progress-fill" style="width:100%"></div></div>
-  </div>
-
   <div class="df-finish-scroll">
 
     <!-- Thread arrival — the seven tool threads pour in and land in the file -->
     <div class="df-arrival">
       <svg viewBox="0 0 1440 250" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M -10 20 C 150 8, 280 80, 400 88 C 530 98, 630 170, 700 205" fill="none" stroke="oklch(58% 0.2 300)" stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14" style="--df-travel:-408px;animation:df-dash-in 12s linear infinite;"></path>
-        <path d="M -10 52 C 130 74, 300 28, 430 110 C 540 165, 620 186, 706 207" fill="none" stroke="oklch(60% 0.19 265)" stroke-width="1.5" opacity="0.55" stroke-dasharray="8 12" style="--df-travel:-400px;animation:df-dash-in 10s linear infinite;"></path>
-        <path d="M -10 86 C 160 60, 260 142, 410 130 C 540 120, 640 190, 712 209" fill="none" stroke="oklch(62% 0.2 340)" stroke-width="1.5" opacity="0.55" stroke-dasharray="3 8" style="--df-travel:-396px;animation:df-dash-in 9s linear infinite;"></path>
-        <path d="M -10 116 C 140 142, 320 78, 450 150 C 560 205, 650 200, 720 210" fill="none" stroke="oklch(68% 0.14 180)" stroke-width="1.5" opacity="0.6" stroke-dasharray="12 10" style="--df-travel:-396px;animation:df-dash-in 11s linear infinite;"></path>
-        <path d="M -10 146 C 170 118, 290 192, 440 170 C 560 153, 660 200, 728 210" fill="none" stroke="oklch(75% 0.15 90)" stroke-width="1.5" opacity="0.55" stroke-dasharray="4 9" style="--df-travel:-403px;animation:df-dash-in 8s linear infinite;"></path>
-        <path d="M -10 176 C 150 202, 330 138, 470 190 C 580 228, 670 208, 734 211" fill="none" stroke="oklch(65% 0.18 25)" stroke-width="1.5" opacity="0.6" stroke-dasharray="9 13" style="--df-travel:-396px;animation:df-dash-in 13s linear infinite;"></path>
-        <path d="M -10 206 C 180 178, 300 242, 460 215 C 580 196, 680 212, 740 212" fill="none" stroke="oklch(70% 0.16 140)" stroke-width="1.5" opacity="0.5" stroke-dasharray="6 11" style="--df-travel:-408px;animation:df-dash-in 10.5s linear infinite;"></path>
+        <path d="M 180 -10 C 160 60, 250 100, 380 130 C 520 162, 645 190, 700 205" fill="none" stroke="oklch(58% 0.2 300)" stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14" style="--df-travel:-408px;animation:df-dash-in 12s linear infinite;"></path>
+        <path d="M 360 -10 C 335 65, 430 105, 505 140 C 590 175, 660 195, 706 207" fill="none" stroke="oklch(60% 0.19 265)" stroke-width="1.5" opacity="0.55" stroke-dasharray="8 12" style="--df-travel:-400px;animation:df-dash-in 10s linear infinite;"></path>
+        <path d="M 540 -10 C 515 60, 575 115, 615 150 C 665 185, 695 200, 712 209" fill="none" stroke="oklch(62% 0.2 340)" stroke-width="1.5" opacity="0.55" stroke-dasharray="3 8" style="--df-travel:-396px;animation:df-dash-in 9s linear infinite;"></path>
+        <path d="M 720 -10 C 735 55, 695 115, 712 160 C 720 185, 719 198, 720 210" fill="none" stroke="oklch(68% 0.14 180)" stroke-width="1.5" opacity="0.6" stroke-dasharray="12 10" style="--df-travel:-396px;animation:df-dash-in 11s linear infinite;"></path>
+        <path d="M 900 -10 C 925 60, 855 115, 805 150 C 762 180, 738 197, 728 210" fill="none" stroke="oklch(75% 0.15 90)" stroke-width="1.5" opacity="0.55" stroke-dasharray="4 9" style="--df-travel:-403px;animation:df-dash-in 8s linear infinite;"></path>
+        <path d="M 1080 -10 C 1110 70, 990 115, 905 155 C 830 190, 765 203, 734 211" fill="none" stroke="oklch(65% 0.18 25)" stroke-width="1.5" opacity="0.6" stroke-dasharray="9 13" style="--df-travel:-396px;animation:df-dash-in 13s linear infinite;"></path>
+        <path d="M 1260 -10 C 1295 80, 1140 125, 1010 165 C 890 200, 795 207, 740 212" fill="none" stroke="oklch(70% 0.16 140)" stroke-width="1.5" opacity="0.5" stroke-dasharray="6 11" style="--df-travel:-408px;animation:df-dash-in 10.5s linear infinite;"></path>
       </svg>
       <div class="df-arrival-chip-wrap">
-        <div class="df-arrival-chip">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span>design-file.css</span>
-        </div>
+        <img class="df-arrival-file" src="<?= asset_versioned_path('/assets/icons/cssicon.svg') ?>" alt="design-file.css — complete">
       </div>
     </div>
 
@@ -291,6 +263,11 @@ require '../includes/header.php';
     </div>
 
   </div>
+
+  <div class="df-finish-chrome">
+    <span>All 7 steps complete</span>
+    <div class="df-progress"><div class="df-progress-fill" style="width:100%"></div></div>
+  </div>
 </main>
 </div>
 
@@ -306,11 +283,7 @@ require '../includes/header.php';
     });
 
     document.getElementById('df-figma').addEventListener('click', function () {
-      var tokens = { name: 'ONE design — design file', steps: {} };
-      flow.STEPS.forEach(function (st, i) {
-        tokens.steps[st.id] = { order: i + 1, label: st.label, completed: state.completed.indexOf(st.id) !== -1 };
-      });
-      flow.download('design-file.tokens.json', 'application/json', JSON.stringify(tokens, null, 2));
+      flow.download('design-file.tokens.json', 'application/json', JSON.stringify(flow.buildJson(state), null, 2));
     });
 
     var copyBtn = document.getElementById('df-copy');

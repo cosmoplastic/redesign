@@ -299,9 +299,7 @@ require '../includes/header.php';
   <div class="topstrip">
     <div class="topstrip-head">
       <h1 class="topstrip-title">Border <em>Glow</em></h1>
-      <p class="topstrip-intro">This border glow generator helps you build animated highlight treatments for cards,
-        buttons, and input fields without depending on a framework. You can control palette, border width, radius,
-        brightness, saturation, and motion, then preview how the effect feels on different UI elements.</p>
+      <p class="topstrip-intro">Wrap cards, buttons, and inputs in an animated border glow — tune palette, geometry, and motion, then export pure CSS.</p>
     </div>
     <div class="topstrip-actions">
       <button class="btn" id="bg-export-btn" type="button">
