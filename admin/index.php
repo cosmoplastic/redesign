@@ -1814,6 +1814,9 @@ header('Cache-Control: no-store, must-revalidate');
           <div class="lock-error" id="reauth-error">Incorrect passcode.</div>
           <button class="lock-submit" id="reauth-submit">Unlock</button>
         </div>
+        <a href="/" class="lock-home">
+          <span class="btn-icon" style="--icon:url(/assets/icons/home.svg)"></span>Back to home
+        </a>
       </div>
     </div>
   </div>

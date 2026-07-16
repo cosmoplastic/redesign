@@ -14,7 +14,7 @@
     <div class="ch-stage ch-stage--desktop">
       <svg class="ch-threads" viewBox="0 0 1130 480" preserveAspectRatio="none" aria-hidden="true">
         <path d="M -20 70 C 120 20, 260 130, 400 75 S 600 190, 740 160 S 880 235, 928 254" fill="none"
-          stroke="oklch(58% 0.2 300)" stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14"
+          stroke="oklch(0.64 0.21 300.6)" stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14"
           style="--ch-travel:-408px;animation:ch-dash-in 12s linear infinite;"></path>
         <path d="M -20 120 C 140 180, 280 60, 430 140 S 620 110, 730 190 S 878 242, 928 256" fill="none"
           stroke="oklch(60% 0.19 265)" stroke-width="1.5" opacity="0.55" stroke-dasharray="8 12"
@@ -40,9 +40,9 @@
 
       <!-- Label lefts are percentages of the 1130 design width so they track
            the stretched threads; tops stay px (stage height is fixed). -->
-      <div class="ch-label" style="left:17.7%;top:44px;color:oklch(58% 0.2 300);transform:rotate(-2deg);">gradients
+      <div class="ch-label" style="left:17.7%;top:44px;color:oklch(0.64 0.21 300.6);transform:rotate(-2deg);">gradients
       </div>
-      <div class="ch-label" style="left:29.2%;top:102px;color:oklch(60% 0.19 265);transform:rotate(-1deg);">palette
+      <div class="ch-label" style="left:14.8%;top:86px;color:oklch(60% 0.19 265);transform:rotate(-1deg);">palette
       </div>
       <div class="ch-label" style="left:20.35%;top:162px;color:oklch(62% 0.2 340);transform:rotate(2deg);">colors</div>
       <div class="ch-label" style="left:13.27%;top:238px;color:oklch(68% 0.14 180);transform:rotate(-2deg);">type scale
@@ -77,7 +77,7 @@
   <div class="ch-fit ch-fit--mobile">
     <div class="ch-stage ch-stage--mobile">
       <svg class="ch-threads" viewBox="0 0 390 800" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M -10 130 C 80 90, 150 190, 110 260 S 160 380, 186 448" fill="none" stroke="oklch(58% 0.2 300)"
+        <path d="M -10 130 C 80 90, 150 190, 110 260 S 160 380, 186 448" fill="none" stroke="oklch(0.64 0.21 300.6)"
           stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14" style="--ch-travel:-408px;animation:ch-dash-in 12s linear infinite;">
         </path>
         <path d="M 60 -10 C 20 90, 120 140, 80 230 S 170 370, 190 450" fill="none" stroke="oklch(60% 0.19 265)"
@@ -104,7 +104,7 @@
       <div class="ch-scrim ch-scrim--bottom"></div>
 
       <!-- Label lefts are percentages of the 390 design width. -->
-      <div class="ch-label" style="left:26.92%;top:196px;color:oklch(58% 0.2 300);transform:rotate(-4deg);">gradients
+      <div class="ch-label" style="left:26.92%;top:196px;color:oklch(0.64 0.21 300.6);transform:rotate(-4deg);">gradients
       </div>
       <div class="ch-label" style="left:7.18%;top:252px;color:oklch(60% 0.19 265);transform:rotate(3deg);">palette</div>
       <div class="ch-label" style="left:38.46%;top:290px;color:oklch(62% 0.2 340);transform:rotate(-2deg);">colors</div>
@@ -196,6 +196,10 @@
     inset: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .ch-threads path {
+    stroke-width: 2.6;
   }
 
   .ch-label {
