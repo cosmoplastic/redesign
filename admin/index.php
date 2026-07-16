@@ -1924,7 +1924,8 @@ header('Cache-Control: no-store, must-revalidate');
 
         <div class="hz-pane">
           <div class="hz-pane-head">
-            <span class="hz-pane-label">Humanized<span class="hz-edit-hint" id="hz-edit-hint" hidden> · editable</span></span>
+            <span class="hz-pane-label">Humanized<span class="hz-edit-hint" id="hz-edit-hint" hidden> ·
+                editable</span></span>
             <div class="hz-head-actions">
               <button class="hz-copy" id="hz-compare" disabled title="Highlight what changed">
                 <svg viewBox="0 0 24 24">

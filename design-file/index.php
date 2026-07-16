@@ -232,26 +232,46 @@ require '../includes/header.php';
     <!-- Thread arrival — the seven tool threads pour in and land in the file -->
     <div class="df-arrival">
       <svg viewBox="0 0 1440 250" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M 180 -10 C 160 60, 250 100, 380 130 C 520 162, 645 190, 700 205" fill="none" stroke="oklch(0.64 0.21 300.6)" stroke-width="2.6" opacity="0.6" stroke-dasharray="10 14" style="--df-travel:-408px;animation:df-dash-in 12s linear infinite;"></path>
-        <path d="M 360 -10 C 335 65, 430 105, 505 140 C 590 175, 660 195, 706 207" fill="none" stroke="oklch(60% 0.19 265)" stroke-width="2.6" opacity="0.55" stroke-dasharray="8 12" style="--df-travel:-400px;animation:df-dash-in 10s linear infinite;"></path>
-        <path d="M 540 -10 C 515 60, 575 115, 615 150 C 665 185, 695 200, 712 209" fill="none" stroke="oklch(62% 0.2 340)" stroke-width="2.6" opacity="0.55" stroke-dasharray="3 8" style="--df-travel:-396px;animation:df-dash-in 9s linear infinite;"></path>
-        <path d="M 720 -10 C 735 55, 695 115, 712 160 C 720 185, 719 198, 720 210" fill="none" stroke="oklch(68% 0.14 180)" stroke-width="2.6" opacity="0.6" stroke-dasharray="12 10" style="--df-travel:-396px;animation:df-dash-in 11s linear infinite;"></path>
-        <path d="M 900 -10 C 925 60, 855 115, 805 150 C 762 180, 738 197, 728 210" fill="none" stroke="oklch(75% 0.15 90)" stroke-width="2.6" opacity="0.55" stroke-dasharray="4 9" style="--df-travel:-403px;animation:df-dash-in 8s linear infinite;"></path>
-        <path d="M 1080 -10 C 1110 70, 990 115, 905 155 C 830 190, 765 203, 734 211" fill="none" stroke="oklch(65% 0.18 25)" stroke-width="2.6" opacity="0.6" stroke-dasharray="9 13" style="--df-travel:-396px;animation:df-dash-in 13s linear infinite;"></path>
-        <path d="M 1260 -10 C 1295 80, 1140 125, 1010 165 C 890 200, 795 207, 740 212" fill="none" stroke="oklch(70% 0.16 140)" stroke-width="2.6" opacity="0.5" stroke-dasharray="6 11" style="--df-travel:-408px;animation:df-dash-in 10.5s linear infinite;"></path>
+        <path d="M 180 -10 C 160 60, 250 100, 380 130 C 520 162, 645 190, 700 205" fill="none"
+          stroke="oklch(0.64 0.21 300.6)" stroke-width="2.6" opacity="0.6" stroke-dasharray="10 14"
+          style="--df-travel:-408px;animation:df-dash-in 12s linear infinite;"></path>
+        <path d="M 360 -10 C 335 65, 430 105, 505 140 C 590 175, 660 195, 706 207" fill="none"
+          stroke="oklch(60% 0.19 265)" stroke-width="2.6" opacity="0.55" stroke-dasharray="8 12"
+          style="--df-travel:-400px;animation:df-dash-in 10s linear infinite;"></path>
+        <path d="M 540 -10 C 515 60, 575 115, 615 150 C 665 185, 695 200, 712 209" fill="none"
+          stroke="oklch(62% 0.2 340)" stroke-width="2.6" opacity="0.55" stroke-dasharray="3 8"
+          style="--df-travel:-396px;animation:df-dash-in 9s linear infinite;"></path>
+        <path d="M 720 -10 C 735 55, 695 115, 712 160 C 720 185, 719 198, 720 210" fill="none"
+          stroke="oklch(68% 0.14 180)" stroke-width="2.6" opacity="0.6" stroke-dasharray="12 10"
+          style="--df-travel:-396px;animation:df-dash-in 11s linear infinite;"></path>
+        <path d="M 900 -10 C 925 60, 855 115, 805 150 C 762 180, 738 197, 728 210" fill="none"
+          stroke="oklch(75% 0.15 90)" stroke-width="2.6" opacity="0.55" stroke-dasharray="4 9"
+          style="--df-travel:-403px;animation:df-dash-in 8s linear infinite;"></path>
+        <path d="M 1080 -10 C 1110 70, 990 115, 905 155 C 830 190, 765 203, 734 211" fill="none"
+          stroke="oklch(65% 0.18 25)" stroke-width="2.6" opacity="0.6" stroke-dasharray="9 13"
+          style="--df-travel:-396px;animation:df-dash-in 13s linear infinite;"></path>
+        <path d="M 1260 -10 C 1295 80, 1140 125, 1010 165 C 890 200, 795 207, 740 212" fill="none"
+          stroke="oklch(70% 0.16 140)" stroke-width="2.6" opacity="0.5" stroke-dasharray="6 11"
+          style="--df-travel:-408px;animation:df-dash-in 10.5s linear infinite;"></path>
       </svg>
       <div class="df-arrival-chip-wrap">
-        <img class="df-arrival-file" src="<?= asset_versioned_path('/assets/icons/cssicon.svg') ?>" alt="design-file.css — complete">
+        <img class="df-arrival-file" src="<?= asset_versioned_path('/assets/icons/cssicon.svg') ?>"
+          alt="design-file.css — complete">
       </div>
     </div>
 
     <div class="df-done">
       <div class="df-done-badge"><span class="df-done-badge-dot"></span>Design file complete</div>
       <h1 class="df-done-title">Your file is <em>ready.</em></h1>
-      <p class="df-done-desc">Everything you made — palette, gradients, type, shadows, buttons, glow — in one export.</p>
+      <p class="df-done-desc">Everything you made — palette, gradients, type, shadows, buttons, glow — in one export.
+      </p>
       <div class="df-done-actions">
         <button type="button" class="df-dl" id="df-download">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
           Download design-file.css
         </button>
         <div class="df-ghost-row">
@@ -266,7 +286,9 @@ require '../includes/header.php';
 
   <div class="df-finish-chrome">
     <span>All 7 steps complete</span>
-    <div class="df-progress"><div class="df-progress-fill" style="width:100%"></div></div>
+    <div class="df-progress">
+      <div class="df-progress-fill" style="width:100%"></div>
+    </div>
   </div>
 </main>
 </div>

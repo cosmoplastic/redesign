@@ -78,25 +78,32 @@
     <div class="ch-stage ch-stage--mobile">
       <svg class="ch-threads" viewBox="0 0 390 800" preserveAspectRatio="none" aria-hidden="true">
         <path d="M -10 130 C 80 90, 150 190, 110 260 S 160 380, 186 448" fill="none" stroke="oklch(0.64 0.21 300.6)"
-          stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14" style="--ch-travel:-408px;animation:ch-dash-in 12s linear infinite;">
+          stroke-width="1.5" opacity="0.6" stroke-dasharray="10 14"
+          style="--ch-travel:-408px;animation:ch-dash-in 12s linear infinite;">
         </path>
         <path d="M 60 -10 C 20 90, 120 140, 80 230 S 170 370, 190 450" fill="none" stroke="oklch(60% 0.19 265)"
-          stroke-width="1.5" opacity="0.55" stroke-dasharray="8 12" style="--ch-travel:-400px;animation:ch-dash-in 10s linear infinite;">
+          stroke-width="1.5" opacity="0.55" stroke-dasharray="8 12"
+          style="--ch-travel:-400px;animation:ch-dash-in 10s linear infinite;">
         </path>
         <path d="M 170 -10 C 210 70, 130 150, 175 240 S 180 380, 193 452" fill="none" stroke="oklch(62% 0.2 340)"
-          stroke-width="1.5" opacity="0.55" stroke-dasharray="3 8" style="--ch-travel:-396px;animation:ch-dash-in 9s linear infinite;">
+          stroke-width="1.5" opacity="0.55" stroke-dasharray="3 8"
+          style="--ch-travel:-396px;animation:ch-dash-in 9s linear infinite;">
         </path>
         <path d="M 280 -10 C 240 80, 320 160, 265 250 S 205 380, 197 452" fill="none" stroke="oklch(68% 0.14 180)"
-          stroke-width="1.5" opacity="0.6" stroke-dasharray="12 10" style="--ch-travel:-396px;animation:ch-dash-in 11s linear infinite;">
+          stroke-width="1.5" opacity="0.6" stroke-dasharray="12 10"
+          style="--ch-travel:-396px;animation:ch-dash-in 11s linear infinite;">
         </path>
         <path d="M 400 110 C 320 80, 280 190, 320 260 S 225 390, 201 450" fill="none" stroke="oklch(75% 0.15 90)"
-          stroke-width="1.5" opacity="0.55" stroke-dasharray="4 9" style="--ch-travel:-403px;animation:ch-dash-in 8s linear infinite;">
+          stroke-width="1.5" opacity="0.55" stroke-dasharray="4 9"
+          style="--ch-travel:-403px;animation:ch-dash-in 8s linear infinite;">
         </path>
         <path d="M -10 320 C 70 290, 130 360, 120 400 S 175 420, 189 452" fill="none" stroke="oklch(65% 0.18 25)"
-          stroke-width="1.5" opacity="0.6" stroke-dasharray="9 13" style="--ch-travel:-396px;animation:ch-dash-in 13s linear infinite;">
+          stroke-width="1.5" opacity="0.6" stroke-dasharray="9 13"
+          style="--ch-travel:-396px;animation:ch-dash-in 13s linear infinite;">
         </path>
         <path d="M 400 330 C 330 310, 270 380, 285 410 S 215 430, 203 452" fill="none" stroke="oklch(70% 0.16 140)"
-          stroke-width="1.5" opacity="0.5" stroke-dasharray="6 11" style="--ch-travel:-408px;animation:ch-dash-in 10.5s linear infinite;">
+          stroke-width="1.5" opacity="0.5" stroke-dasharray="6 11"
+          style="--ch-travel:-408px;animation:ch-dash-in 10.5s linear infinite;">
         </path>
       </svg>
 
@@ -104,7 +111,8 @@
       <div class="ch-scrim ch-scrim--bottom"></div>
 
       <!-- Label lefts are percentages of the 390 design width. -->
-      <div class="ch-label" style="left:26.92%;top:196px;color:oklch(0.64 0.21 300.6);transform:rotate(-4deg);">gradients
+      <div class="ch-label" style="left:26.92%;top:196px;color:oklch(0.64 0.21 300.6);transform:rotate(-4deg);">
+        gradients
       </div>
       <div class="ch-label" style="left:7.18%;top:252px;color:oklch(60% 0.19 265);transform:rotate(3deg);">palette</div>
       <div class="ch-label" style="left:38.46%;top:290px;color:oklch(62% 0.2 340);transform:rotate(-2deg);">colors</div>
