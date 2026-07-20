@@ -157,6 +157,118 @@
     return lines.join('\n');
   }
 
+  /* ── AI-ready design guide (design-file.md) ─────────────────────────
+     The semantic layer for AI coding agents: what each token MEANS and
+     when to use it, generated from the user's actual artifacts and
+     referencing the variable/class names shipped in design-file.css.
+     Meant to be dropped into CLAUDE.md / .cursor/rules / AGENTS.md. ── */
+  function buildMd(s) {
+    var a = s.artifacts || {};
+    var md = [];
+    var slug = function (n) { return String(n).trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'color'; };
+    var tokensIn = function (css) {
+      var m = (css || '').match(/--[\w-]+(?=\s*:)/g) || [];
+      return m.filter(function (t, i) { return m.indexOf(t) === i; });
+    };
+    var skippedNote = function (label) {
+      md.push('## ' + label, '', '_Not part of this system (step skipped)._', '');
+    };
+
+    md.push(
+      '# Design system — design-file',
+      '',
+      'Generated ' + new Date().toISOString().slice(0, 10) + ' with [ONE design](' + location.origin + ') · ' + s.completed.length + '/7 steps.',
+      '',
+      'This guide is the **semantic layer** for the tokens in `design-file.css`.',
+      'Give an AI agent both files (e.g. drop this into `CLAUDE.md`, `.cursor/rules/`, or `AGENTS.md`',
+      'and import the CSS) so it applies the system as intended instead of guessing.',
+      '',
+      '**Ground rules**',
+      '- Use the CSS custom properties and classes below — never hardcode raw values that a token already covers.',
+      '- When something isn’t specified here, derive it from the nearest token (e.g. mix or step the scales) rather than inventing new values.',
+      ''
+    );
+
+    /* Palette */
+    if (a.palette && a.palette.data && a.palette.data.length) {
+      md.push('## Color palette', '');
+      md.push('Each color is a 50–900 scale: `--color-<name>-<stop>` (50 = lightest, 900 = darkest).', '');
+      a.palette.data.forEach(function (c, i) {
+        var g = slug(c.name);
+        var role = i === 0
+          ? 'Primary. Interactive elements and main actions use `--color-' + g + '-600`; tinted surfaces use 50–100; text on light surfaces uses 700+.'
+          : (i === 1
+            ? 'Secondary. Accents and highlights — use sparingly next to ' + slug(a.palette.data[0].name) + '; same stop conventions.'
+            : 'Supporting. Same stop conventions; keep below primary/secondary in visual frequency.');
+        md.push('- **' + c.name + '** (seed `' + c.hex + '`) — ' + role);
+      });
+      md.push('');
+    } else if (isDone(s, 'palette')) { md.push('## Color palette', '', '_Completed — see `design-file.css` for tokens._', ''); }
+    else skippedNote('Color palette');
+
+    /* Picked colors */
+    if (a.colors && a.colors.data) {
+      md.push('## Picked colors', '');
+      md.push('- `--picked-color` (`' + a.colors.data.picked + '`) — a deliberate one-off; use as chosen, don’t derive scales from it.');
+      if (a.colors.data.saved && a.colors.data.saved.length) {
+        md.push('- Saved swatches `--saved-color-1…' + a.colors.data.saved.length + '`: ' + a.colors.data.saved.join(', '));
+      }
+      md.push('');
+    } else if (!isDone(s, 'colors')) skippedNote('Picked colors');
+
+    /* Gradient */
+    if (a.gradients) {
+      var gd = a.gradients.data;
+      md.push('## Gradient', '');
+      if (gd) {
+        md.push('One signature ' + (gd.type || 'linear') + ' gradient' + (gd.type === 'linear' && gd.angle != null ? ' at ' + gd.angle + '°' : '') +
+          ' (' + (gd.stops || []).map(function (st) { return st.hex + ' @ ' + st.pos + '%'; }).join(' → ') + '), OKLCH-interpolated.');
+      }
+      md.push('Apply via the `.gradient` block in `design-file.css`. Use for hero/feature surfaces and accents — not body backgrounds or text containers.', '');
+    } else if (!isDone(s, 'gradients')) skippedNote('Gradient');
+
+    /* Typography */
+    if (a.type && a.type.data) {
+      var t = a.type.data;
+      md.push('## Typography', '');
+      md.push('- Headings: `--font-heading` (' + t.headingFont + '). Body: `--font-body` (' + t.bodyFont + ').');
+      if (t.desktopBase) md.push('- Modular scale: base ' + t.desktopBase + 'px × ' + t.desktopRatio + ' on desktop; ' + t.mobileBase + 'px × ' + t.mobileRatio + ' on mobile.');
+      md.push('- Use the `--text-*` size variables from `design-file.css`; don’t invent in-between sizes — step the scale.');
+      md.push('- Keep the hierarchy: one H1 per view; don’t skip heading levels for styling reasons.', '');
+    } else if (a.type) { md.push('## Typography', '', 'Use `--font-heading`, `--font-body`, and the `--text-*` scale from `design-file.css`.', ''); }
+    else if (!isDone(s, 'type')) skippedNote('Typography');
+
+    /* Shadows */
+    if (a.shadows && a.shadows.css) {
+      var sh = tokensIn(a.shadows.css);
+      md.push('## Elevation (shadows)', '');
+      md.push('Semantic ladder — pick by elevation, never mix levels on one element:');
+      md.push('`' + sh.join('` → `') + '` (lowest → highest).');
+      md.push('- Inputs/controls: lowest · cards: low-mid · dropdowns/popovers: mid · modals/overlays: highest.', '');
+    } else if (!isDone(s, 'shadows')) skippedNote('Elevation (shadows)');
+
+    /* Buttons */
+    if (a.buttons && a.buttons.css) {
+      var cls = (a.buttons.css.match(/\.btn[\w-]*/g) || []).filter(function (c, i, arr) { return arr.indexOf(c) === i; });
+      md.push('## Buttons', '');
+      md.push('Classes: `' + cls.join('` · `') + '`.');
+      md.push('- `.btn-primary` — the single main action per view.');
+      md.push('- `.btn-secondary` — supporting actions alongside a primary.');
+      if (cls.indexOf('.btn-tertiary') !== -1) md.push('- `.btn-tertiary` — low-emphasis / inline actions.');
+      md.push('- Sizes: `.btn-lg` for hero CTAs, default for UI, `.btn-sm` for dense surfaces. Don’t restyle buttons ad hoc — extend the classes.', '');
+    } else if (!isDone(s, 'buttons')) skippedNote('Buttons');
+
+    /* Border glow */
+    if (a.borderglow) {
+      md.push('## Border glow', '');
+      md.push('Animated conic-gradient border treatment (`.beam-card--md` card · `.beam-card--sm` button · `.beam-card--line` input).');
+      md.push('Decorative attention — use on **one** focal element per view at most; requires the driver script included in `design-file.css`’s export block.', '');
+    } else if (!isDone(s, 'borderglow')) skippedNote('Border glow');
+
+    md.push('---', '', 'Full token values live in `design-file.css` — that file is the source of truth; this one is how to use it.', '');
+    return md.join('\n');
+  }
+
   /* ── Figma-ready token JSON from the same artifacts ── */
   function buildJson(s) {
     var tokens = { name: 'ONE design — design file', generated: new Date().toISOString(), steps: {} };
@@ -357,5 +469,5 @@
   else init();
 
   /* Shared with the finish page. */
-  window.OneDesignFlow = { load: load, save: save, wipe: wipe, isComplete: isComplete, buildCss: buildCss, buildJson: buildJson, download: downloadFile, STEPS: STEPS };
+  window.OneDesignFlow = { load: load, save: save, wipe: wipe, isComplete: isComplete, buildCss: buildCss, buildJson: buildJson, buildMd: buildMd, download: downloadFile, STEPS: STEPS };
 })();

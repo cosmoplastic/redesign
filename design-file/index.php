@@ -280,6 +280,7 @@ require '../includes/header.php';
           Download design-file.css
         </button>
         <div class="df-ghost-row">
+          <button type="button" class="df-ghost" id="df-md">AI guide (.md)</button>
           <button type="button" class="df-ghost" id="df-figma">Figma JSON</button>
           <button type="button" class="df-ghost" id="df-copy">Copy CSS</button>
         </div>
@@ -307,6 +308,10 @@ require '../includes/header.php';
 
     document.getElementById('df-download').addEventListener('click', function () {
       flow.download('design-file.css', 'text/css', flow.buildCss(state));
+    });
+
+    document.getElementById('df-md').addEventListener('click', function () {
+      flow.download('design-file.md', 'text/markdown', flow.buildMd(state));
     });
 
     document.getElementById('df-figma').addEventListener('click', function () {
