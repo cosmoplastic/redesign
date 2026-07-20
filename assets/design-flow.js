@@ -132,15 +132,6 @@
     return -1;
   }
 
-  /* First incomplete step at-or-after `from` (wraps); -1 when all complete. */
-  function nextIncomplete(s, from) {
-    for (var k = 0; k < STEPS.length; k++) {
-      var i = (from + k) % STEPS.length;
-      if (!isDone(s, STEPS[i].id)) return i;
-    }
-    return -1;
-  }
-
   function go(i) { location.href = i === -1 ? '/design-file/' : STEPS[i].href; }
 
   /* ── design-file.css assembly from captured artifacts ── */
@@ -298,6 +289,17 @@
 
     main.appendChild(bar);   // docked at the bottom of the main column
 
+    /* Both buttons advance strictly linearly — always to the step after
+       this one (finish after the last), even when everything is already
+       complete; revisiting step 2 and continuing lands on step 3, not the
+       finish. The finish page's own guard bounces back to the first
+       incomplete step, so skipped work still gets caught at the end. */
+    function advance() {
+      var next = idx + 1 < STEPS.length ? idx + 1 : -1;
+      s.current = next === -1 ? 7 : next + 1;
+      save(s);
+      go(next);
+    }
     bar.querySelector('.df-btn-continue').addEventListener('click', function () {
       /* Capture the tool's current output — also on revisits, so edits
          recommit a fresh artifact. */
@@ -307,21 +309,12 @@
       if (!isDone(s, id)) s.completed.push(id);
       var k = s.skipped.indexOf(id);
       if (k !== -1) s.skipped.splice(k, 1);   // completing un-skips
-      var next = nextIncomplete(s, idx + 1);
-      s.current = next === -1 ? 7 : next + 1;
-      save(s);
-      go(next);
+      advance();
     });
     bar.querySelector('.df-btn-skip').addEventListener('click', function () {
       var id = STEPS[idx].id;
       if (!isDone(s, id) && s.skipped.indexOf(id) === -1) s.skipped.push(id);
-      var next = nextIncomplete(s, idx + 1);
-      /* Skipping the current step: don't land right back on it unless it's
-         the only one left — then the finish is unreachable, so stay linear. */
-      if (next === idx) next = (idx + 1) % STEPS.length === idx ? next : nextIncomplete(s, idx + 1);
-      s.current = next === -1 ? 7 : next + 1;
-      save(s);
-      go(next === idx ? -1 : next);
+      advance();
     });
   }
 

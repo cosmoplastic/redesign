@@ -5040,6 +5040,12 @@ textarea#main-input::placeholder {
 .bm-select:hover {
   border-color: var(--border2);
 }
+/* Typeface source select — full row, sits above the custom font picker */
+.bm-typeface-source {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
 .bm-select:focus {
   outline: none;
   border-color: var(--border3);

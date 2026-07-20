@@ -220,8 +220,13 @@ require '../includes/header.php';
         var s = JSON.parse(localStorage.getItem('one-design-flow'));
         if (!s || !Array.isArray(s.completed)) { location.replace('/'); return; }
         if (s.completed.length < 7) {
+          // Send the user to the FIRST unfinished step (skipped or pending) —
+          // the flow advances linearly, so this is where leftover work lives.
+          var ids = ['palette', 'colors', 'gradients', 'type', 'shadows', 'buttons', 'borderglow'];
           var steps = ['/palette/', '/color-picker/', '/gradient/', '/type-guide/', '/shadow/', '/button-maker/', '/border-glow/'];
-          location.replace(steps[Math.min(Math.max((s.current || 1) - 1, 0), 6)]);
+          for (var i = 0; i < ids.length; i++) {
+            if (s.completed.indexOf(ids[i]) === -1) { location.replace(steps[i]); return; }
+          }
         }
       } catch (e) { location.replace('/'); }
     })();

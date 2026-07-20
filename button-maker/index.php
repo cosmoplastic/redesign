@@ -37,7 +37,9 @@ require '../includes/header.php';
 
       <div class="grad-section">
         <div class="field-label">Typeface</div>
-        <div class="font-picker-row">
+        <select class="bm-select bm-typeface-source" id="typeface-source" onchange="setTypefaceSource(this.value)"
+          aria-label="Typeface" style="display:none"></select>
+        <div class="font-picker-row" id="custom-font-row">
           <button class="font-picker-trigger" id="font-picker-trigger" onclick="openFontPicker()" style="flex:1">
             <span class="font-picker-trigger-name" id="font-picker-name">System UI</span>
             <svg viewBox="0 0 24 24" class="font-picker-chevron">
@@ -853,6 +855,51 @@ require '../includes/header.php';
     ensureFontLoaded(name);
     closeFontPicker();
     render();
+    renderTypefaceSource();
+  }
+
+  /* ── Typeface source — the faces chosen in the Type guide come first;
+       "Custom…" reveals the full Google Fonts picker. ── */
+  const CUSTOM_FONT = '__custom';
+
+  function typeGuideFonts() {
+    try {
+      const draft = JSON.parse(localStorage.getItem('oklch-type-draft'));
+      const t = draft && draft.settings;
+      if (!t) return [];
+      const fonts = [];
+      if (t.headingFont) fonts.push({ name: t.headingFont, role: 'heading' });
+      if (t.bodyFont && t.bodyFont !== t.headingFont) fonts.push({ name: t.bodyFont, role: 'body' });
+      return fonts;
+    } catch (e) { return []; }
+  }
+
+  function renderTypefaceSource() {
+    const sel = document.getElementById('typeface-source');
+    const row = document.getElementById('custom-font-row');
+    const fonts = typeGuideFonts();
+    if (!fonts.length) {
+      // Nothing chosen in the Type guide yet — plain picker, as before.
+      sel.style.display = 'none';
+      row.style.display = '';
+      return;
+    }
+    const isSaved = fonts.some(f => f.name === s.fontFamily);
+    sel.innerHTML = fonts.map(f =>
+      `<option value="${f.name.replace(/"/g, '&quot;')}">${f.name} · ${f.role}</option>`
+    ).join('') + `<option value="${CUSTOM_FONT}">Custom…</option>`;
+    sel.value = isSaved ? s.fontFamily : CUSTOM_FONT;
+    sel.style.display = '';
+    row.style.display = isSaved ? 'none' : '';
+  }
+
+  function setTypefaceSource(v) {
+    if (v === CUSTOM_FONT) {
+      document.getElementById('custom-font-row').style.display = '';
+      openFontPicker();
+      return;
+    }
+    applyFont(v);
   }
 
   document.addEventListener('click', e => {
@@ -923,6 +970,7 @@ require '../includes/header.php';
   ensureFontLoaded(s.fontFamily);
 
   render();
+  renderTypefaceSource();
 </script>
 
 <?php require '../includes/footer.php'; ?>
